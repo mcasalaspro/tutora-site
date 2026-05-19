@@ -1,0 +1,75 @@
+---
+/**
+ * AreasFormacao.astro — grid de 6 cards (um por área).
+ * Cada um leva para /cursos?area=[slug].
+ * Linguagem visual em blocos coloridos (autorizada pelo brandbook em capas de área).
+ */
+import { AREAS } from '~/config/site';
+
+const palette = [
+  { bg: 'bg-tutora-laranja', dot: 'bg-tutora-azul-escuro' },
+  { bg: 'bg-tutora-verde-agua', dot: 'bg-tutora-azul-escuro' },
+  { bg: 'bg-tutora-azul-secundario', dot: 'bg-tutora-laranja' },
+  { bg: 'bg-tutora-vermelho', dot: 'bg-tutora-cinza-claro' },
+  { bg: 'bg-tutora-cinza-claro', dot: 'bg-tutora-azul-escuro' },
+  { bg: 'bg-tutora-laranja', dot: 'bg-tutora-verde-agua' },
+];
+
+const cores: Record<string, { titulo: string; legenda: string }> = {
+  'bg-tutora-laranja': { titulo: 'text-white', legenda: 'text-white/85' },
+  'bg-tutora-verde-agua': { titulo: 'text-tutora-azul-escuro', legenda: 'text-tutora-azul-escuro/85' },
+  'bg-tutora-azul-secundario': { titulo: 'text-white', legenda: 'text-white/85' },
+  'bg-tutora-vermelho': { titulo: 'text-white', legenda: 'text-white/85' },
+  'bg-tutora-cinza-claro': { titulo: 'text-tutora-azul-escuro', legenda: 'text-tutora-azul-escuro/85' },
+};
+
+const RESUMOS: Record<string, string> = {
+  'Educação dos Filhos': 'Princípios e práticas para criar pessoas íntegras.',
+  'Família e Casamento': 'Para construir e cuidar do laço mais importante da vida.',
+  'Filosofia e Formação do Juízo': 'Pensar bem é a primeira virtude prática.',
+  'Literatura e Cultura': 'O patrimônio do espírito ocidental e suas obras vivas.',
+  'História e Política': 'Compreender o passado para agir no presente.',
+  'Direito e Vida Pública': 'A tradição jurídica como guardiã da liberdade.',
+};
+---
+
+<section id="areas" class="container-tutora-wide py-20 sm:py-24">
+  <div class="mb-12 max-w-2xl">
+    <h2 class="font-display font-extrabold text-display-lg text-white">
+      Áreas de formação
+    </h2>
+    <p class="mt-3 font-sans text-base text-white/65">
+      Seis caminhos para uma formação inteira.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+    {AREAS.map((area, i) => {
+      const { bg, dot } = palette[i % palette.length];
+      const corTexto = cores[bg];
+      return (
+        <a
+          href={`/cursos/?area=${area.slug}`}
+          class={`relative ${bg} border-4 border-tutora-azul-escuro rounded-lg p-8 min-h-[14rem] flex flex-col justify-between overflow-hidden group hover:scale-[1.02] transition-transform duration-300`}
+        >
+          <!-- Padrão de blocos sutil no canto -->
+          <div class={`absolute -top-4 -right-4 w-20 h-20 ${dot} rounded-md rotate-12 opacity-90`} aria-hidden="true"></div>
+          <div class={`absolute -top-4 right-16 w-10 h-10 ${dot} rounded-md rotate-12 opacity-60`} aria-hidden="true"></div>
+
+          <h3 class={`relative font-display font-extrabold text-2xl sm:text-3xl ${corTexto.titulo} leading-tight`}>
+            {area.nome}
+          </h3>
+          <p class={`relative font-sans text-sm ${corTexto.legenda} mt-4`}>
+            {RESUMOS[area.nome]}
+          </p>
+          <span class={`relative mt-5 font-display font-semibold text-sm ${corTexto.titulo} inline-flex items-center gap-2`}>
+            Ver cursos
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </span>
+        </a>
+      );
+    })}
+  </div>
+</section>

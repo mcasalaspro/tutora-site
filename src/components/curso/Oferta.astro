@@ -1,0 +1,125 @@
+---
+/**
+ * Oferta.astro — duas colunas: Avulso (esquerda) e Combo (direita).
+ * Combo recebe destaque: borda laranja, badge "Mais escolhido", fundo levemente
+ * diferenciado, botão laranja sólido.
+ */
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  curso: CollectionEntry<'cursos'>;
+}
+
+const { curso } = Astro.props;
+const { oferta_avulsa, oferta_combo } = curso.data;
+
+// Resolve os títulos dos cursos do combo (slug → título)
+const todosCursos = await getCollection('cursos');
+const indice = new Map(todosCursos.map((c) => [c.slug, c]));
+const cursosCombo = oferta_combo.cursos_inclusos
+  .map((s) => indice.get(s))
+  .filter((c): c is CollectionEntry<'cursos'> => Boolean(c));
+---
+
+<section id="oferta" class="container-tutora py-10">
+  <h2 class="font-display font-extrabold text-display-md mb-6 text-white">
+    Comece agora
+  </h2>
+
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-5xl">
+    <!-- Card AVULSO -->
+    <article class="relative rounded-2xl border border-tutora-sutil bg-tutora-azul-secundario/40 p-7 sm:p-8 flex flex-col">
+      <header>
+        <h3 class="font-display font-extrabold text-2xl sm:text-3xl text-white">
+          {oferta_avulsa.titulo}
+        </h3>
+        <p class="mt-2 font-sans text-sm text-white/65">{oferta_avulsa.subtitulo}</p>
+      </header>
+
+      <div class="mt-6">
+        <p class="font-display font-bold text-4xl sm:text-5xl text-white">{oferta_avulsa.preco}</p>
+        <p class="mt-1 font-sans text-sm text-white/65">{oferta_avulsa.preco_parcelado}</p>
+      </div>
+
+      <ul class="mt-7 space-y-3 flex-1">
+        {oferta_avulsa.inclui.map((item) => (
+          <li class="flex gap-3 items-start">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1ECAD3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 mt-0.5" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span class="font-sans text-sm sm:text-base text-white/85 leading-relaxed">{item}</span>
+          </li>
+        ))}
+      </ul>
+
+      <a
+        href={oferta_avulsa.link_hotmart}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-secondary mt-8 w-full"
+      >
+        Comprar na Hotmart
+      </a>
+    </article>
+
+    <!-- Card COMBO (destacado) -->
+    <article class="relative rounded-2xl border-2 border-tutora-laranja bg-tutora-azul-secundario/70 p-7 sm:p-8 flex flex-col shadow-card-hover">
+      <span class="absolute -top-3 left-7 bg-tutora-laranja text-white text-xs font-display font-bold uppercase tracking-wider px-3 py-1 rounded-full">
+        Mais escolhido
+      </span>
+
+      <header>
+        <h3 class="font-display font-extrabold text-2xl sm:text-3xl text-white">
+          {oferta_combo.titulo}
+        </h3>
+        <p class="mt-2 font-sans text-sm text-white/65">{oferta_combo.subtitulo}</p>
+      </header>
+
+      <div class="mt-6">
+        <p class="font-display font-bold text-4xl sm:text-5xl text-white">{oferta_combo.preco}</p>
+        <p class="mt-1 font-sans text-sm text-white/65">{oferta_combo.preco_parcelado}</p>
+      </div>
+
+      <ul class="mt-7 space-y-3">
+        {oferta_combo.inclui.map((item) => (
+          <li class="flex gap-3 items-start">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1ECAD3" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="flex-shrink-0 mt-0.5" aria-hidden="true">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span class="font-sans text-sm sm:text-base text-white/85 leading-relaxed">{item}</span>
+          </li>
+        ))}
+      </ul>
+
+      {cursosCombo.length > 0 && (
+        <div class="mt-6 pt-6 border-t border-white/10 flex-1">
+          <p class="font-display font-semibold text-sm text-white/65 uppercase tracking-wider mb-3">
+            Cursos inclusos
+          </p>
+          <ul class="space-y-1.5">
+            {cursosCombo.map((c) => (
+              <li>
+                <a
+                  href={`/cursos/${c.slug}/`}
+                  class="font-sans text-sm sm:text-base text-tutora-verde-agua hover:underline underline-offset-4"
+                >
+                  → {c.data.titulo}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <a
+        href={oferta_combo.link_hotmart}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn-primary mt-8 w-full"
+      >
+        Comprar na Hotmart
+      </a>
+    </article>
+  </div>
+</section>

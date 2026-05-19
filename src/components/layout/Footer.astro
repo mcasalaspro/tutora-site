@@ -1,0 +1,90 @@
+---
+/**
+ * Footer.astro — rodapé persistente.
+ * Contato, redes sociais, links institucionais e logo.
+ */
+import { CONTATO, REDES_SOCIAIS, LINKS, SITE_NAME } from '~/config/site';
+
+const anoAtual = new Date().getFullYear();
+
+const linksInstitucionais = [
+  { label: 'Política de Privacidade', href: LINKS.politicaPrivacidade },
+  { label: 'Termos de Uso', href: LINKS.termos },
+  { label: 'Mapa do Site', href: LINKS.mapaSite },
+  { label: 'Código de Ética', href: LINKS.codigoEtica },
+];
+---
+
+<footer class="bg-tutora-azul-escuro border-t border-tutora-sutil mt-24">
+  <div class="container-tutora-wide py-14 grid grid-cols-1 md:grid-cols-4 gap-10">
+    <!-- Coluna 1: marca -->
+    <div class="md:col-span-2">
+      <img
+        src="/images/brand/tutora-logo-branco.png"
+        alt="Tutora Cursos"
+        width="180"
+        height="50"
+        class="h-10 w-auto mb-5"
+        loading="lazy"
+      />
+      <p class="font-sans text-sm text-white/70 max-w-md leading-relaxed">
+        Uma escola de formação humana. Cursos com professores de referência sobre filosofia,
+        literatura, família, educação dos filhos e história — o que importa para a vida.
+      </p>
+    </div>
+
+    <!-- Coluna 2: contato + redes -->
+    <div>
+      <h3 class="font-display font-bold text-base mb-4">Contato</h3>
+      <ul class="space-y-2 text-sm font-sans">
+        <li>
+          <a href={`mailto:${CONTATO.email}`} class="text-white/70 hover:text-tutora-verde-agua transition-colors">
+            {CONTATO.email}
+          </a>
+        </li>
+        <li>
+          <a href={`mailto:${CONTATO.emailSuporte}`} class="text-white/70 hover:text-tutora-verde-agua transition-colors">
+            {CONTATO.emailSuporte}
+          </a>
+        </li>
+      </ul>
+
+      <h3 class="font-display font-bold text-base mt-6 mb-4">Redes sociais</h3>
+      <div class="flex gap-4">
+        <a href={REDES_SOCIAIS.instagram} target="_blank" rel="noopener noreferrer"
+           aria-label="Instagram" class="text-white/70 hover:text-tutora-verde-agua transition-colors">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>
+        </a>
+        <a href={REDES_SOCIAIS.youtube} target="_blank" rel="noopener noreferrer"
+           aria-label="YouTube" class="text-white/70 hover:text-tutora-verde-agua transition-colors">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></svg>
+        </a>
+        <a href={REDES_SOCIAIS.facebook} target="_blank" rel="noopener noreferrer"
+           aria-label="Facebook" class="text-white/70 hover:text-tutora-verde-agua transition-colors">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path></svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Coluna 3: institucional -->
+    <div>
+      <h3 class="font-display font-bold text-base mb-4">Institucional</h3>
+      <ul class="space-y-2 text-sm font-sans">
+        {linksInstitucionais.map((link) => (
+          <li>
+            <a href={link.href} class="text-white/70 hover:text-tutora-verde-agua transition-colors">
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  <div class="border-t border-tutora-sutil">
+    <div class="container-tutora-wide py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
+      <p class="text-xs text-white/50 font-sans">© {anoAtual} {SITE_NAME}. Todos os direitos reservados.</p>
+      <p class="text-xs text-white/40 font-sans">Pagamentos processados pela Hotmart.</p>
+    </div>
+  </div>
+</footer>

@@ -1,0 +1,111 @@
+---
+import { getCollection } from 'astro:content';
+import Layout from '~/layouts/Layout.astro';
+import CardCurso from '~/components/cards/CardCurso.astro';
+import { SITE_NAME, SITE_URL } from '~/config/site';
+
+export async function getStaticPaths() {
+  const professores = await getCollection('professores');
+  return professores.map((prof) => ({
+    params: { slug: prof.slug },
+    props: { prof },
+  }));
+}
+
+const { prof } = Astro.props;
+const dados = prof.data;
+
+const todosCursos = await getCollection('cursos');
+const cursosDoProf = todosCursos.filter((c) => c.data.professor === prof.slug);
+
+const iniciais = dados.nome
+  .split(' ')
+  .filter((p: string) => p)
+  .map((p: string) => p[0])
+  .slice(0, 2)
+  .join('')
+  .toUpperCase();
+
+const descricao = dados.mini_bio;
+
+const schemaPerson = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: dados.nome,
+  description: dados.mini_bio,
+  url: new URL(`/professores/${prof.slug}/`, SITE_URL).toString(),
+  image: new URL(dados.foto, SITE_URL).toString(),
+  affiliation: {
+    '@type': 'Organization',
+    name: SITE_NAME,
+  },
+};
+
+const paragrafosBio = dados.bio_completa.split(/\n\s*\n/).map((p: string) => p.trim()).filter(Boolean);
+---
+
+<Layout
+  title={`${dados.nome} — Professor da ${SITE_NAME}`}
+  description={descricao}
+  path={`/professores/${prof.slug}/`}
+>
+  <script
+    type="application/ld+json"
+    slot="schema-org"
+    set:html={JSON.stringify(schemaPerson)}
+  />
+
+  <!-- Cabeçalho -->
+  <section class="container-tutora pt-12 pb-10">
+    <div class="grid grid-cols-1 md:grid-cols-[auto,1fr] gap-8 md:gap-10 items-start">
+      <div class="relative w-40 h-40 md:w-56 md:h-56 mx-auto md:mx-0 rounded-full overflow-hidden border-2 border-tutora-verde-agua/30 bg-tutora-azul-secundario flex-shrink-0">
+        <div class="absolute inset-0 flex items-center justify-center font-display font-bold text-5xl text-white/60">
+          {iniciais}
+        </div>
+        <img
+          src={dados.foto}
+          alt={`Foto de ${dados.nome}`}
+          loading="eager"
+          class="absolute inset-0 w-full h-full object-cover"
+          onerror="this.style.display='none'"
+        />
+      </div>
+
+      <div>
+        <h1 class="font-display font-extrabold text-display-lg text-white">{dados.nome}</h1>
+        <div class="mt-5 prose-tutora max-w-prose space-y-4">
+          {paragrafosBio.map((p: string) => <p>{p}</p>)}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Formação -->
+  {dados.formacao.length > 0 && (
+    <section class="container-tutora py-8">
+      <h2 class="font-display font-extrabold text-display-md text-white mb-5">
+        Formação
+      </h2>
+      <ul class="space-y-2 max-w-3xl">
+        {dados.formacao.map((f: string) => (
+          <li class="flex gap-3 items-start font-sans text-base text-white/85">
+            <span class="flex-shrink-0 mt-2 w-1.5 h-1.5 rounded-full bg-tutora-laranja"></span>
+            <span>{f}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <!-- Cursos do professor -->
+  {cursosDoProf.length > 0 && (
+    <section class="container-tutora-wide py-12">
+      <h2 class="font-display font-extrabold text-display-md text-white mb-8">
+        Cursos com {dados.nome}
+      </h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        {cursosDoProf.map((c) => <CardCurso curso={c} />)}
+      </div>
+    </section>
+  )}
+</Layout>

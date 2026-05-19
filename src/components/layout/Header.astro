@@ -1,0 +1,85 @@
+---
+/**
+ * Header.astro — barra superior persistente.
+ *
+ * Logo branco da Tutora (área de proteção mantida com padding generoso),
+ * navegação principal e CTA "Assinar" (link da assinatura).
+ */
+import { LINKS } from '~/config/site';
+
+const navItems = [
+  { label: 'Cursos', href: '/cursos/' },
+  { label: 'Áreas', href: '/#areas' },
+  { label: 'Professores', href: '/#professores' },
+];
+---
+
+<header class="sticky top-0 z-40 bg-tutora-azul-escuro/95 backdrop-blur-sm border-b border-tutora-sutil">
+  <div class="container-tutora-wide flex items-center justify-between h-16 sm:h-20">
+    <!-- Logo: área de proteção respeitada via padding lateral generoso -->
+    <a
+      href="/"
+      class="flex items-center gap-3 hover:opacity-90 transition-opacity"
+      aria-label="Tutora Cursos — Página inicial"
+    >
+      <img
+        src="/images/brand/tutora-logo-branco.png"
+        alt="Tutora Cursos"
+        width="180"
+        height="50"
+        class="h-8 sm:h-10 w-auto"
+        loading="eager"
+      />
+    </a>
+
+    <!-- Nav desktop -->
+    <nav class="hidden md:flex items-center gap-8" aria-label="Navegação principal">
+      {navItems.map((item) => (
+        <a
+          href={item.href}
+          class="font-sans text-sm font-medium text-white/85 hover:text-tutora-verde-agua transition-colors"
+        >
+          {item.label}
+        </a>
+      ))}
+      <a href={LINKS.assinaturaHotmart} rel="noopener noreferrer" target="_blank" class="btn-primary text-sm py-2 px-4">
+        Assinar
+      </a>
+    </nav>
+
+    <!-- Menu mobile — botão simples que dispara <details> -->
+    <details class="md:hidden relative">
+      <summary
+        class="list-none cursor-pointer p-2 rounded-md hover:bg-white/5 transition-colors"
+        aria-label="Abrir menu"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </summary>
+      <nav
+        class="absolute right-0 top-full mt-2 w-56 bg-tutora-azul-escuro border border-tutora-sutil rounded-lg shadow-card-hover p-2 flex flex-col"
+        aria-label="Navegação mobile"
+      >
+        {navItems.map((item) => (
+          <a
+            href={item.href}
+            class="px-4 py-3 rounded-md font-sans text-sm font-medium text-white/85 hover:bg-white/5 hover:text-tutora-verde-agua transition-colors"
+          >
+            {item.label}
+          </a>
+        ))}
+        <a
+          href={LINKS.assinaturaHotmart}
+          rel="noopener noreferrer"
+          target="_blank"
+          class="mt-2 mx-2 btn-primary text-sm py-2"
+        >
+          Assinar
+        </a>
+      </nav>
+    </details>
+  </div>
+</header>

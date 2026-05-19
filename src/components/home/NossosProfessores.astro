@@ -1,0 +1,26 @@
+---
+/**
+ * NossosProfessores.astro — grid com fotos circulares.
+ */
+import { getCollection } from 'astro:content';
+import CardProfessor from '~/components/cards/CardProfessor.astro';
+
+const professores = (await getCollection('professores')).sort((a, b) =>
+  a.data.nome.localeCompare(b.data.nome, 'pt-BR')
+);
+---
+
+<section id="professores" class="container-tutora-wide py-20 sm:py-24">
+  <div class="mb-12 max-w-2xl">
+    <h2 class="font-display font-extrabold text-display-lg text-white">
+      Nossos professores
+    </h2>
+    <p class="mt-3 font-sans text-base text-white/65">
+      Cada curso é conduzido por quem domina o tema com profundidade e clareza.
+    </p>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-y-10 gap-x-6">
+    {professores.map((prof) => <CardProfessor professor={prof} />)}
+  </div>
+</section>

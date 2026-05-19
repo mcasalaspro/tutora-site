@@ -1,0 +1,55 @@
+---
+import Layout from '~/layouts/Layout.astro';
+import BuscaFiltros from '~/components/catalogo/BuscaFiltros.tsx';
+import type { CursoLite } from '~/components/catalogo/BuscaFiltros.tsx';
+import { getCollection } from 'astro:content';
+import { AREAS, SITE_NAME } from '~/config/site';
+
+const todosCursos = await getCollection('cursos');
+const professores = await getCollection('professores');
+const indiceProf = new Map(professores.map((p) => [p.slug, p]));
+
+const cursosLite: CursoLite[] = todosCursos
+  .map((c) => ({
+    slug: c.slug,
+    titulo: c.data.titulo,
+    professor: c.data.professor,
+    professorNome: indiceProf.get(c.data.professor)?.data.nome ?? c.data.professor,
+    area: c.data.area,
+    capa: c.data.capa,
+    sinopse_curta: c.data.sinopse_curta,
+    duracao_aulas: c.data.duracao_aulas,
+    duracao_horas: c.data.duracao_horas,
+    lancamento: Boolean(c.data.lancamento),
+  }))
+  .sort((a, b) => a.titulo.localeCompare(b.titulo, 'pt-BR'));
+
+const professoresLite = professores
+  .map((p) => ({ slug: p.slug, nome: p.data.nome }))
+  .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+---
+
+<Layout
+  title={`Catálogo de cursos — ${SITE_NAME}`}
+  description="Todos os cursos da Tutora. Busque por palavra-chave, filtre por área ou professor."
+  path="/cursos/"
+>
+  <section class="container-tutora-wide pt-12 pb-8">
+    <h1 class="font-display font-extrabold text-display-xl text-white">
+      Catálogo de cursos
+    </h1>
+    <p class="mt-4 font-sans text-base sm:text-lg text-white/70 max-w-2xl">
+      Filosofia, literatura, família, educação dos filhos, história e direito —
+      cursos para uma formação humana completa.
+    </p>
+  </section>
+
+  <section class="container-tutora-wide pb-24">
+    <BuscaFiltros
+      client:load
+      cursos={cursosLite}
+      areas={[...AREAS]}
+      professores={professoresLite}
+    />
+  </section>
+</Layout>

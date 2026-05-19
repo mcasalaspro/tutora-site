@@ -1,0 +1,76 @@
+---
+/**
+ * CardCurso.astro — card padrão do curso.
+ * Usado no catálogo, em destaques da home e na seção de cursos relacionados.
+ * Sensação de "capa de streaming": imagem dominante, título destacado.
+ */
+import { getEntry } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  curso: CollectionEntry<'cursos'>;
+  /** Reduz o card (usado em listas densas e mobile horizontal-scroll). */
+  compacto?: boolean;
+}
+
+const { curso, compacto = false } = Astro.props;
+const slug = curso.slug;
+const { titulo, professor, area, capa, sinopse_curta, duracao_aulas, duracao_horas, lancamento } = curso.data;
+
+// Lookup do nome do professor para mostrar no card
+const profEntry = await getEntry('professores', professor);
+const nomeProfessor = profEntry?.data.nome ?? professor;
+---
+
+<a
+  href={`/cursos/${slug}/`}
+  class={`card-tutora group flex flex-col h-full ${compacto ? 'min-w-[260px] max-w-[280px]' : ''}`}
+>
+  <!-- Imagem de capa -->
+  <div class="relative aspect-[4/3] overflow-hidden bg-tutora-azul-secundario">
+    <img
+      src={capa}
+      alt={`Capa do curso ${titulo}`}
+      loading="lazy"
+      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      onerror="this.style.display='none'; this.parentElement.classList.add('bg-gradient-to-br','from-tutora-azul-secundario','to-tutora-azul-escuro');"
+    />
+    {lancamento && (
+      <span class="absolute top-3 left-3 bg-tutora-vermelho text-white text-xs font-display font-bold px-2.5 py-1 rounded-full uppercase tracking-wide">
+        Novo
+      </span>
+    )}
+    <span class="absolute top-3 right-3 bg-tutora-laranja text-white text-xs font-display font-semibold px-2.5 py-1 rounded-full">
+      {area}
+    </span>
+  </div>
+
+  <!-- Conteúdo -->
+  <div class="flex-1 flex flex-col p-5">
+    <h3 class="font-display font-extrabold text-lg sm:text-xl leading-snug clamp-2 group-hover:text-tutora-verde-agua transition-colors">
+      {titulo}
+    </h3>
+    <p class="mt-1.5 text-sm font-sans text-tutora-verde-agua">
+      {nomeProfessor}
+    </p>
+    {!compacto && (
+      <p class="mt-3 text-sm font-sans text-white/70 clamp-3 leading-relaxed">
+        {sinopse_curta}
+      </p>
+    )}
+    <div class="mt-4 pt-4 border-t border-white/10 flex items-center gap-4 text-xs font-sans text-white/60">
+      <span class="flex items-center gap-1.5">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+        </svg>
+        {duracao_aulas} aulas
+      </span>
+      <span class="flex items-center gap-1.5">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        {duracao_horas}h
+      </span>
+    </div>
+  </div>
+</a>

@@ -1,0 +1,66 @@
+---
+/**
+ * SobreProfessor.astro — card horizontal com foto, nome, mini_bio e link
+ * para a página do professor.
+ */
+import { getEntry } from 'astro:content';
+
+interface Props {
+  professorSlug: string;
+}
+
+const { professorSlug } = Astro.props;
+const prof = await getEntry('professores', professorSlug);
+
+// Defensivo: se o professor não existir na collection, esconde a seção
+if (!prof) return null;
+
+const slug = prof.slug;
+const { nome, foto, mini_bio } = prof.data;
+const iniciais = nome
+  .split(' ')
+  .filter((p) => p)
+  .map((p) => p[0])
+  .slice(0, 2)
+  .join('')
+  .toUpperCase();
+---
+
+<section class="container-tutora py-10">
+  <h2 class="font-display font-extrabold text-display-md mb-6 text-white">
+    Sobre o professor
+  </h2>
+
+  <article class="card-tutora flex flex-col sm:flex-row gap-6 sm:gap-8 p-6 sm:p-8 max-w-4xl">
+    <div class="relative w-28 h-28 sm:w-36 sm:h-36 flex-shrink-0 rounded-full overflow-hidden border-2 border-tutora-verde-agua/30 bg-tutora-azul-secundario mx-auto sm:mx-0">
+      <div class="absolute inset-0 flex items-center justify-center font-display font-bold text-3xl text-white/60">
+        {iniciais}
+      </div>
+      <img
+        src={foto}
+        alt={`Foto de ${nome}`}
+        loading="lazy"
+        class="absolute inset-0 w-full h-full object-cover"
+        onerror="this.style.display='none'"
+      />
+    </div>
+
+    <div class="flex-1 text-center sm:text-left">
+      <h3 class="font-display font-extrabold text-2xl sm:text-3xl text-white">
+        {nome}
+      </h3>
+      <p class="mt-3 font-sans text-base text-white/80 leading-relaxed">
+        {mini_bio}
+      </p>
+      <a
+        href={`/professores/${slug}/`}
+        class="mt-5 inline-flex items-center gap-2 font-display font-semibold text-tutora-verde-agua hover:underline underline-offset-4"
+      >
+        Ver perfil completo
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline>
+        </svg>
+      </a>
+    </div>
+  </article>
+</section>

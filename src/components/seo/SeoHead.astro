@@ -1,0 +1,44 @@
+---
+/**
+ * SeoHead.astro
+ * Meta tags universais: <title>, description, OG, Twitter, canônica.
+ * Schema.org pode ser injetado via slot opcional `<slot name="schema-org" />`.
+ */
+import { SITE_NAME, SITE_URL } from '~/config/site';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Caminho absoluto do path (sem domínio), ex: "/cursos/foo" */
+  path?: string;
+  /** URL absoluta da imagem OG (1200x630 idealmente). */
+  imagem?: string;
+  /** Tipo OG, default "website". Em páginas de curso usar "article". */
+  ogType?: 'website' | 'article';
+}
+
+const { title, description, path = '/', imagem, ogType = 'website' } = Astro.props;
+
+const tituloCompleto = title === SITE_NAME ? title : `${title} — ${SITE_NAME}`;
+const canonical = new URL(path, SITE_URL).toString();
+const imagemOG = imagem ?? new URL('/images/brand/og-default.jpg', SITE_URL).toString();
+---
+
+<title>{tituloCompleto}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+
+<meta property="og:type" content={ogType} />
+<meta property="og:site_name" content={SITE_NAME} />
+<meta property="og:title" content={tituloCompleto} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+<meta property="og:image" content={imagemOG} />
+<meta property="og:locale" content="pt_BR" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={tituloCompleto} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imagemOG} />
+
+<slot name="schema-org" />

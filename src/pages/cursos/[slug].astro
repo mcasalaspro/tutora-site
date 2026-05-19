@@ -1,0 +1,141 @@
+---
+/**
+ * Página de detalhe do curso.
+ * Carrega: dados do curso, professor, quiz (se existir) e cursos relacionados.
+ */
+import { getCollection, getEntry } from 'astro:content';
+import Layout from '~/layouts/Layout.astro';
+import CabecalhoCurso from '~/components/curso/CabecalhoCurso.astro';
+import VideoPreview from '~/components/curso/VideoPreview.astro';
+import Sinopse from '~/components/curso/Sinopse.astro';
+import ParaQuemE from '~/components/curso/ParaQuemE.astro';
+import OQueVaiAprender from '~/components/curso/OQueVaiAprender.astro';
+import Importancia from '~/components/curso/Importancia.astro';
+import Curriculo from '~/components/curso/Curriculo.tsx';
+import QuizCurso from '~/components/curso/QuizCurso.tsx';
+import Curiosidades from '~/components/curso/Curiosidades.tsx';
+import SobreProfessor from '~/components/curso/SobreProfessor.astro';
+import Oferta from '~/components/curso/Oferta.astro';
+import SeloGarantia from '~/components/curso/SeloGarantia.astro';
+import FAQ from '~/components/curso/FAQ.tsx';
+import CursosRelacionados from '~/components/curso/CursosRelacionados.astro';
+import StickyBar from '~/components/curso/StickyBar.tsx';
+import { cursosRelacionadosCom } from '~/lib/relacionados';
+import { parseQuiz } from '~/lib/parseQuiz';
+import { SITE_NAME, SITE_URL } from '~/config/site';
+
+export async function getStaticPaths() {
+  const cursos = await getCollection('cursos');
+  return cursos.map((curso) => ({
+    params: { slug: curso.slug },
+    props: { curso },
+  }));
+}
+
+const { curso } = Astro.props;
+const dados = curso.data;
+
+// Professor
+const prof = await getEntry('professores', dados.professor);
+const nomeProfessor = prof?.data.nome ?? dados.professor;
+
+// Quiz (opcional — se o arquivo não existir, parseQuiz devolve vazio e os
+// componentes da Quiz/Curiosidades se escondem por conta própria)
+const quizEntry = await getEntry('quizzes', curso.slug);
+const { perguntas, curiosidades } = quizEntry
+  ? parseQuiz(quizEntry.body ?? '')
+  : { perguntas: [], curiosidades: [] };
+
+// Relacionados (com fallback de mesma área)
+const relacionados = await cursosRelacionadosCom(curso);
+
+// SEO + Schema.org
+const descricao = dados.sinopse_curta;
+const capaAbsoluta = new URL(dados.capa, SITE_URL).toString();
+
+const schemaCourse = {
+  '@context': 'https://schema.org',
+  '@type': 'Course',
+  name: dados.titulo,
+  description: dados.sinopse_curta,
+  provider: {
+    '@type': 'Organization',
+    name: SITE_NAME,
+    sameAs: SITE_URL,
+  },
+  instructor: {
+    '@type': 'Person',
+    name: nomeProfessor,
+  },
+  timeRequired: `PT${dados.duracao_horas}H`,
+  offers: [
+    {
+      '@type': 'Offer',
+      name: dados.oferta_avulsa.titulo,
+      price: dados.oferta_avulsa.preco.replace(/[^\d,]/g, '').replace(',', '.'),
+      priceCurrency: 'BRL',
+      url: dados.oferta_avulsa.link_hotmart,
+    },
+    {
+      '@type': 'Offer',
+      name: dados.oferta_combo.titulo,
+      price: dados.oferta_combo.preco.replace(/[^\d,]/g, '').replace(',', '.'),
+      priceCurrency: 'BRL',
+      url: dados.oferta_combo.link_hotmart,
+    },
+  ],
+};
+---
+
+<Layout
+  title={`${dados.titulo} — ${SITE_NAME}`}
+  description={descricao}
+  path={`/cursos/${curso.slug}/`}
+  imagem={capaAbsoluta}
+  ogType="article"
+>
+  <script
+    type="application/ld+json"
+    slot="schema-org"
+    set:html={JSON.stringify(schemaCourse)}
+  />
+
+  <article class="pb-24">
+    <CabecalhoCurso curso={curso} />
+    <VideoPreview url={dados.preview_youtube_embed} titulo={dados.titulo} />
+    <Sinopse sinopse={dados.sinopse_longa} />
+    <ParaQuemE itens={dados.para_quem_e} />
+    <OQueVaiAprender itens={dados.o_que_vai_aprender} />
+    <Importancia texto={dados.importancia} />
+    <Curriculo client:visible curriculo={dados.curriculo} />
+
+    {perguntas.length > 0 && (
+      <QuizCurso
+        client:visible
+        perguntas={perguntas}
+        tituloTema={dados.titulo}
+        linkOferta={dados.oferta_avulsa.link_hotmart}
+      />
+    )}
+
+    {curiosidades.length > 0 && (
+      <Curiosidades client:visible curiosidades={curiosidades} />
+    )}
+
+    <SobreProfessor professorSlug={dados.professor} />
+    <Oferta curso={curso} />
+    <SeloGarantia />
+    <FAQ client:visible />
+    <CursosRelacionados cursos={relacionados} />
+  </article>
+
+  <StickyBar
+    client:load
+    titulo={dados.titulo}
+    precoAvulso={dados.oferta_avulsa.preco}
+    linkAvulso={dados.oferta_avulsa.link_hotmart}
+    precoCombo={dados.oferta_combo.preco}
+    linkCombo={dados.oferta_combo.link_hotmart}
+    ancoraId="oferta"
+  />
+</Layout>

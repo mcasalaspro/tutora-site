@@ -1,0 +1,113 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---------------------------------------------------------------------------
+   Tutora Cursos — Estilos globais
+   Tipografia: Baloo 2 (display) + Montserrat (corpo), via Google Fonts.
+   --------------------------------------------------------------------------- */
+
+@layer base {
+  :root {
+    color-scheme: dark light;
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-tutora-azul-escuro text-white font-sans;
+    font-feature-settings: 'kern', 'liga';
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-display;
+  }
+
+  /* Foco visível e elegante — substitui o default azul do navegador */
+  *:focus-visible {
+    outline: 2px solid theme('colors.tutora.laranja');
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Tipografia padrão para prosa editorial (sinopse longa, manifesto, etc) */
+  .prose-tutora {
+    @apply font-sans text-white/85 leading-relaxed;
+  }
+  .prose-tutora p + p {
+    @apply mt-4;
+  }
+}
+
+@layer components {
+  /* Botões base — variants definidas via classes Tailwind nos componentes */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-3 rounded-md font-display font-semibold
+           transition-all duration-200 select-none whitespace-nowrap;
+  }
+
+  .btn-primary {
+    @apply btn bg-tutora-laranja text-white hover:bg-tutora-laranja/90 hover:-translate-y-0.5
+           shadow-card hover:shadow-card-hover;
+  }
+
+  .btn-secondary {
+    @apply btn bg-tutora-verde-agua text-tutora-azul-escuro hover:bg-tutora-verde-agua/90
+           hover:-translate-y-0.5 shadow-card hover:shadow-card-hover;
+  }
+
+  .btn-ghost {
+    @apply btn bg-transparent border border-white/25 text-white hover:bg-white/5 hover:border-white/50;
+  }
+
+  /* Card padrão (cursos, professores) */
+  .card-tutora {
+    @apply bg-tutora-azul-secundario/40 border border-tutora-sutil rounded-xl overflow-hidden
+           shadow-card hover:shadow-card-hover transition-all duration-300;
+  }
+
+  /* Container padrão (max-width + paddings consistentes) */
+  .container-tutora {
+    @apply max-w-6xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+
+  /* Container largo (catálogo, home grids) */
+  .container-tutora-wide {
+    @apply max-w-7xl mx-auto px-4 sm:px-6 lg:px-8;
+  }
+}
+
+@layer utilities {
+  /* Esconde scrollbar mas mantém scroll funcional (carrosséis) */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Borda lateral grossa para blocos editoriais */
+  .border-l-destaque {
+    border-left-width: 4px;
+    border-left-color: theme('colors.tutora.laranja');
+  }
+
+  /* Texto truncado em N linhas */
+  .clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}

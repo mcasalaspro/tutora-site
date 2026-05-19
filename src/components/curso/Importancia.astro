@@ -1,0 +1,22 @@
+---
+/**
+ * Importancia.astro — bloco editorial destacado.
+ * Fundo azul-secundario, borda lateral grossa laranja, texto em Baloo 2 Medium.
+ */
+interface Props {
+  texto: string;
+}
+const { texto } = Astro.props;
+const paragrafos = texto.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+---
+
+<section class="container-tutora py-10">
+  <div class="bg-tutora-azul-secundario rounded-lg border-l-destaque p-8 sm:p-10 max-w-4xl">
+    <h2 class="font-display font-extrabold text-display-md mb-4 text-white">
+      Por que isso importa
+    </h2>
+    <div class="font-display font-medium text-lg sm:text-xl text-white/90 leading-relaxed space-y-4">
+      {paragrafos.map((p) => <p>{p}</p>)}
+    </div>
+  </div>
+</section>

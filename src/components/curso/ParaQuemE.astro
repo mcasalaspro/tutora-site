@@ -1,0 +1,27 @@
+---
+/**
+ * ParaQuemE.astro — lista visual: check + item.
+ */
+interface Props {
+  itens: string[];
+}
+const { itens } = Astro.props;
+---
+
+<section class="container-tutora py-10">
+  <h2 class="font-display font-extrabold text-display-md mb-6 text-white">
+    Para quem é este curso
+  </h2>
+  <ul class="space-y-3 max-w-3xl">
+    {itens.map((item) => (
+      <li class="flex gap-4 items-start">
+        <span class="flex-shrink-0 mt-1 w-6 h-6 rounded-full bg-tutora-verde-agua/15 flex items-center justify-center">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1ECAD3" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <polyline points="20 6 9 17 4 12"></polyline>
+          </svg>
+        </span>
+        <span class="font-sans text-base text-white/85 leading-relaxed">{item}</span>
+      </li>
+    ))}
+  </ul>
+</section>

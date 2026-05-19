@@ -1,0 +1,44 @@
+---
+/**
+ * CardProfessor.astro — foto circular + nome. Usado na home na seção "Nossos professores".
+ */
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  professor: CollectionEntry<'professores'>;
+}
+
+const { professor } = Astro.props;
+const slug = professor.slug;
+const { nome, foto } = professor.data;
+
+// Iniciais como fallback caso a foto não carregue
+const iniciais = nome
+  .split(' ')
+  .filter((p) => p.length > 0)
+  .map((p) => p[0])
+  .slice(0, 2)
+  .join('')
+  .toUpperCase();
+---
+
+<a
+  href={`/professores/${slug}/`}
+  class="group flex flex-col items-center text-center"
+>
+  <div class="relative w-28 h-28 sm:w-36 sm:h-36 rounded-full overflow-hidden border-2 border-tutora-sutil group-hover:border-tutora-verde-agua transition-colors shadow-card bg-tutora-azul-secundario">
+    <div class="absolute inset-0 flex items-center justify-center font-display font-bold text-3xl text-white/60">
+      {iniciais}
+    </div>
+    <img
+      src={foto}
+      alt={`Foto de ${nome}`}
+      loading="lazy"
+      class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+      onerror="this.style.display='none'"
+    />
+  </div>
+  <h4 class="mt-4 font-display font-semibold text-base sm:text-lg group-hover:text-tutora-verde-agua transition-colors">
+    {nome}
+  </h4>
+</a>

@@ -1,0 +1,36 @@
+---
+/**
+ * Destaques.astro — carrossel horizontal scroll-snap dos cursos com destaque_home.
+ * Não usa biblioteca: scroll-snap CSS puro.
+ */
+import { getCollection } from 'astro:content';
+import CardCurso from '~/components/cards/CardCurso.astro';
+
+const todos = await getCollection('cursos');
+const destaques = todos.filter((c) => c.data.destaque_home);
+
+if (destaques.length === 0) return null;
+---
+
+<section class="py-20 sm:py-24">
+  <div class="container-tutora-wide mb-8">
+    <h2 class="font-display font-extrabold text-display-lg text-white">
+      Cursos em destaque
+    </h2>
+    <p class="mt-3 font-sans text-base text-white/65 max-w-2xl">
+      Uma seleção do que melhor representa o espírito da Tutora hoje.
+    </p>
+  </div>
+
+  <div class="overflow-x-auto scrollbar-hide snap-x snap-mandatory">
+    <div class="flex gap-5 px-4 sm:px-6 lg:px-8 pb-4">
+      {destaques.map((curso) => (
+        <div class="snap-start flex-shrink-0 w-[280px] sm:w-[320px]">
+          <CardCurso curso={curso} compacto />
+        </div>
+      ))}
+      <!-- Espaçador para visualizar último card por inteiro no mobile -->
+      <div class="flex-shrink-0 w-1" aria-hidden="true"></div>
+    </div>
+  </div>
+</section>

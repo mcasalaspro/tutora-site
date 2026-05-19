@@ -1,0 +1,434 @@
+---
+slug: guia-das-emocoes
+titulo: "O Guia das Emoções"
+professor: marcelo-danuca-love
+---
+
+## quiz
+
+### 1. Segundo a perspectiva apresentada no curso, qual a diferença essencial entre emoção e sentimento?
+- tipo: multipla_escolha
+- dificuldade: facil
+- fonte: transcricao
+- alternativas:
+  - "Emoção dura mais tempo do que sentimento."
+  - "Emoção é um impulso psicofisiológico bruto; sentimento é a emoção reconhecida, nomeada e elaborada pela cognição."
+  - "Sentimento é exclusivo dos animais; emoção é exclusiva dos humanos."
+  - "Não há diferença prática entre os dois conceitos."
+- resposta_correta: B
+- explicacao: "A emoção é um estímulo neural que predispõe à ação, enquanto o sentimento envolve o intelecto que entra em contato com essa emoção, nomeando-a e investigando-a. Por isso, podemos estar emocionados sem saber por quê, mas só sentimos plenamente quando damos nome ao que se passa."
+
+### 2. As primeiras conexões neurais responsáveis pela leitura de afetos e expressões faciais são formadas principalmente em qual fase da vida?
+- tipo: multipla_escolha
+- dificuldade: media
+- fonte: transcricao
+- alternativas:
+  - "Na adolescência, quando o córtex pré-frontal amadurece."
+  - "Na vida adulta, com a experiência social acumulada."
+  - "Nos primeiros seis anos de vida, durante o período mais dinâmico de formação cerebral."
+  - "Apenas após o desenvolvimento da linguagem verbal completa."
+- resposta_correta: C
+- explicacao: "Do zero aos seis anos ocorrem mais conexões sinápticas do que em todo o restante da vida. As 'janelas de oportunidade' para aprender a ler microexpressões faciais se fecham se a criança for privada desse contato facial precoce."
+
+### 3. É verdadeiro afirmar que a alegria, segundo Spinoza, é uma passagem para um estado mais perfeito e mais potente do próprio ser.
+- tipo: verdadeiro_falso
+- dificuldade: media
+- fonte: transcricao
+- resposta_correta: verdadeiro
+- explicacao: "Para Spinoza, alegria é ganho de potência e tristeza é perda de potência. Quanto mais alegre, mais próximo da perfeição; toda tristeza é, simbolicamente, uma pequena morte em vida."
+
+### 4. Qual a função da virtude da temperança na ética clássica?
+- tipo: multipla_escolha
+- dificuldade: facil
+- fonte: transcricao
+- alternativas:
+  - "Reprimir totalmente todas as emoções para se tornar racional."
+  - "Colocar rédeas nos desejos e impulsos para que a razão possa governar."
+  - "Permitir-se todos os prazeres como forma de evitar neuroses."
+  - "Substituir a razão pela intuição emocional."
+- resposta_correta: B
+- explicacao: "A temperança, virtude central em Platão e Aristóteles, consiste em moderar os apetites e impulsos para que a alma racional possa conduzir a vida. Não é negar o desejo, mas governá-lo."
+
+### 5. Segundo Aristóteles, a virtude da coragem é definida como:
+- tipo: multipla_escolha
+- dificuldade: media
+- fonte: transcricao
+- alternativas:
+  - "A ausência completa de medo diante de qualquer perigo."
+  - "O ponto médio entre a covardia e a temeridade."
+  - "A capacidade de sentir mais medo que os outros, mas agir mesmo assim."
+  - "A submissão voluntária à autoridade superior."
+- resposta_correta: B
+- explicacao: "A ética aristotélica é uma ética do meio-termo. A coragem está entre dois vícios: a covardia (paralisia pelo medo) e a temeridade (ausência irrefletida de medo). O temerário não é corajoso — é imprudente."
+
+### 6. A expressão "fazer alguém sentir-se" (como em "você me faz sentir culpado") demonstra principalmente:
+- tipo: multipla_escolha
+- dificuldade: media
+- fonte: transcricao
+- alternativas:
+  - "Uma forma legítima de descrever causalidade emocional."
+  - "Que somos passivos diante das emoções alheias."
+  - "A negação da responsabilidade pessoal sobre as próprias emoções."
+  - "Uma técnica avançada de comunicação não-violenta."
+- resposta_correta: C
+- explicacao: "Ninguém faz outra pessoa sentir nada. As emoções nascem da interpretação que damos aos estímulos. Atribuir ao outro a causa da emoção é uma forma sutil de fugir da responsabilidade sobre o próprio mundo interno."
+
+### 7. É verdadeiro que, segundo Freud, os desejos humanos são "incomprimíveis" como líquidos.
+- tipo: verdadeiro_falso
+- dificuldade: dificil
+- fonte: transcricao
+- resposta_correta: verdadeiro
+- explicacao: "Freud afirmava que reprimir desejos gera neuroses, daí a tese da incompressibilidade. Essa ideia foi absorvida pela cultura contemporânea e levou ao culto da permissividade — algo que a tradição filosófica clássica, com a temperança, contesta diretamente."
+
+### 8. Em qual região do cérebro nasce predominantemente a emoção do medo?
+- tipo: multipla_escolha
+- dificuldade: facil
+- fonte: transcricao
+- alternativas:
+  - "No córtex pré-frontal."
+  - "Na amígdala."
+  - "No hipocampo."
+  - "No cerebelo."
+- resposta_correta: B
+- explicacao: "A amígdala, uma pequena estrutura do sistema límbico, é onde o medo é deflagrado. Estímulos elétricos nessa região, mesmo sem ameaça externa, produzem medo imediato no sujeito."
+
+### 9. Qual estrutura cerebral está associada à emoção do nojo, tanto físico quanto moral?
+- tipo: multipla_escolha
+- dificuldade: media
+- fonte: transcricao
+- alternativas:
+  - "O hipotálamo."
+  - "A ínsula."
+  - "O giro singulado."
+  - "O tálamo."
+- resposta_correta: B
+- explicacao: "A ínsula deflagra o nojo. Curiosamente, com o amadurecimento, ela passa a se ativar não só diante de alimentos estragados, mas também diante de ideias e comportamentos repugnantes — o nojo se torna uma forma primitiva de juízo moral."
+
+### 10. Na teoria dos quatro discursos de Aristóteles, qual aparece historicamente primeiro nas civilizações?
+- tipo: multipla_escolha
+- dificuldade: media
+- fonte: transcricao
+- alternativas:
+  - "O discurso lógico."
+  - "O discurso retórico."
+  - "O discurso dialético."
+  - "O discurso poético."
+- resposta_correta: D
+- explicacao: "O discurso poético-mitológico foi o primeiro modo pelo qual as civilizações se organizaram. Ele é o mais rico e o menos crível — sua função é expandir a imaginação, não estabelecer verdades."
+
+### 11. A teogonia de Hesíodo descreve que do Caos primordial surgiram Gaia, Tártaro e:
+- tipo: multipla_escolha
+- dificuldade: dificil
+- fonte: transcricao
+- alternativas:
+  - "Apolo."
+  - "Eros."
+  - "Zeus."
+  - "Cronos."
+- resposta_correta: B
+- explicacao: "Eros, na teogonia hesiódica, não é o Cupido das representações tardias, mas a força fundamental, mutável e incoercível do desejo — uma personificação da dinâmica emocional que move o universo."
+
+### 12. É verdadeiro que indivíduos com maior atividade no córtex pré-frontal esquerdo tendem a apresentar mais tendência à depressão do que aqueles com maior atividade no córtex pré-frontal direito.
+- tipo: verdadeiro_falso
+- dificuldade: media
+- fonte: transcricao
+- resposta_correta: falso
+- explicacao: "É o oposto. Maior ativação no córtex pré-frontal direito correlaciona-se com mais tendência à depressão, maior emotividade reativa e sistema imune mais frágil. A ativação à esquerda associa-se a maior equilíbrio emocional e bem-estar."
+
+### 13. O eixo psico-neuro-imuno-endocrinológico ativado pelo estresse prolongado leva à liberação de cortisol pelas:
+- tipo: multipla_escolha
+- dificuldade: dificil
+- fonte: transcricao
+- alternativas:
+  - "Glândulas tireoides."
+  - "Glândulas pineais."
+  - "Glândulas suprarrenais (adrenais)."
+  - "Glândulas salivares."
+- resposta_correta: C
+- explicacao: "O hipotálamo ativa a hipófise, que libera ACTH; este chega às adrenais (em cima dos rins), que liberam cortisol. O cortisol prolongado destrói células de defesa, gerando imunossupressão — eis por que estresse crônico adoece."
+
+### 14. Para Spinoza, qual destas afirmações descreve corretamente sua concepção de Deus?
+- tipo: multipla_escolha
+- dificuldade: dificil
+- fonte: transcricao
+- alternativas:
+  - "Um Deus pessoal e criador, como no cristianismo."
+  - "Uma divindade que reside fora do universo material."
+  - "O próprio universo, que sempre existiu e sempre existirá (panteísmo)."
+  - "Uma força inteiramente espiritual, separada da natureza."
+- resposta_correta: C
+- explicacao: "Spinoza identifica Deus com a totalidade da natureza — panteísmo. Mesmo discordando desse princípio, é possível absorver as ideias dele sobre afetos, pois elas funcionam independentemente da premissa teológica."
+
+### 15. Na parábola da biga, de Platão, o que representa o cocheiro?
+- tipo: multipla_escolha
+- dificuldade: facil
+- fonte: transcricao
+- alternativas:
+  - "O desejo."
+  - "A razão."
+  - "A irascibilidade."
+  - "O corpo."
+- resposta_correta: B
+- explicacao: "Na parábola, o cocheiro é a razão; um dos cavalos é a irascibilidade (emoções/sentimentos) e o outro é a concupiscência (desejos e apetites). A alma humana tem um cavalo bom e outro ruim — daí a dificuldade de conduzi-la."
+
+### 16. É verdadeiro afirmar que toda emoção, por mais incômoda que seja, pede algum tipo de ação ou resposta específica.
+- tipo: verdadeiro_falso
+- dificuldade: facil
+- fonte: transcricao
+- resposta_correta: verdadeiro
+- explicacao: "A tristeza pede introspecção; a culpa pede reparação; o medo pede prudência; a chateação pede uma reclamação efetiva. Reconhecer o pedido implícito da emoção é parte fundamental da maturidade afetiva."
+
+### 17. Qual a função do controle voluntário da respiração no manejo emocional?
+- tipo: multipla_escolha
+- dificuldade: media
+- fonte: transcricao
+- alternativas:
+  - "Aumentar a oxigenação cerebral para produzir euforia."
+  - "Interromper o estado emocional intenso por meio do único acesso direto que temos ao sistema nervoso autônomo."
+  - "Causar hipoxia controlada para anestesiar o sistema límbico."
+  - "Simular sintomas de pânico para dessensibilização."
+- resposta_correta: B
+- explicacao: "A respiração é a única função autônoma que podemos comandar voluntariamente. Por isso, controlá-la é a porta de entrada para modular um estado emocional sequestrante — princípio reconhecido há milênios pelo yoga e hoje pela neurociência."
+
+### 18. A "secundariedade", segundo a psicologia dos temperamentos, refere-se a quê?
+- tipo: multipla_escolha
+- dificuldade: dificil
+- fonte: transcricao
+- alternativas:
+  - "À tendência de agir de forma secundária ou subordinada aos outros."
+  - "À forte repercussão que as impressões passadas exercem sobre o comportamento presente."
+  - "À ausência de memória afetiva."
+  - "Ao caráter desorganizado e impulsivo do indivíduo."
+- resposta_correta: B
+- explicacao: "O indivíduo secundário é marcado pelo passado: princípios, pactos e memórias antigas guiam o presente. Já o primário responde mais aos estímulos do momento. Nenhum dos dois é melhor — são naturezas distintas, com forças e fragilidades próprias."
+
+### 19. Segundo a teoria de Eric Kandall (Prêmio Nobel 2000), aprendizagens emocionalmente intensas formam memórias mais consistentes porque:
+- tipo: multipla_escolha
+- dificuldade: media
+- fonte: transcricao
+- alternativas:
+  - "Geram cansaço cerebral que fixa o conteúdo."
+  - "Reforçam as conexões sinápticas entre neurônios, tornando o aprendizado mais durável."
+  - "Inibem a região da memória de curto prazo."
+  - "Diminuem a atividade do hipocampo, evitando esquecimento."
+- resposta_correta: B
+- explicacao: "A emoção reforça as conexões sinápticas. Por isso lembramos com mais nitidez professores, momentos e ensinamentos carregados afetivamente — e por isso traumas grudam tanto. Educar bem, em parte, é saber emocionar adequadamente."
+
+### 20. O termo "sequestro emocional" descreve principalmente:
+- tipo: multipla_escolha
+- dificuldade: facil
+- fonte: transcricao
+- alternativas:
+  - "Quando alguém nos rapta usando ameaças emocionais."
+  - "Quando uma emoção intensa ocupa quase todo o espaço da consciência, ofuscando o pensamento e a deliberação."
+  - "Um quadro psiquiátrico específico tratado com medicação."
+  - "Uma manipulação consciente exercida sobre terceiros."
+- resposta_correta: B
+- explicacao: "No sequestro emocional, a emoção toma quase todo o campo da consciência. O resultado é uma ação contaminada — agimos COM a emoção em vez de agir A PARTIR dela, com a devida lucidez."
+
+### 21. É verdadeiro afirmar que crianças muito pequenas devem ser ensinadas a identificar racionalmente cada uma de suas emoções, pois isso desenvolve a inteligência emocional adulta.
+- tipo: verdadeiro_falso
+- dificuldade: dificil
+- fonte: transcricao
+- resposta_correta: falso
+- explicacao: "O cérebro infantil ainda não tem maturidade cortical para racionalizar afetos. Educar emocionalmente uma criança não é fazê-la decorar nomes de emoções, mas oferecer vínculos, rotina afetiva, leitura em voz alta, contato face a face e regras claras."
+
+### 22. Qual destas é uma característica do "discurso dialético", segundo Aristóteles?
+- tipo: multipla_escolha
+- dificuldade: dificil
+- fonte: transcricao
+- alternativas:
+  - "Busca persuadir a plateia emocionalmente."
+  - "Busca a verdade através de um embate honesto, mesmo que isso exija abandonar as próprias opiniões."
+  - "Fundamenta-se em demonstrações lógicas com certeza absoluta."
+  - "Apela ao imaginário poético para inspirar."
+- resposta_correta: B
+- explicacao: "O dialético não trata suas opiniões como bichinhos de estimação. Ele entra na conversa disposto a abandoná-las se a verdade aparecer do outro lado — algo que pressupõe maturidade emocional considerável."
+
+### 23. A meditação chamada "estado aberto" consiste em:
+- tipo: multipla_escolha
+- dificuldade: media
+- fonte: transcricao
+- alternativas:
+  - "Forçar pensamentos positivos por longos períodos."
+  - "Repetir mentalmente um mantra de compaixão."
+  - "Observar os pensamentos que surgem sem julgá-los e sem se deixar levar por eles."
+  - "Esvaziar completamente a mente de qualquer atividade neural."
+- resposta_correta: C
+- explicacao: "No estado aberto, o praticante apenas observa os pensamentos como vagões de um trem passando — sem entrar neles. Com prática, isso fortalece o córtex pré-frontal esquerdo e a capacidade de desidentificação dos sequestros emocionais."
+
+### 24. Qual a diferença entre "afeto" (no sentido de Spinoza) e "efeito" no encontro entre dois modos?
+- tipo: multipla_escolha
+- dificuldade: dificil
+- fonte: transcricao
+- alternativas:
+  - "Afeto é positivo; efeito é negativo."
+  - "Afeto é subjetivo (como a dor sentida); efeito é objetivo (como o osso quebrado)."
+  - "Não há diferença real entre os dois termos."
+  - "Afeto é externo; efeito é interno."
+- resposta_correta: B
+- explicacao: "Quando dois modos se encontram, há efeitos objetivos (mensuráveis) e afetos subjetivos (vivenciados). Bater o braço na mesa produz um efeito (lesão) e um afeto (dor). Em seres vivos, todo encontro é também traduzido em afeto."
+
+### 25. É verdadeiro que estudos científicos demonstraram que monges experientes em meditação apresentam aumento da atividade no córtex pré-frontal esquerdo, área associada a emoções positivas.
+- tipo: verdadeiro_falso
+- dificuldade: media
+- fonte: transcricao
+- resposta_correta: verdadeiro
+- explicacao: "Richard Davidson conduziu essas pesquisas com monges budistas tibetanos. O resultado mostrou que a meditação prolongada não relaxa o cérebro — ele fica intensamente focado, e o córtex pré-frontal esquerdo ganha proeminência."
+
+### 26. Segundo o curso, o que distingue um sorriso genuíno de um sorriso forçado em termos neurológicos?
+- tipo: multipla_escolha
+- dificuldade: media
+- fonte: transcricao
+- alternativas:
+  - "O sorriso genuíno dura mais tempo."
+  - "O sorriso forçado envolve apenas o córtex motor; o genuíno envolve também áreas emocionais e contrai músculos ao redor dos olhos."
+  - "Não há diferenças perceptíveis entre os dois."
+  - "O sorriso forçado é assimétrico; o genuíno é sempre simétrico."
+- resposta_correta: B
+- explicacao: "O sorriso forçado é comandado diretamente pelo córtex motor; o genuíno passa pelas áreas emocionais antes, ativando músculos ao redor dos olhos. Por isso é tão difícil simular convincentemente — o rosto entrega."
+
+### 27. A primeira tradução grega da palavra "filosofia" significa:
+- tipo: multipla_escolha
+- dificuldade: facil
+- fonte: transcricao
+- alternativas:
+  - "Estudo da natureza."
+  - "Amor à sabedoria."
+  - "Ciência das coisas eternas."
+  - "Arte de discursar."
+- resposta_correta: B
+- explicacao: "Filo (amor) + sofia (sabedoria). O filósofo busca conhecer pelo prazer de conhecer, não por utilidade — uma postura cada vez mais rara num tempo dominado pela lógica do retorno imediato."
+
+### 28. Qual destes não é um dos cinco domínios da inteligência emocional, segundo Daniel Goleman?
+- tipo: multipla_escolha
+- dificuldade: dificil
+- fonte: transcricao
+- alternativas:
+  - "Conhecer as próprias emoções."
+  - "Lidar com relacionamentos."
+  - "Reconhecer emoções nos outros."
+  - "Suprimir totalmente as emoções negativas."
+- resposta_correta: D
+- explicacao: "Goleman propõe: conhecer as próprias emoções, lidar com elas, motivar-se, reconhecer emoções nos outros e lidar com relacionamentos. A supressão total nunca foi proposta — o objetivo é gestão, não eliminação."
+
+### 29. É verdadeiro que a culpa, vista com seriedade, é uma emoção civilizatória — sua ausência costuma sinalizar perigo psicológico.
+- tipo: verdadeiro_falso
+- dificuldade: media
+- fonte: transcricao
+- resposta_correta: verdadeiro
+- explicacao: "Indivíduos que não sentem culpa diante de transgressões éticas tendem a ser perigosos socialmente. A culpa, longe de ser sintoma a ser eliminado, é o sinal de que algo precisa ser reparado — pede ação, não anestesia."
+
+### 30. Quando Aristóteles afirma que "entre dois males sempre existirá um menor", ele aponta principalmente para:
+- tipo: multipla_escolha
+- dificuldade: dificil
+- fonte: transcricao
+- alternativas:
+  - "A impossibilidade prática de agir sempre de modo perfeitamente virtuoso, devendo-se então escolher o menor dos males quando o ideal não está disponível."
+  - "A ideia de que todas as ações são igualmente más."
+  - "Um pessimismo radical sobre a natureza humana."
+  - "A defesa de que o fim justifica os meios em qualquer situação."
+- resposta_correta: A
+- explicacao: "Aristóteles é realista: nem sempre dispomos do meio-termo virtuoso. Diante de um exército só com covardes e temerários, o general escolhe os temerários — o vício menos paralisante. A ética se faz nas circunstâncias concretas, não no abstrato."
+
+## curiosidades
+
+### 1.
+- categoria: provocativa
+- fonte: transcricao
+- texto: "Atletas paraplégicos que sofreram ruptura medular relatam que suas emoções 'ficaram em preto e branco' — sem a somatização corporal completa, sentir torna-se mais mental e menos vivo. A emoção pede o corpo inteiro para se manifestar em cores."
+
+### 2.
+- categoria: historica
+- fonte: transcricao
+- texto: "Há mais de 2.500 anos, três pensadores que jamais se encontraram — Aristóteles na Grécia, Buda na Índia e Confúcio na China — propuseram, em palavras quase intercambiáveis, a mesma ideia central: a virtude é o caminho do meio."
+
+### 3.
+- categoria: cotidiano
+- fonte: transcricao
+- texto: "Quando alguém te atende mal numa loja e você se irrita, é fácil culpar o atendente. Mas a raiva nasce da interpretação que você dá ao que ele disse — outra pessoa, no mesmo lugar, poderia sentir apenas compaixão pela tristeza dele."
+
+### 4.
+- categoria: referencia
+- fonte: externo
+- texto: "Spinoza escreveu sua 'Ética' em estilo geométrico, com axiomas, definições e proposições — como se a vida afetiva pudesse ser demonstrada com o mesmo rigor de Euclides. Quase quatro séculos depois, neurocientistas redescobriram que ele acertou em quase tudo."
+
+### 5.
+- categoria: provocativa
+- fonte: transcricao
+- texto: "Vivemos a vida inteira a apenas dois graus da nossa morte. Subir três graus acima ou descer três abaixo dos 37°C nos mata. O corpo gerencia esse fio da navalha sem nos pedir permissão — e ainda assim somos capazes de nos descontrolar emocionalmente por ninharias."
+
+### 6.
+- categoria: historica
+- fonte: transcricao
+- texto: "O Dalai Lama promoveu, durante décadas, encontros entre monges budistas tibetanos e neurocientistas em Dharamsala. O objetivo nunca foi religioso — era investigar se a meditação realmente altera a estrutura física do cérebro. Hoje sabemos que sim."
+
+### 7.
+- categoria: cotidiano
+- fonte: transcricao
+- texto: "Um experimento de Harvard mostrou que 75% das pessoas não percebem quando, no meio de uma conversa breve, a pessoa diante delas é trocada por outra. Se nem isso percebemos, imagine o que nossas emoções fazem sem que nos demos conta."
+
+### 8.
+- categoria: referencia
+- fonte: transcricao
+- texto: "Antônio Damásio, neurocientista português, escreveu um livro inteiro intitulado 'Em Busca de Espinosa' — tentando verificar se as ideias de um filósofo do século XVII sobre afetos e mente sobreviveriam à neurociência contemporânea. Sobreviveram com folga."
+
+### 9.
+- categoria: provocativa
+- fonte: transcricao
+- texto: "Para Spinoza, toda tristeza é uma morte em vida. Quem se entristece por coisas pequenas vai morrendo aos poucos, milhares de vezes, antes da morte definitiva."
+
+### 10.
+- categoria: historica
+- fonte: transcricao
+- texto: "Na década de 60, cientistas ocidentais ficaram perplexos ao verificar que faquires hindus conseguiam parar quase totalmente o próprio metabolismo e ser enterrados vivos por dias. Tantos morreram tentando provar que o faquirismo foi proibido na Índia."
+
+### 11.
+- categoria: cotidiano
+- fonte: transcricao
+- texto: "Indivíduos profundamente tristes costumam suspirar frequentemente. Não é poesia: a respiração curta da melancolia acumula CO2 no sangue, e o corpo é forçado a soltar grandes suspiros para reequilibrar a química interna."
+
+### 12.
+- categoria: referencia
+- fonte: externo
+- texto: "C.S. Lewis, autor de 'As Crônicas de Nárnia', escreveu também um pequeno livro filosófico chamado 'A Abolição do Homem', em que defende a existência de verdades morais universais reconhecidas por civilizações tão distantes quanto a chinesa antiga e a cristã medieval."
+
+### 13.
+- categoria: provocativa
+- fonte: transcricao
+- texto: "A imagem mental de alguém querido pode ativar no seu cérebro praticamente os mesmos circuitos afetivos que a presença real dessa pessoa. Para os neurônios, lembrar com intensidade é quase indistinguível de encontrar de novo."
+
+### 14.
+- categoria: historica
+- fonte: externo
+- texto: "Vitor Frankl, psiquiatra austríaco sobrevivente de campos de concentração, escreveu que entre o estímulo e a resposta existe um espaço — e nesse espaço reside a nossa liberdade. Quase toda terapia ocidental moderna gira em torno de aprender a habitar esse espaço."
+
+### 15.
+- categoria: cotidiano
+- fonte: transcricao
+- texto: "Quando estamos estressados, o sangue sai do estômago e vai para os músculos das pernas e braços. É a origem fisiológica do 'frio na barriga' — o corpo se preparando para correr ou lutar, mesmo quando o perigo é só uma reunião marcada para as três da tarde."
+
+### 16.
+- categoria: referencia
+- fonte: transcricao
+- texto: "Antes de Sócrates, organizar a sociedade significava saber recitar Homero. A Ilíada e a Odisseia não eram entretenimento — eram o sistema operacional moral, político e psicológico de uma civilização inteira."
+
+### 17.
+- categoria: provocativa
+- fonte: transcricao
+- texto: "Crianças nascem com diferentes 'temperaturas' afetivas já mensuráveis. Bebês ainda no berçário, com poucas horas de vida, mostram diferenças significativas na ativação dos hemisférios cerebrais. Boa parte da sua emotividade já estava ali antes da primeira palavra."
+
+### 18.
+- categoria: historica
+- fonte: transcricao
+- texto: "O afresco renascentista 'A Escola de Atenas', de Rafael, mostra Platão apontando para o céu e Aristóteles para a terra. Em um gesto, séculos de disputa filosófica entre o mundo das ideias e o mundo dos fenômenos concretos."
+
+### 19.
+- categoria: cotidiano
+- fonte: transcricao
+- texto: "Em alemão existe uma palavra para a alegria sentida diante do infortúnio alheio: Schadenfreude. Não é virtude reconhecê-la em si — mas é honesto. O português ainda não inventou um termo equivalente, talvez por hipocrisia editorial."
+
+### 20.
+- categoria: referencia
+- fonte: externo
+- texto: "Aristóteles foi tutor privado de Alexandre, o Grande, durante cerca de sete anos. O futuro conquistador do mundo conhecido aprendeu ética com o filósofo que defendia o meio-termo — uma ironia que a história nunca terminou de digerir."

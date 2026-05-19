@@ -1,0 +1,24 @@
+---
+/**
+ * VideoPreview.astro — embed responsivo 16:9 com sombra suave.
+ */
+interface Props {
+  url: string;
+  titulo: string;
+}
+
+const { url, titulo } = Astro.props;
+---
+
+<section class="container-tutora py-6">
+  <div class="relative aspect-video w-full overflow-hidden rounded-xl shadow-card-hover bg-black border border-tutora-sutil">
+    <iframe
+      src={url}
+      title={`Prévia: ${titulo}`}
+      loading="lazy"
+      allowfullscreen
+      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+      class="absolute inset-0 w-full h-full"
+    ></iframe>
+  </div>
+</section>

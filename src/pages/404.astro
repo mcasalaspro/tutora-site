@@ -1,0 +1,26 @@
+---
+import Layout from '~/layouts/Layout.astro';
+---
+
+<Layout
+  title="Página não encontrada — Tutora Cursos"
+  description="A página que você procura não existe. Volte ao início ou veja o catálogo completo."
+  path="/404"
+>
+  <section class="container-tutora py-32 text-center">
+    <p class="font-display font-bold text-tutora-laranja text-base uppercase tracking-widest">
+      Erro 404
+    </p>
+    <h1 class="mt-4 font-display font-extrabold text-display-xl text-white">
+      Página não encontrada
+    </h1>
+    <p class="mt-6 font-sans text-base sm:text-lg text-white/65 max-w-md mx-auto">
+      O endereço que você procura não existe — ou foi movido. Acontece. Vamos voltar
+      ao caminho certo.
+    </p>
+    <div class="mt-10 flex flex-col sm:flex-row gap-3 justify-center">
+      <a href="/" class="btn-secondary">Voltar ao início</a>
+      <a href="/cursos/" class="btn-primary">Ver catálogo de cursos</a>
+    </div>
+  </section>
+</Layout>

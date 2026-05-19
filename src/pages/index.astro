@@ -1,0 +1,69 @@
+---
+import Layout from '~/layouts/Layout.astro';
+import Hero from '~/components/home/Hero.astro';
+import PorQueTutora from '~/components/home/PorQueTutora.astro';
+import Manifesto from '~/components/home/Manifesto.astro';
+import Destaques from '~/components/home/Destaques.astro';
+import AreasFormacao from '~/components/home/AreasFormacao.astro';
+import NossosProfessores from '~/components/home/NossosProfessores.astro';
+import BuscaFiltros from '~/components/catalogo/BuscaFiltros.tsx';
+import type { CursoLite } from '~/components/catalogo/BuscaFiltros.tsx';
+import { getCollection, getEntry } from 'astro:content';
+import { AREAS, SITE_DESCRIPTION, SITE_NAME } from '~/config/site';
+
+// Prepara dados serializáveis para a Island de catálogo
+const todosCursos = await getCollection('cursos');
+const professores = await getCollection('professores');
+const indiceProf = new Map(professores.map((p) => [p.slug, p]));
+
+const cursosLite: CursoLite[] = todosCursos
+  .map((c) => ({
+    slug: c.slug,
+    titulo: c.data.titulo,
+    professor: c.data.professor,
+    professorNome: indiceProf.get(c.data.professor)?.data.nome ?? c.data.professor,
+    area: c.data.area,
+    capa: c.data.capa,
+    sinopse_curta: c.data.sinopse_curta,
+    duracao_aulas: c.data.duracao_aulas,
+    duracao_horas: c.data.duracao_horas,
+    lancamento: Boolean(c.data.lancamento),
+  }))
+  .sort((a, b) => a.titulo.localeCompare(b.titulo, 'pt-BR'));
+
+const professoresLite = professores
+  .map((p) => ({ slug: p.slug, nome: p.data.nome }))
+  .sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+---
+
+<Layout
+  title={SITE_NAME}
+  description={SITE_DESCRIPTION}
+  path="/"
+>
+  <Hero />
+  <PorQueTutora />
+  <Manifesto />
+  <Destaques />
+  <AreasFormacao />
+
+  <!-- Catálogo embutido na home -->
+  <section id="catalogo" class="container-tutora-wide py-20 sm:py-24">
+    <div class="mb-10 max-w-2xl">
+      <h2 class="font-display font-extrabold text-display-lg text-white">
+        Catálogo completo
+      </h2>
+      <p class="mt-3 font-sans text-base text-white/65">
+        Todos os cursos da Tutora — busque, filtre e mergulhe.
+      </p>
+    </div>
+    <BuscaFiltros
+      client:visible
+      cursos={cursosLite}
+      areas={[...AREAS]}
+      professores={professoresLite}
+    />
+  </section>
+
+  <NossosProfessores />
+</Layout>

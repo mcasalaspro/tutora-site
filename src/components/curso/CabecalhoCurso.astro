@@ -1,0 +1,64 @@
+---
+/**
+ * CabecalhoCurso.astro
+ * Breadcrumb, título, badge da área (laranja), professor (verde-agua),
+ * badges de duração.
+ */
+import { getEntry } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+  curso: CollectionEntry<'cursos'>;
+}
+
+const { curso } = Astro.props;
+const { titulo, area, professor, duracao_aulas, duracao_horas } = curso.data;
+
+const profEntry = await getEntry('professores', professor);
+const nomeProfessor = profEntry?.data.nome ?? professor;
+---
+
+<header class="container-tutora pt-10 pb-8">
+  <!-- Breadcrumb -->
+  <nav aria-label="Breadcrumb" class="font-sans text-sm text-white/55 mb-5">
+    <ol class="flex flex-wrap items-center gap-x-2 gap-y-1">
+      <li><a href="/" class="hover:text-tutora-verde-agua transition-colors">Início</a></li>
+      <li aria-hidden="true">/</li>
+      <li><a href="/cursos/" class="hover:text-tutora-verde-agua transition-colors">{area}</a></li>
+      <li aria-hidden="true">/</li>
+      <li class="text-white/85 truncate max-w-xs">{titulo}</li>
+    </ol>
+  </nav>
+
+  <!-- Badge da área -->
+  <span class="inline-block bg-tutora-laranja text-white text-xs sm:text-sm font-display font-semibold px-3 py-1 rounded-full uppercase tracking-wide">
+    {area}
+  </span>
+
+  <!-- Título principal -->
+  <h1 class="mt-4 font-display font-extrabold text-display-lg max-w-4xl">
+    {titulo}
+  </h1>
+
+  <!-- Professor + duração -->
+  <div class="mt-5 flex flex-wrap items-center gap-x-6 gap-y-2 text-sm sm:text-base font-sans">
+    <a
+      href={`/professores/${professor}/`}
+      class="text-tutora-verde-agua hover:underline underline-offset-4 decoration-tutora-verde-agua/40 font-semibold"
+    >
+      com {nomeProfessor}
+    </a>
+    <span class="flex items-center gap-1.5 text-white/65">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect>
+      </svg>
+      {duracao_aulas} aulas
+    </span>
+    <span class="flex items-center gap-1.5 text-white/65">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline>
+      </svg>
+      {duracao_horas} horas
+    </span>
+  </div>
+</header>

@@ -1,0 +1,59 @@
+---
+/**
+ * PorQueTutora.astro — grid de 4 cards com ícones (SVG inline para evitar
+ * dependência de outra biblioteca em componentes Astro estáticos).
+ */
+const cards = [
+  {
+    titulo: 'Professores de referência',
+    texto: 'Especialistas reconhecidos em cada área da formação humana.',
+    icone: 'graduation',
+  },
+  {
+    titulo: 'Conteúdo atemporal',
+    texto: 'Cursos baseados em tradições intelectuais consolidadas, não em modismos.',
+    icone: 'book',
+  },
+  {
+    titulo: 'Acesso por 1 ano',
+    texto: 'Tempo suficiente para estudar com calma e revisitar o que importa.',
+    icone: 'clock',
+  },
+  {
+    titulo: 'Garantia de 7 dias',
+    texto: 'Se não for para você, devolvemos seu investimento integralmente.',
+    icone: 'shield',
+  },
+];
+---
+
+<section class="container-tutora-wide py-20 sm:py-24">
+  <div class="text-center max-w-2xl mx-auto mb-12">
+    <h2 class="font-display font-extrabold text-display-lg text-white">
+      Por que escolher a Tutora?
+    </h2>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+    {cards.map((card) => (
+      <article class="card-tutora p-6 sm:p-7 h-full flex flex-col">
+        <div class="w-12 h-12 rounded-lg bg-tutora-laranja/15 text-tutora-laranja flex items-center justify-center mb-5">
+          {card.icone === 'graduation' && (
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"></path><path d="M6 12v5c3 3 9 3 12 0v-5"></path></svg>
+          )}
+          {card.icone === 'book' && (
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+          )}
+          {card.icone === 'clock' && (
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          )}
+          {card.icone === 'shield' && (
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><polyline points="9 12 11 14 15 10"></polyline></svg>
+          )}
+        </div>
+        <h3 class="font-display font-bold text-xl text-white mb-2">{card.titulo}</h3>
+        <p class="font-sans text-sm text-white/70 leading-relaxed flex-1">{card.texto}</p>
+      </article>
+    ))}
+  </div>
+</section>

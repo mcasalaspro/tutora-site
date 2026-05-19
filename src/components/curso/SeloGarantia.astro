@@ -1,0 +1,29 @@
+---
+/**
+ * SeloGarantia.astro — bloco horizontal estreito com ícone de escudo.
+ */
+import { CONTATO } from '~/config/site';
+---
+
+<section class="container-tutora py-6">
+  <div class="bg-tutora-azul-secundario/40 border border-tutora-sutil rounded-xl p-5 sm:p-6 flex flex-col sm:flex-row items-center gap-4 sm:gap-5 max-w-4xl">
+    <div class="flex-shrink-0 w-14 h-14 rounded-full bg-tutora-verde-agua/15 flex items-center justify-center">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#1ECAD3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+        <polyline points="9 12 11 14 15 10"></polyline>
+      </svg>
+    </div>
+    <div class="text-center sm:text-left">
+      <h3 class="font-display font-bold text-lg text-white">
+        Garantia incondicional de 7 dias
+      </h3>
+      <p class="mt-1 font-sans text-sm text-white/75 leading-relaxed">
+        Se você não gostar, basta escrever para
+        <a href={`mailto:${CONTATO.emailSuporte}`} class="text-tutora-verde-agua hover:underline">
+          {CONTATO.emailSuporte}
+        </a>
+        que devolvemos seu investimento integralmente.
+      </p>
+    </div>
+  </div>
+</section>
