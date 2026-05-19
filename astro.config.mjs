@@ -4,10 +4,8 @@ import tailwind from '@astrojs/tailwind';
 import preact from '@astrojs/preact';
 import sitemap from '@astrojs/sitemap';
 
-import { SITE_URL } from './src/config/site.ts';
-
 export default defineConfig({
-  site: SITE_URL,
+  site: 'https://tutora-site.pages.dev',
   output: 'static',
   integrations: [
     tailwind({ applyBaseStyles: false }),
