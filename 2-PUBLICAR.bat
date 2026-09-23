@@ -34,6 +34,17 @@ git config gc.auto 0
 git config maintenance.auto false
 git config core.safecrlf false
 
+rem ---- Arquivos que sairam do site: o ZIP traz a lista em _arquivos-removidos.txt.
+rem ---- Descompactar um ZIP por cima da pasta nao apaga nada, entao o BAT apaga por voce.
+if exist "_arquivos-removidos.txt" (
+  for /f "usebackq eol=# delims=" %%f in ("_arquivos-removidos.txt") do (
+    if exist "%%f" (
+      del /q "%%f"
+      echo  Removido do site: %%f
+    )
+  )
+)
+
 git add -A
 git diff --cached --quiet
 if errorlevel 1 (

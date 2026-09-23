@@ -6,7 +6,8 @@ import Fileira from '../components/Fileira.astro';
 import ProfCard from '../components/ProfCard.astro';
 import Logo from '../components/Logo.astro';
 import Icone from '../components/Icone.astro';
-import { cursos, professores, totais, nomesProfessores } from '../lib/catalogo';
+import ProfDestaque from '../components/ProfDestaque.astro';
+import { cursos, professores, totais } from '../lib/catalogo';
 import { config, linkAviso } from '../lib/config';
 import { ofertaDe } from '../lib/precos';
 import { url, plural } from '../lib/formatar';
@@ -31,7 +32,7 @@ const aviso = linkAviso('Aviso de inscrições: assinatura');
 const TEMPO = 8000;
 ---
 <Base titulo={cfg.nome} atual="inicio">
-  <h1 class="sr-only">{cfg.nome}: catálogo de cursos de {cfg.slogan}</h1>
+  <h1 class="sr-only">{cfg.nome}: {cfg.slogan}</h1>
 
   <section class="vitrine" data-vitrine data-tempo={TEMPO} aria-roledescription="carrossel" aria-label="Cursos em destaque">
     {destaques.map((c, i) => (
@@ -46,8 +47,8 @@ const TEMPO = 8000;
           <span class="sobretitulo">Em destaque · {c.area}</span>
           <h2 class="vitrine__titulo">{c.titulo}</h2>
           <p class="vitrine__frase">{c.frase}</p>
+          <ProfDestaque profs={[c.professor, ...c.convidados].filter((p): p is NonNullable<typeof p> => Boolean(p))} tamanho="m" />
           <div class="meta">
-            {nomesProfessores(c) && <span><Icone nome="pessoa" />{nomesProfessores(c)}</span>}
             <span><Icone nome="aulas" />{plural(c.nAulas, 'aula')}</span>
             {c.duracaoTexto && <span><Icone nome="relogio" />{c.duracaoTexto}</span>}
           </div>
@@ -75,6 +76,25 @@ const TEMPO = 8000;
   </section>
 
   <div class="apos-vitrine">
+    <section class="conteiner atalhos" aria-label="Por onde começar">
+      <a class="atalho atalho--laranja" href={url('/descubra/')}>
+        <span class="atalho__icone" aria-hidden="true"><Icone nome="bussola" /></span>
+        <span class="atalho__txt">
+          <strong>Descubra qual o curso certo para você!</strong>
+          <span>Responda a algumas perguntas rápidas e receba sugestões de cursos e de uma trilha.</span>
+        </span>
+        <Icone nome="seta-link" class="atalho__seta" />
+      </a>
+      <a class="atalho" href={url('/quiz/')}>
+        <span class="atalho__icone" aria-hidden="true"><Icone nome="pergunta" /></span>
+        <span class="atalho__txt">
+          <strong>Teste seu conhecimento</strong>
+          <span>Escolha um tema e responda a 5, 10 ou 20 perguntas tiradas dos cursos.</span>
+        </span>
+        <Icone nome="seta-link" class="atalho__seta" />
+      </a>
+    </section>
+
     {novos.length > 0 && (
       <Fileira titulo="Lançamentos">
         {novos.map((c) => <Capa curso={c} />)}

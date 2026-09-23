@@ -1,13 +1,13 @@
 ---
-# Biografia do site antigo da Tutora (tutoracursos.com.br, 2025). Pode editar à vontade.
+# Biografia do site antigo da Tutora (2025), revisada em 23/09/2026. Pode editar à vontade.
 slug: guilherme-almeida
 nome: Guilherme Almeida
-mini_bio: Guilherme Almeida é formado em História e especialista em História Geral.
+mini_bio: "Guilherme Almeida é professor há mais de 20 anos, graduado em história e especialista em história geral."
 formacao: []
 site: ''
 instagram: ''
 ---
 
-Guilherme Almeida é formado em História e especialista em História Geral. Atua como professor há mais de 20 anos.
+Em mais de 20 anos como professor, Guilherme Almeida já formou mais de 10 mil alunos. Graduou-se em história, com especialização em história geral.
 
-Já formou mais de 10.000 alunos e, após a pandemia, teve uma abertura significativa para dar cursos online, colaborando com diversas iniciativas de História e Educação.
+Depois da pandemia, passou a dar mais cursos online, em colaboração com diversas iniciativas de história e educação. Na Tutora, assina uma série de cursos de história, da Grécia antiga ao início do século XX.

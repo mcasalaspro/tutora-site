@@ -20,6 +20,7 @@ export interface Professor {
   instagram: string;
   foto?: ImageMetadata;
   cena?: ImageMetadata;
+  feminino: boolean;
   ordem: number;
   cursos: string[];
 }
@@ -94,6 +95,7 @@ async function carregarProfessores(): Promise<Map<string, Professor>> {
       instagram: p.data.instagram,
       foto: fotoProfessor(p.id, 'quadrada'),
       cena: fotoProfessor(p.id, 'cena'),
+      feminino: p.data.genero === 'feminino',
       ordem: p.data.ordem ?? 999,
       cursos: [],
     });
@@ -250,6 +252,18 @@ export async function totais() {
     horas: Math.round(cs.reduce((s, c) => s + c.minutos, 0) / 60),
     professores: ps.length,
   };
+}
+
+/** "professor" ou "professora", conforme o campo genero do arquivo do professor. */
+export function tituloProf(p: Professor): string {
+  return p.feminino ? 'professora' : 'professor';
+}
+
+/** Rótulo de um grupo: "Professor", "Professora", "Professores" ou "Professoras". */
+export function rotuloProfs(ps: Professor[]): string {
+  const todasMulheres = ps.length > 0 && ps.every((p) => p.feminino);
+  const base = ps.length > 1 ? (todasMulheres ? 'Professoras' : 'Professores') : todasMulheres ? 'Professora' : 'Professor';
+  return base;
 }
 
 /** Nome(s) do(s) professor(es) para exibir: "Marcus Boeira e Mauro Keller" */

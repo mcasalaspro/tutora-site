@@ -1,0 +1,457 @@
+---
+/**
+ * Quiz geral: a pessoa escolhe um tema (conteudo/quiz-geral.md) e 5, 10 ou 20 perguntas.
+ * As perguntas vêm dos quizzes dos cursos; ao lado de cada uma aparece o cartão do curso de onde ela veio.
+ * No fim: placar por área e duas sugestões de curso (ponto forte e onde mais errou).
+ */
+import Base from '../../layouts/Base.astro';
+import Capa from '../../components/Capa.astro';
+import Icone from '../../components/Icone.astro';
+import { cursos, nomesProfessores } from '../../lib/catalogo';
+import { config } from '../../lib/config';
+import { quizGeral } from '../../lib/paginas-extras';
+import { url, plural } from '../../lib/formatar';
+
+const cfg = config();
+const q = quizGeral();
+const lista = (await cursos()).filter((c) => c.perguntas.length >= 3);
+const porSlug = new Map(lista.map((c) => [c.slug, c]));
+const temas = q.temas
+  .map((t) => {
+    const cs = t.cursos[0] === '*' ? lista : t.cursos.map((s) => porSlug.get(s)).filter((c): c is NonNullable<typeof c> => Boolean(c));
+    return {
+      slug: t.slug,
+      nome: t.nome,
+      descricao: t.descricao,
+      cursos: cs.map((c) => c.slug),
+      nPerguntas: cs.reduce((s, c) => s + c.perguntas.length, 0),
+    };
+  })
+  .filter((t) => t.cursos.length > 0);
+const dados = JSON.stringify({
+  temas: temas.map((t) => ({ slug: t.slug, nome: t.nome, cursos: t.cursos })),
+  cursos: Object.fromEntries(lista.map((c) => [c.slug, { t: c.titulo, a: c.area }])),
+  areas: cfg.areas.map((a) => a.nome),
+  fonte: url('/quiz/perguntas.json'),
+}).replace(/</g, '\\u003c');
+---
+<Base titulo={q.titulo} descricao={q.subtitulo || 'Quiz com perguntas dos cursos da Tutora.'} topoSolido atual="quiz">
+  <div class="conteiner quiz-geral" data-quiz-geral>
+    <script type="application/json" data-dados set:html={dados}></script>
+    <header class="cab-pagina">
+      <span class="sobretitulo">Quiz</span>
+      <h1>{q.titulo}</h1>
+      {q.subtitulo && <p>{q.subtitulo}</p>}
+    </header>
+
+    <section class="qg-tela" data-tela="escolha" aria-label="Escolha do quiz">
+      <h2 class="qg-passo"><span aria-hidden="true">1</span> Escolha um tema</h2>
+      <div class="qg-temas" role="radiogroup" aria-label="Tema">
+        {temas.map((t, i) => (
+          <button type="button" class="qg-tema" role="radio" aria-checked={i === 0 ? 'true' : 'false'} data-tema={t.slug}>
+            <strong>{t.nome}</strong>
+            {t.descricao && <span>{t.descricao}</span>}
+            <small>{plural(t.nPerguntas, 'pergunta')} · {plural(t.cursos.length, 'curso')}</small>
+          </button>
+        ))}
+      </div>
+      <h2 class="qg-passo"><span aria-hidden="true">2</span> Quantas perguntas?</h2>
+      <div class="qg-qtd" role="radiogroup" aria-label="Número de perguntas">
+        {q.quantidades.map((n, i) => (
+          <button type="button" class="qg-qtd__op" role="radio" aria-checked={i === 0 ? 'true' : 'false'} data-qtd={n}>{n}</button>
+        ))}
+      </div>
+      <div class="qg-comecar">
+        <button class="botao botao--laranja" type="button" data-comecar><Icone nome="play" /> Começar o quiz</button>
+        <p class="qg-aviso" data-aviso role="status"></p>
+      </div>
+    </section>
+
+    <section class="qg-tela qg-jogo" data-tela="pergunta" hidden aria-label="Pergunta">
+      <div class="quiz qg-quiz">
+        <div class="quiz__cab">
+          <div class="quiz__progresso" data-progresso aria-hidden="true"></div>
+          <span class="chip" data-contador></span>
+        </div>
+        <span class="sobretitulo" data-tema-nome></span>
+        <h2 class="quiz__enunciado" data-enunciado tabindex="-1"></h2>
+        <div class="quiz__opcoes" data-opcoes role="group" aria-label="Alternativas"></div>
+        <div class="quiz__retorno" data-retorno hidden aria-live="polite">
+          <strong data-veredito></strong>
+          <p data-explicacao></p>
+        </div>
+        <div class="quiz__rodape">
+          <button class="botao botao--laranja" type="button" data-proxima hidden></button>
+          <button class="botao botao--vidro botao--pequeno" type="button" data-sair>Trocar de tema</button>
+        </div>
+      </div>
+      <aside class="qg-curso" data-curso aria-label="Curso que trata deste tema"></aside>
+    </section>
+
+    <section class="qg-tela" data-tela="fim" hidden aria-label="Resultado">
+      <div class="quiz qg-fim">
+        <span class="sobretitulo" data-fim-tema></span>
+        <p class="quiz__placar" data-placar></p>
+        <h2 class="quiz__enunciado" data-mensagem tabindex="-1"></h2>
+        <h3 class="qg-sub">Seu placar por área</h3>
+        <div class="qg-areas" data-areas></div>
+        <div class="quiz__rodape">
+          <button class="botao botao--laranja" type="button" data-de-novo><Icone nome="refazer" /> Jogar de novo</button>
+          <button class="botao botao--vidro" type="button" data-outro-tema>Escolher outro tema</button>
+        </div>
+      </div>
+      <div class="qg-sugestoes" data-sugestoes></div>
+    </section>
+
+    {lista.map((c) => (
+      <template data-card={c.slug}>
+        <div class="qg-card">
+          <div class="qg-card__capa"><Capa curso={c} tamanhos="(max-width: 900px) 110px, 260px" /></div>
+          <div class="qg-card__txt">
+            <span class="qg-card__rotulo" data-rotulo>Este tema está no curso</span>
+            <a class="qg-card__titulo" href={url(`/cursos/${c.slug}/`)}>{c.titulo}</a>
+            <span class="qg-card__meta">{[nomesProfessores(c), plural(c.nAulas, 'aula')].filter(Boolean).join(' · ')}</span>
+            <p class="qg-card__frase">{c.frase}</p>
+            <a class="link-seta" href={url(`/cursos/${c.slug}/`)}>Conhecer o curso <Icone nome="seta-link" /></a>
+          </div>
+        </div>
+      </template>
+    ))}
+  </div>
+</Base>
+
+<script>
+  interface P {
+    e: string;
+    a: string[];
+    k: number;
+    x: string;
+    vf: boolean;
+    d: string;
+  }
+  interface Q extends P {
+    curso: string;
+    id: string;
+  }
+  interface Tema {
+    slug: string;
+    nome: string;
+    cursos: string[];
+  }
+  interface Dados {
+    temas: Tema[];
+    cursos: Record<string, { t: string; a: string }>;
+    areas: string[];
+    fonte: string;
+  }
+
+  const ACERTOS = ['Isso mesmo.', 'Acertou.', 'Exatamente.', 'Muito bem.', 'Certíssimo.'];
+  const ERROS = ['Não foi dessa vez.', 'Quase.', 'Resposta errada.', 'Ainda não.'];
+  const LETRAS = 'ABCDEF';
+
+  const raiz = document.querySelector<HTMLElement>('[data-quiz-geral]');
+  if (raiz) {
+    const dados: Dados = JSON.parse(raiz.querySelector('[data-dados]')?.textContent || '{}');
+    const $ = <T extends HTMLElement = HTMLElement>(s: string) => raiz.querySelector<T>(s)!;
+    const $$ = <T extends HTMLElement = HTMLElement>(s: string) => [...raiz.querySelectorAll<T>(s)];
+    const telas = $$('[data-tela]');
+    // Troca de tela; se o começo da tela nova não estiver bem à vista, rola até ele.
+    const mostrarTela = (nome: string) => {
+      telas.forEach((t) => (t.hidden = t.dataset.tela !== nome));
+      const tela = telas.find((t) => t.dataset.tela === nome);
+      if (!tela) return;
+      const r = tela.getBoundingClientRect();
+      if (r.top < 70 || r.top > window.innerHeight * 0.35) {
+        window.scrollTo({ top: Math.max(0, r.top + window.scrollY - 90), behavior: 'smooth' });
+      }
+    };
+
+    const sortear = <T,>(l: T[]): T[] => {
+      const a = [...l];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    };
+
+    // ── escolha de tema e quantidade ──
+    const params = new URLSearchParams(location.search);
+    let temaAtual: Tema = dados.temas.find((t) => t.slug === params.get('tema')) ?? dados.temas[0];
+    let qtd = Number($$('[data-qtd]')[0]?.dataset.qtd || 5);
+    const pedido = Number(params.get('n'));
+    if ($$('[data-qtd]').some((b) => Number(b.dataset.qtd) === pedido)) qtd = pedido;
+
+    const marcar = (grupo: HTMLElement[], escolhido: HTMLElement) =>
+      grupo.forEach((b) => b.setAttribute('aria-checked', String(b === escolhido)));
+    const botoesTema = $$('[data-tema]');
+    const botoesQtd = $$('[data-qtd]');
+    const selTema = botoesTema.find((b) => b.dataset.tema === temaAtual.slug);
+    if (selTema) marcar(botoesTema, selTema);
+    const selQtd = botoesQtd.find((b) => Number(b.dataset.qtd) === qtd);
+    if (selQtd) marcar(botoesQtd, selQtd);
+    botoesTema.forEach((b) =>
+      b.addEventListener('click', () => {
+        temaAtual = dados.temas.find((t) => t.slug === b.dataset.tema) ?? temaAtual;
+        marcar(botoesTema, b);
+      }),
+    );
+    botoesQtd.forEach((b) =>
+      b.addEventListener('click', () => {
+        qtd = Number(b.dataset.qtd);
+        marcar(botoesQtd, b);
+      }),
+    );
+    // setas do teclado dentro de cada grupo
+    for (const grupo of [botoesTema, botoesQtd]) {
+      grupo.forEach((b, i) =>
+        b.addEventListener('keydown', (ev) => {
+          const passo = ev.key === 'ArrowRight' || ev.key === 'ArrowDown' ? 1 : ev.key === 'ArrowLeft' || ev.key === 'ArrowUp' ? -1 : 0;
+          if (!passo) return;
+          ev.preventDefault();
+          const alvo = grupo[(i + passo + grupo.length) % grupo.length];
+          alvo.focus();
+          alvo.click();
+        }),
+      );
+    }
+
+    // ── banco de perguntas (baixado só quando a pessoa começa) ──
+    let banco: Record<string, P[]> | null = null;
+    const carregar = async () => {
+      if (banco) return banco;
+      const r = await fetch(dados.fonte);
+      if (!r.ok) throw new Error(String(r.status));
+      banco = (await r.json()).cursos as Record<string, P[]>;
+      return banco;
+    };
+
+    const usadas = new Set<string>();
+    let rodada: Q[] = [];
+    let atual = 0;
+    let respostas: boolean[] = [];
+    let ordem: number[] = [];
+    let cursoNaTela = '';
+
+    function montarRodada(): boolean {
+      const b = banco!;
+      const cs = temaAtual.cursos.filter((s) => (b[s] ?? []).length);
+      if (!cs.length) return false;
+      const filas = () =>
+        new Map(
+          cs.map((s) => [s, sortear(b[s].map((p, i) => ({ ...p, curso: s, id: `${s}#${i}` })).filter((p) => !usadas.has(p.id)))]),
+        );
+      let porCurso = filas();
+      const disponiveis = [...porCurso.values()].reduce((n, f) => n + f.length, 0);
+      if (disponiveis < qtd) {
+        cs.forEach((s) => b[s].forEach((_, i) => usadas.delete(`${s}#${i}`)));
+        porCurso = filas();
+      }
+      // alterna os cursos (em ordem sorteada) e os níveis, para a rodada não ficar concentrada num curso só
+      const ordemCursos = sortear(cs);
+      const niveis = ['facil', 'media', 'dificil'];
+      const escolha: Q[] = [];
+      let k = 0;
+      while (escolha.length < qtd && [...porCurso.values()].some((f) => f.length)) {
+        const fila = porCurso.get(ordemCursos[k % ordemCursos.length])!;
+        if (fila.length) {
+          const alvo = niveis[escolha.length % niveis.length];
+          const i = Math.max(0, fila.findIndex((p) => p.d === alvo));
+          escolha.push(fila.splice(i, 1)[0]);
+        }
+        k++;
+      }
+      escolha.forEach((p) => usadas.add(p.id));
+      rodada = escolha;
+      atual = 0;
+      respostas = [];
+      cursoNaTela = '';
+      return rodada.length > 0;
+    }
+
+    function cartao(slug: string, rotulo?: string): HTMLElement | null {
+      const t = raiz!.querySelector<HTMLTemplateElement>(`template[data-card="${slug}"]`);
+      if (!t) return null;
+      const el = t.content.firstElementChild!.cloneNode(true) as HTMLElement;
+      if (rotulo) el.querySelector('[data-rotulo]')!.textContent = rotulo;
+      return el;
+    }
+
+    function mostrarPergunta() {
+      const p = rodada[atual];
+      mostrarTela('pergunta');
+      $('[data-tema-nome]').textContent = temaAtual.nome;
+      $('[data-contador]').textContent = `Pergunta ${atual + 1} de ${rodada.length}`;
+      $('[data-progresso]').innerHTML = rodada
+        .map((_, i) => `<i class="${i < atual ? (respostas[i] ? 'feito' : 'errado') : i === atual ? 'atual' : ''}"></i>`)
+        .join('');
+      const enunciado = $('[data-enunciado]');
+      enunciado.textContent = p.e;
+      const opcoes = $('[data-opcoes]');
+      opcoes.innerHTML = '';
+      const indices = p.a.map((_, i) => i);
+      ordem = p.vf ? indices : sortear(indices);
+      ordem.forEach((original, pos) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'quiz__opcao';
+        b.innerHTML = `<span class="quiz__letra">${p.vf ? (original === 0 ? 'V' : 'F') : LETRAS[pos]}</span><span></span>`;
+        (b.lastElementChild as HTMLElement).textContent = p.a[original];
+        b.addEventListener('click', () => responder(original));
+        opcoes.appendChild(b);
+      });
+      $('[data-retorno]').hidden = true;
+      $('[data-proxima]').hidden = true;
+      if (cursoNaTela !== p.curso) {
+        const lado = $('[data-curso]');
+        lado.replaceChildren(...[cartao(p.curso)].filter((x): x is HTMLElement => Boolean(x)));
+        cursoNaTela = p.curso;
+      }
+      enunciado.focus({ preventScroll: true });
+    }
+
+    function responder(i: number) {
+      const p = rodada[atual];
+      const certo = i === p.k;
+      respostas[atual] = certo;
+      $$<HTMLButtonElement>('[data-opcoes] button').forEach((b, pos) => {
+        b.disabled = true;
+        if (ordem[pos] === p.k) b.classList.add('certa');
+        else if (ordem[pos] === i) b.classList.add('errada');
+      });
+      const ret = $('[data-retorno]');
+      ret.hidden = false;
+      ret.className = 'quiz__retorno ' + (certo ? 'acertou' : 'errou');
+      const frases = certo ? ACERTOS : ERROS;
+      $('[data-veredito]').textContent = frases[Math.floor(Math.random() * frases.length)];
+      $('[data-explicacao]').textContent = p.x;
+      const prox = $('[data-proxima]');
+      prox.hidden = false;
+      prox.textContent = atual + 1 < rodada.length ? 'Próxima pergunta →' : 'Ver meu resultado →';
+      prox.focus({ preventScroll: true });
+    }
+
+    function fim() {
+      mostrarTela('fim');
+      const total = rodada.length;
+      const acertos = respostas.filter(Boolean).length;
+      $('[data-fim-tema]').textContent = `Resultado · ${temaAtual.nome}`;
+      $('[data-placar]').textContent = `${acertos}/${total}`;
+      const r = acertos / total;
+      const msg =
+        r === 1
+          ? 'Gabaritou! Você conhece bem esses temas.'
+          : r >= 0.7
+            ? 'Mandou muito bem.'
+            : r >= 0.4
+              ? 'Bom resultado, e ainda há muito para descobrir.'
+              : 'Esses temas guardam boas surpresas para você.';
+      const m = $('[data-mensagem]');
+      m.textContent = msg;
+
+      // placar por área e por curso
+      const porArea = new Map<string, { certo: number; total: number }>();
+      const porCurso = new Map<string, { certo: number; errado: number; total: number }>();
+      rodada.forEach((p, i) => {
+        const area = dados.cursos[p.curso]?.a ?? '';
+        const a = porArea.get(area) ?? { certo: 0, total: 0 };
+        a.total++;
+        if (respostas[i]) a.certo++;
+        porArea.set(area, a);
+        const c = porCurso.get(p.curso) ?? { certo: 0, errado: 0, total: 0 };
+        c.total++;
+        if (respostas[i]) c.certo++;
+        else c.errado++;
+        porCurso.set(p.curso, c);
+      });
+      const posArea = (nome: string) => {
+        const i = dados.areas.indexOf(nome);
+        return i < 0 ? 99 : i;
+      };
+      const areasOrdem = [...porArea.keys()].sort((a, b) => posArea(a) - posArea(b));
+      $('[data-areas]').innerHTML = '';
+      for (const nome of areasOrdem) {
+        const a = porArea.get(nome)!;
+        const linha = document.createElement('div');
+        linha.className = 'qg-area';
+        linha.innerHTML = `<span class="qg-area__nome"></span><span class="qg-area__barra"><i style="width:${Math.round((a.certo / a.total) * 100)}%"></i></span><span class="qg-area__num">${a.certo} de ${a.total}</span>`;
+        (linha.firstElementChild as HTMLElement).textContent = nome;
+        $('[data-areas]').appendChild(linha);
+      }
+
+      // sugestões: ponto forte (melhor área) e onde mais errou
+      const areas = [...porArea.entries()];
+      const forte = [...areas].sort((a, b) => b[1].certo / b[1].total - a[1].certo / a[1].total || b[1].total - a[1].total)[0];
+      const fraca = [...areas]
+        .filter(([, v]) => v.total - v.certo > 0)
+        .sort((a, b) => b[1].total - b[1].certo - (a[1].total - a[1].certo) || a[1].certo / a[1].total - b[1].certo / b[1].total)[0];
+      const cursosDa = (area: string) => [...porCurso.entries()].filter(([s]) => dados.cursos[s]?.a === area);
+      const sug: { titulo: string; texto: string; curso: string }[] = [];
+      if (fraca) {
+        const [slug] = cursosDa(fraca[0]).sort((a, b) => b[1].errado - a[1].errado || b[1].total - a[1].total)[0];
+        sug.push({
+          titulo: `Para aprofundar: ${fraca[0]}`,
+          texto: 'É a área em que você mais errou. Este curso responde a essas perguntas, e a muitas outras.',
+          curso: slug,
+        });
+      }
+      if (forte && forte[1].certo > 0) {
+        const candidatos = cursosDa(forte[0])
+          .filter(([s]) => !sug.some((x) => x.curso === s))
+          .sort((a, b) => b[1].certo - a[1].certo || b[1].total - a[1].total);
+        if (candidatos.length) {
+          sug.unshift({
+            titulo: `Seu ponto forte: ${forte[0]}`,
+            texto: 'Foi onde você mais acertou. Este curso leva adiante o que você já sabe.',
+            curso: candidatos[0][0],
+          });
+        }
+      }
+      const caixa = $('[data-sugestoes]');
+      caixa.innerHTML = '';
+      for (const s of sug) {
+        const bloco = document.createElement('div');
+        bloco.className = 'qg-sugestao';
+        bloco.innerHTML = '<h3></h3><p></p>';
+        bloco.querySelector('h3')!.textContent = s.titulo;
+        bloco.querySelector('p')!.textContent = s.texto;
+        const c = cartao(s.curso, 'Sugestão para você');
+        if (c) {
+          c.classList.add('qg-card--linha');
+          bloco.appendChild(c);
+        }
+        caixa.appendChild(bloco);
+      }
+      m.focus({ preventScroll: true });
+    }
+
+    async function comecar() {
+      const aviso = $('[data-aviso]');
+      const botao = $<HTMLButtonElement>('[data-comecar]');
+      botao.disabled = true;
+      aviso.textContent = banco ? '' : 'Carregando as perguntas…';
+      try {
+        await carregar();
+        aviso.textContent = '';
+        if (montarRodada()) mostrarPergunta();
+        else aviso.textContent = 'Este tema ainda não tem perguntas.';
+      } catch {
+        aviso.textContent = 'Não consegui carregar as perguntas. Confira a internet e tente de novo.';
+      } finally {
+        botao.disabled = false;
+      }
+    }
+
+    $('[data-comecar]').addEventListener('click', comecar);
+    $('[data-proxima]').addEventListener('click', () => {
+      atual++;
+      if (atual < rodada.length) mostrarPergunta();
+      else fim();
+    });
+    $('[data-de-novo]').addEventListener('click', () => {
+      if (montarRodada()) mostrarPergunta();
+    });
+    $('[data-outro-tema]').addEventListener('click', () => mostrarTela('escolha'));
+    $('[data-sair]').addEventListener('click', () => mostrarTela('escolha'));
+  }
+</script>

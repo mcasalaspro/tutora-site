@@ -8,7 +8,7 @@ import { cursos } from '../lib/catalogo';
 
 interface Props {
   solido?: boolean;
-  atual?: 'inicio' | 'cursos' | 'professores' | '';
+  atual?: 'inicio' | 'cursos' | 'professores' | 'quiz' | 'descubra' | '';
 }
 const { solido = false, atual = '' } = Astro.props;
 const cfg = config();
@@ -19,6 +19,8 @@ const itens = [
   { id: 'inicio', rotulo: 'Início', href: url('/') },
   { id: 'cursos', rotulo: 'Cursos', href: url('/cursos/') },
   { id: 'professores', rotulo: 'Professores', href: url('/professores/') },
+  { id: 'quiz', rotulo: 'Quiz', href: url('/quiz/') },
+  { id: 'descubra', rotulo: 'Descubra seu curso', href: url('/descubra/') },
 ];
 ---
 <header class:list={['topo', { 'topo--solido': solido }]} data-topo>

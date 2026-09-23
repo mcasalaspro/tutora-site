@@ -140,6 +140,105 @@ if (!fs.existsSync(csv)) {
   if (semPreco.length) info.push(`${semPreco.length} curso(s) sem linha no precos.csv (aparecem como "Inscrições em breve").`);
 }
 
+// ── vídeos (YouTube) ─────────────────────────────────────────────────────
+const csvVideos = C('videos.csv');
+if (fs.existsSync(csvVideos)) {
+  const linhas = fs.readFileSync(csvVideos, 'utf8').replace(/^﻿/, '').split(/\r?\n/).filter((l) => l.trim());
+  const sep = (linhas[0].match(/;/g)?.length ?? 0) >= (linhas[0].match(/,/g)?.length ?? 0) ? ';' : ',';
+  const cab = linhas[0].split(sep).map((s) => s.trim().toLowerCase().replace(/^"|"$/g, ''));
+  for (const col of ['curso', 'tipo', 'link']) {
+    if (!cab.includes(col)) erros.push(`videos.csv: falta a coluna "${col}" na primeira linha.`);
+  }
+  const slugsArea = new Set((cfg.areas ?? []).map((a) => a.slug));
+  const comVideo = new Set();
+  linhas.slice(1).forEach((l, k) => {
+    const v = l.split(sep).map((s) => s.trim().replace(/^"|"$/g, ''));
+    const curso = v[cab.indexOf('curso')] ?? '';
+    const tipo = (v[cab.indexOf('tipo')] ?? '').toLowerCase();
+    const link = v[cab.indexOf('link')] ?? '';
+    if (!curso && !link) return;
+    const onde = `videos.csv linha ${k + 2}`;
+    if (curso.startsWith('area:')) {
+      if (!slugsArea.has(curso.slice(5))) avisos.push(`${onde}: não existe a área "${curso.slice(5)}" (use o slug de uma área de configuracoes.yaml).`);
+    } else if (!cursos.has(curso)) {
+      avisos.push(`${onde}: não existe curso "${curso}" (o vídeo não aparece).`);
+    } else comVideo.add(curso);
+    if (!/(youtube(-nocookie)?\.com\/(watch\?v=|embed\/)|youtu\.be\/)[\w-]{11}/.test(link)) avisos.push(`${onde}: o link "${link}" não parece um vídeo do YouTube.`);
+    if (tipo && !tipo.startsWith('apres') && !tipo.startsWith('aula')) avisos.push(`${onde}: tipo "${tipo}" desconhecido (use apresentacao ou aula-gratis).`);
+  });
+  info.push(`${comVideo.size} curso(s) com vídeo no YouTube (videos.csv).`);
+}
+
+// ── quiz geral (conteudo/quiz-geral.md) ─────────────────────────────────
+if (fs.existsSync(C('quiz-geral.md'))) {
+  try {
+    const { dados } = lerFrontmatter(C('quiz-geral.md'));
+    const vistos = new Set();
+    for (const t of dados.temas ?? []) {
+      if (!t?.nome || !t?.slug) {
+        erros.push('quiz-geral.md: todo tema precisa de "nome" e "slug".');
+        continue;
+      }
+      if (vistos.has(t.slug)) erros.push(`quiz-geral.md: o slug de tema "${t.slug}" aparece duas vezes.`);
+      vistos.add(t.slug);
+      if (t.cursos === 'todos' || t.cursos === '*') continue;
+      for (const s of t.cursos ?? []) {
+        if (!cursos.has(s)) avisos.push(`quiz-geral.md: o tema "${t.nome}" cita o curso "${s}", que não existe.`);
+        else if (!fs.existsSync(C('quizzes', `${s}.md`))) avisos.push(`quiz-geral.md: o curso "${s}" (tema "${t.nome}") não tem quiz.`);
+      }
+    }
+  } catch (e) {
+    erros.push(`quiz-geral.md: ${e.message}`);
+  }
+}
+
+// ── descubra seu curso (conteudo/descubra.md) ───────────────────────────
+if (fs.existsSync(C('descubra.md'))) {
+  try {
+    const { dados } = lerFrontmatter(C('descubra.md'));
+    const motivos = new Set(Object.keys(dados.motivos ?? {}));
+    const auto = new Set(['curto', 'medio', 'longo']);
+    const ids = new Set();
+    const marcas = new Set();
+    const etiquetasRespostas = new Set();
+    for (const p of dados.perguntas ?? []) {
+      if (!p?.id || !p?.pergunta) {
+        erros.push('descubra.md: toda pergunta precisa de "id" e "pergunta".');
+        continue;
+      }
+      if (ids.has(p.id)) erros.push(`descubra.md: o id de pergunta "${p.id}" aparece duas vezes.`);
+      ids.add(p.id);
+      if (!Array.isArray(p.opcoes) || p.opcoes.length < 2) erros.push(`descubra.md: a pergunta "${p.id}" precisa de pelo menos duas opções.`);
+      for (const o of p.opcoes ?? []) {
+        if (o?.marca) marcas.add(o.marca);
+        for (const t of Object.keys(o?.pontos ?? {})) etiquetasRespostas.add(t);
+      }
+    }
+    for (const p of dados.perguntas ?? []) {
+      if (p?.mostrar_se && !marcas.has(p.mostrar_se)) avisos.push(`descubra.md: a pergunta "${p.id}" só aparece depois da marca "${p.mostrar_se}", mas nenhuma resposta tem essa marca.`);
+    }
+    const etiquetasCursos = new Set();
+    for (const [slug, tags] of Object.entries(dados.cursos ?? {})) {
+      if (!cursos.has(slug)) avisos.push(`descubra.md: o curso "${slug}" não existe (será ignorado).`);
+      for (const t of Object.keys(tags ?? {})) {
+        etiquetasCursos.add(t);
+        if (!motivos.has(t) && !auto.has(t)) avisos.push(`descubra.md: a etiqueta "${t}" (curso ${slug}) não tem frase em "motivos".`);
+      }
+    }
+    for (const t of etiquetasRespostas) {
+      if (!etiquetasCursos.has(t) && !auto.has(t)) avisos.push(`descubra.md: a etiqueta "${t}" aparece nas respostas, mas nenhum curso a tem (não muda nada).`);
+    }
+    for (const t of dados.trilhas ?? []) {
+      for (const s of t?.cursos ?? []) if (!cursos.has(s)) avisos.push(`descubra.md: a trilha "${t.nome}" cita o curso "${s}", que não existe.`);
+    }
+    for (const s of dados.ponto_de_partida ?? []) if (!cursos.has(s)) avisos.push(`descubra.md: ponto_de_partida cita o curso "${s}", que não existe.`);
+    const fora = [...cursos.keys()].filter((s) => !(s in (dados.cursos ?? {})));
+    if (fora.length) info.push(`${fora.length} curso(s) fora do "Descubra seu curso" (nunca são sugeridos): ${fora.join(', ')}.`);
+  } catch (e) {
+    erros.push(`descubra.md: ${e.message}`);
+  }
+}
+
 // ── imagens ──────────────────────────────────────────────────────────────
 const imgs = new Set(
   (fs.existsSync(C('imagens', 'cursos')) ? fs.readdirSync(C('imagens', 'cursos')) : []).map((f) =>

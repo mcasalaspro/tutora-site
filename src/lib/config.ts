@@ -45,12 +45,12 @@ export function config(): Config {
   const bruto = parse(fs.readFileSync(arquivo, 'utf8')) ?? {};
   cache = {
     nome: bruto.nome ?? 'Tutora',
-    slogan: bruto.slogan ?? 'educação familiar',
+    slogan: bruto.slogan ?? 'cursos de formação humana',
     descricao: bruto.descricao ?? '',
     contato: bruto.contato ?? {},
     home: {
-      titulo_regular: bruto.home?.titulo_regular ?? 'Somos uma escola de',
-      titulo_destaque: bruto.home?.titulo_destaque ?? 'educação familiar.',
+      titulo_regular: bruto.home?.titulo_regular ?? 'Cursos de',
+      titulo_destaque: bruto.home?.titulo_destaque ?? 'formação humana.',
       subtitulo: bruto.home?.subtitulo ?? '',
     },
     areas: (bruto.areas ?? []) as Area[],

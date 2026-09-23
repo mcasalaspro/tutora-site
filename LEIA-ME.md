@@ -14,11 +14,15 @@ tutora-site/
 │   ├── professores/<slug>.md       1 arquivo por professor
 │   ├── quizzes/<slug>.md           quiz e curiosidades de cada curso (mesmo slug do curso)
 │   ├── precos.csv                  preço, parcelamento e link da Hotmart de cada curso + assinatura
+│   ├── videos.csv                  aulas grátis e apresentações no YouTube (bloco "Assista de graça")
+│   ├── quiz-geral.md               temas do quiz geral (página /quiz/)
+│   ├── descubra.md                 perguntas, pesos e trilhas do "Descubra seu curso" (página /descubra/)
 │   ├── configuracoes.yaml          contatos, redes, áreas, trilhas, textos da home
 │   └── imagens/
 │       ├── cursos/                 capas dos cursos (2 formatos por curso)
 │       ├── professores/            fotos dos professores (2 formatos)
 │       └── _modelos/               gabaritos com as áreas de segurança
+├── _arquivos-removidos.txt         arquivos que saíram do site; o 2-PUBLICAR.bat apaga cada um deles
 ├── _interno/                       anotações da equipe; NÃO vai para o GitHub (o repositório é público)
 │   └── REVISAO-DO-CONTEUDO.md      pontos para conferir: professores, aulas faltando, grafia de nomes
 └── src/, public/, scripts/         o "motor" do site (não precisa mexer)
@@ -72,6 +76,13 @@ endereço na próxima publicação.
    - Bolinha **verde**: publicado.
    - **X vermelho**: abra o item e leia a etapa **"Conferir o conteúdo e montar o site"**. O verificador diz,
      em português, qual arquivo e qual linha corrigir. O site anterior continua no ar até você corrigir.
+   - Se a janela perguntar *"Deletion of directory '.git/objects/..' failed. Should I try again? (y/n)"*: é
+     inofensivo. Aperte **Ctrl+C**, responda **S** e rode o `2-PUBLICAR.bat` de novo (a versão atual já evita a
+     pergunta). Acontece quando outro programa prende a pasta oculta `.git`, quase sempre o OneDrive, o Dropbox
+     ou o antivírus: se a pasta do site estiver dentro de uma pasta sincronizada, mova-a para fora
+     (por exemplo, `C:\tutora-site`).
+   - Se a lista de arquivos terminar em *(END)* e a janela parar: aperte a tecla **q**. É o Git mostrando uma
+     lista longa página por página; o envio continua em seguida. A versão atual do `2-PUBLICAR.bat` já não faz isso.
 
 ---
 
@@ -98,7 +109,7 @@ Use só letras minúsculas, números e hífens. Todos os cursos têm a mesma est
 | `cursos_relacionados` | Slugs de cursos para a fileira "Cursos relacionados". O site completa com a mesma área. |
 | `destaque_home` | `true` põe o curso no carrossel do topo da home. |
 | `lancamento` | `true` mostra o selo "Novo". |
-| `preview_youtube_embed` | Link do trailer no YouTube (opcional). Aparece o botão "Assistir trailer". |
+| `preview_youtube_embed` | Link de um vídeo de apresentação no YouTube (opcional). Prefira a lista `conteudo/videos.csv`, que aceita vários vídeos por curso. |
 
 Abaixo da segunda linha `---` fica o **resumo detalhado** (texto livre), que aparece na página
 "Resumo completo do curso" (`/cursos/<slug>/resumo/`, pronta para imprimir ou salvar em PDF).
@@ -124,23 +135,65 @@ da home e cartão de assinatura em cada curso).
 
 ### Professores: `conteudo/professores/<slug>.md`
 
-`nome`, `mini_bio` (1 ou 2 frases, aparece no bloco "Quem dá o curso" e no topo da página do professor) e,
+`nome`, `mini_bio` (1 ou 2 frases, aparece no bloco "Conheça seu professor" e no topo da página do professor) e,
 abaixo das linhas `---`, a biografia completa. `formacao` é uma lista opcional. Enquanto um campo está vazio,
-o site simplesmente não mostra aquele trecho (nada de "em breve").
+o site simplesmente não mostra aquele trecho (nada de "em breve"). Para professoras, acrescente a linha
+`genero: feminino`: o site passa a dizer "Conheça sua professora", "Página da professora" etc.
 
-As biografias atuais são **provisórias**: foram escritas só com o que cada professor diz de si nas aulas e com os
-cursos que ele dá. Cada arquivo traz um aviso no topo. Quando chegarem as oficiais, substitua o texto, apague as
-linhas de aviso e publique.
+As biografias vêm do site antigo da Tutora, revisadas em 23/09/2026 (texto mais claro, sem repetir a mini bio,
+sem datas vencidas; os fatos são os mesmos). A de Jorge Pimentel Cintra ainda é **provisória**, escrita a partir
+do que ele diz nas aulas, e traz um aviso no topo do arquivo. O que vale confirmar com cada professor está em
+`_interno/REVISAO-DO-CONTEUDO.md`.
 
 Um professor ganha página própria quando tem pelo menos um curso ou uma biografia. Sem nenhum dos dois,
 ele aparece em "Também na Tutora" (página Professores) só com a foto, sem link.
 
 ### Quiz: `conteudo/quizzes/<slug>.md`
 
-Perguntas de múltipla escolha ou verdadeiro/falso e curiosidades. A página sorteia 5 perguntas por rodada,
-misturando os níveis fácil, média e difícil, e embaralha as alternativas (a posição da resposta certa no arquivo
-não importa). Mantenha o formato dos arquivos existentes
-(`### N.`, `- tipo:`, `- alternativas:`, `- resposta_correta:`, `- explicacao:`).
+Perguntas de múltipla escolha ou verdadeiro/falso e curiosidades. A página do curso sorteia 5 perguntas por
+rodada, misturando os níveis fácil, média e difícil, e embaralha as alternativas (a posição da resposta certa no
+arquivo não importa). As mesmas perguntas alimentam o quiz geral (/quiz/). Mantenha o formato dos arquivos
+existentes (`### N.`, `- tipo:`, `- alternativas:`, `- resposta_correta:`, `- explicacao:`).
+
+### Vídeos: `conteudo/videos.csv`
+
+Aulas grátis e apresentações dos cursos no YouTube. Abra no Excel ou no Google Planilhas e salve como CSV
+(separado por `;`). Colunas:
+
+| Coluna | Exemplo | Observação |
+|---|---|---|
+| `curso` | `dante-e-a-literatura` | Slug do curso. Para mostrar o vídeo na página de uma área, use `area:` e o slug da área (ex.: `area:historia-e-politica`). |
+| `tipo` | `aula-gratis` | `apresentacao` ou `aula-gratis`. |
+| `titulo` | `Dante e a Literatura - Aula Grátis` | Nome do vídeo (aparece só na página de área; no curso, o rótulo basta). |
+| `link` | `https://www.youtube.com/watch?v=...` | Qualquer link do vídeo no YouTube. |
+| `observacao` | | Só para a equipe. |
+
+Curso com vídeo ganha o bloco "Assista de graça" logo depois da sinopse, o botão "Assistir aula grátis" no topo e o
+item "Aula grátis" no menu da página. Curso sem vídeo não mostra nada disso. O vídeo só carrega quando a pessoa
+clica, para a página continuar leve.
+
+### Quiz geral: `conteudo/quiz-geral.md`
+
+A página **/quiz/** ("Teste seu conhecimento") usa as perguntas de todos os cursos. Neste arquivo ficam os
+**temas** (nome, descrição e lista de cursos de cada um) e as quantidades de perguntas (5, 10, 20). A pessoa escolhe
+o tema e a quantidade; a cada pergunta, o cartão do curso de onde ela veio aparece ao lado (embaixo, no celular).
+No fim, o site mostra o placar por área e sugere um curso da área em que a pessoa foi melhor e outro da área em
+que mais errou. As instruções estão no próprio arquivo.
+
+### Descubra seu curso: `conteudo/descubra.md`
+
+A página **/descubra/** faz algumas perguntas (o que a pessoa busca, temas, filhos, tempo, jeito de aprender) e
+sugere três cursos, com o motivo de cada sugestão, e uma trilha. Tudo o que decide a sugestão está neste arquivo:
+as perguntas e respostas, os pontos de cada resposta, as etiquetas e os pesos de cada curso, as frases dos motivos
+e as trilhas. O fim do arquivo explica a conta e como calibrar. Curso novo no catálogo precisa de uma linha em
+`cursos:` para poder ser sugerido (o verificador avisa quando falta).
+
+### Tirar um curso do site
+
+- **Esconder** (e talvez voltar depois): no `precos.csv`, ponha `oculto` na coluna `status`.
+- **Apagar de vez**: apague o `.md` do curso, o do quiz e as duas imagens. Se for mandar o site num ZIP para
+  alguém descompactar por cima, liste esses arquivos em `_arquivos-removidos.txt`: descompactar não apaga
+  nada, e o `2-PUBLICAR.bat` apaga os arquivos da lista antes de enviar.
 
 ### Configurações: `conteudo/configuracoes.yaml`
 
@@ -165,7 +218,7 @@ Cada curso usa **duas imagens**. Enquanto elas não existem, o site mostra uma c
 | `conteudo/imagens/cursos/<slug>-horizontal.jpg` | **1920 × 1080** (16:9) | Topo da página do curso e carrossel da home no computador e no tablet, prévia no WhatsApp/Facebook |
 | `conteudo/imagens/cursos/<slug>-poster.jpg` | **1000 × 1500** (2:3) | Fileiras, catálogo, páginas de área e de professor, e o topo do curso e o carrossel da home no celular |
 | `conteudo/imagens/professores/<slug>.jpg` | 1080 × 1080 | Card do professor (a foto já traz o nome gravado) |
-| `conteudo/imagens/professores/<slug>-cena.jpg` | 940 × 788 | Topo da página do professor e bloco "Quem dá o curso" |
+| `conteudo/imagens/professores/<slug>-cena.jpg` | 940 × 788 | Topo da página do professor e bloco "Conheça seu professor" |
 
 - Mande sempre as duas imagens do curso. No celular em pé, o topo usa o pôster, porque a horizontal
   cortada numa tela estreita mostraria só a metade escura da ilustração. Sem a horizontal, o topo

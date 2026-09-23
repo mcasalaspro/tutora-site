@@ -10,6 +10,9 @@ echo    TUTORA - CONFIGURAR A PUBLICACAO (so na 1a vez)
 echo  =====================================================
 echo.
 
+rem Nunca parar numa pergunta "Should I try again? y/n" do Git: responde nao sozinho.
+set "GIT_ASK_YESNO=false"
+
 where git >nul 2>nul
 if errorlevel 1 (
   echo  O Git nao esta instalado neste computador.
@@ -54,6 +57,13 @@ if not exist ".git" (
   git init >nul
   git symbolic-ref HEAD refs/heads/main
 )
+rem ---- O Git arruma a pasta .git sozinho de vez em quando. No Windows, OneDrive,
+rem ---- Dropbox ou antivirus prendem essas pastas e ele fica perguntando
+rem ---- "Should I try again? y/n". Desligamos a arrumacao automatica e a pergunta,
+rem ---- e tambem os avisos inofensivos de LF/CRLF.
+git config gc.auto 0
+git config maintenance.auto false
+git config core.safecrlf false
 git remote remove origin >nul 2>nul
 git remote add origin "!REPO!"
 git add -A

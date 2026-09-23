@@ -1,0 +1,64 @@
+---
+/**
+ * Bloco "Assista de graça": miniaturas dos vídeos do YouTube (conteudo/videos.csv).
+ * O vídeo só carrega quando a pessoa clica (a página não baixa o player do YouTube antes disso).
+ */
+import Icone from './Icone.astro';
+import type { Video } from '../lib/videos';
+
+interface Props {
+  videos: Video[];
+  titulo?: string;
+  descricao?: string;
+  id?: string;
+  /** mostra o nome do vídeo no YouTube embaixo da miniatura (na página do curso, o rótulo basta) */
+  mostrarTitulo?: boolean;
+}
+const { videos, titulo, descricao, id = 'videos', mostrarTitulo = false } = Astro.props;
+const temAula = videos.some((v) => v.tipo === 'aula-gratis');
+const tituloFinal = titulo ?? (temAula ? 'Veja uma aula antes de decidir' : 'Conheça o curso em vídeo');
+---
+{videos.length > 0 && (
+  <section class="secao videos-secao" id={id} data-secao={id}>
+    <div class="conteiner">
+      <div class="secao__cab">
+        <div>
+          <span class="sobretitulo">Assista de graça</span>
+          <h2 class="titulo-secao" style="margin-top:10px">{tituloFinal}</h2>
+          {descricao && <p>{descricao}</p>}
+        </div>
+      </div>
+      <div class:list={['videos', { 'videos--um': videos.length === 1 }]}>
+        {videos.map((v) => (
+          <figure class="video">
+            <div class="video__quadro" data-video-quadro>
+              <button class="video__capa" type="button" data-video={v.id} data-titulo={v.titulo || v.rotulo} aria-label={`Assistir: ${v.rotulo}${v.titulo ? ` (${v.titulo})` : ''}`}>
+                <img src={`https://i.ytimg.com/vi/${v.id}/hqdefault.jpg`} alt="" width="480" height="360" loading="lazy" decoding="async" onerror="this.style.visibility='hidden'" />
+                <span class="video__play" aria-hidden="true"><Icone nome="play" /></span>
+              </button>
+            </div>
+            <figcaption>
+              <span class:list={['chip', { 'chip--laranja': v.tipo === 'aula-gratis' }]}>{v.rotulo}</span>
+              {mostrarTitulo && v.titulo && <span class="video__titulo">{v.titulo}</span>}
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<script>
+  for (const botao of document.querySelectorAll<HTMLButtonElement>('[data-video]')) {
+    botao.addEventListener('click', () => {
+      const quadro = botao.closest<HTMLElement>('[data-video-quadro]');
+      if (!quadro) return;
+      const iframe = document.createElement('iframe');
+      iframe.src = `https://www.youtube-nocookie.com/embed/${botao.dataset.video}?autoplay=1&rel=0`;
+      iframe.title = botao.dataset.titulo || 'Vídeo';
+      iframe.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+      iframe.allowFullscreen = true;
+      quadro.replaceChildren(iframe);
+    });
+  }
+</script>

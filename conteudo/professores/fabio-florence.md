@@ -1,11 +1,13 @@
 ---
-# Biografia do site antigo da Tutora (tutoracursos.com.br, 2025). Pode editar à vontade.
+# Biografia do site antigo da Tutora (2025), revisada em 23/09/2026. Pode editar à vontade.
 slug: fabio-florence
 nome: Fabio Florence
-mini_bio: Professor, mestre e doutor, Fabio Florence tem mais de 10 anos de experiência no ensino da Filosofia em colégios de São Paulo e traduziu obras de autores como S. Tomás de Aquino.
+mini_bio: "Fabio Florence é professor de filosofia, com mais de dez anos de experiência em colégios de São Paulo, e tradutor de autores como Santo Tomás de Aquino."
 formacao: []
 site: ''
 instagram: ''
 ---
 
-Professor, Mestre e Doutor, Fabio Florence tem mais de 10 anos de experiência no ensino da Filosofia em colégios de São Paulo, além de também já ter trabalhado com a tradução de obras importantes de grandes autores como S. Tomás de Aquino, S. Afonso de Ligório, Frederick Copleston, Louis de Raeymaeker e Martín Echavarría.
+Mestre e doutor, Fabio Florence tem mais de dez anos de experiência no ensino de filosofia em colégios de São Paulo.
+
+Traduziu obras de autores como Santo Tomás de Aquino, Santo Afonso de Ligório, Frederick Copleston, Louis de Raeymaeker e Martín Echavarría.

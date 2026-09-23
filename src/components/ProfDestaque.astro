@@ -1,0 +1,40 @@
+---
+/**
+ * Professor em destaque no topo do curso e na vitrine da home: foto grande, rótulo e nome.
+ * Com mais de um professor, as fotos se sobrepõem e os nomes vêm juntos ("A e B").
+ */
+import { Image } from 'astro:assets';
+import type { Professor } from '../lib/catalogo';
+import { rotuloProfs, temPagina } from '../lib/catalogo';
+import { url, iniciais } from '../lib/formatar';
+
+interface Props {
+  profs: Professor[];
+  /** 'g' no topo do curso, 'm' na vitrine da home */
+  tamanho?: 'g' | 'm';
+}
+const { profs, tamanho = 'g' } = Astro.props;
+const principal = profs[0];
+const comLink = principal && temPagina(principal);
+const Tag = comLink ? 'a' : 'div';
+const nomes =
+  profs.length <= 1 ? principal?.nome ?? '' : profs.slice(0, -1).map((p) => p.nome).join(', ') + ' e ' + profs[profs.length - 1].nome;
+---
+{principal && (
+  <Tag
+    class:list={['prof-destaque', `prof-destaque--${tamanho}`]}
+    href={comLink ? url(`/professores/${principal.slug}/`) : undefined}
+  >
+    <span class="prof-destaque__fotos" aria-hidden="true">
+      {profs.map((p) => (
+        <span class="prof-destaque__foto">
+          {p.foto ? <Image src={p.foto} alt="" width={168} height={168} quality={76} /> : <b>{iniciais(p.nome)}</b>}
+        </span>
+      ))}
+    </span>
+    <span class="prof-destaque__txt">
+      <span class="prof-destaque__rotulo">{rotuloProfs(profs)}</span>
+      <span class="prof-destaque__nome">{nomes}</span>
+    </span>
+  </Tag>
+)}

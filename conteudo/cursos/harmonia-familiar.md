@@ -467,7 +467,6 @@ curriculo:
 cursos_relacionados:
 - educacao-personalizada
 - imaginario-crianca-moderna
-- guia-das-emocoes
 - virtudes-fundamentais
 - o-fim-da-educacao
 destaque_home: false

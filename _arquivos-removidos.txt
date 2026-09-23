@@ -1,0 +1,8 @@
+# Arquivos que sairam do site. O 2-PUBLICAR.bat apaga cada um deles (se ainda existir) antes de enviar.
+# Um caminho por linha, a partir da pasta do site. Linhas com # sao comentarios.
+# O Guia das Emocoes (23/09/2026): publicado fora, a Tutora nao tem mais os direitos.
+conteudo\cursos\guia-das-emocoes.md
+conteudo\quizzes\guia-das-emocoes.md
+conteudo\professores\marcelo-danucalov.md
+conteudo\imagens\cursos\guia-das-emocoes-horizontal.jpg
+conteudo\imagens\cursos\guia-das-emocoes-poster.jpg

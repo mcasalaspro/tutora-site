@@ -9,10 +9,13 @@ import Quiz from '../../components/Quiz.astro';
 import Curiosidades from '../../components/Curiosidades.astro';
 import Ofertas from '../../components/Ofertas.astro';
 import Icone from '../../components/Icone.astro';
-import { cursos, cursoPorSlug, relacionados, doMesmoProfessor, totais, nomesProfessores } from '../../lib/catalogo';
+import ProfDestaque from '../../components/ProfDestaque.astro';
+import Videos from '../../components/Videos.astro';
+import { videosDe } from '../../lib/videos';
+import { cursos, cursoPorSlug, relacionados, doMesmoProfessor, totais, rotuloProfs } from '../../lib/catalogo';
 import { config } from '../../lib/config';
 import { ofertaDe } from '../../lib/precos';
-import { url, paragrafos, plural, iniciais, idYoutube } from '../../lib/formatar';
+import { url, paragrafos, plural, iniciais } from '../../lib/formatar';
 
 export async function getStaticPaths() {
   return (await cursos()).map((c) => ({ params: { slug: c.slug } }));
@@ -24,8 +27,8 @@ const doProf = await doMesmoProfessor(c);
 const rel = await relacionados(c, 8, doProf.map((x) => x.slug));
 const tot = await totais();
 const profs = [c.professor, ...c.convidados].filter(Boolean) as NonNullable<typeof c.professor>[];
-const nomes = nomesProfessores(c);
-const trailer = idYoutube(c.trailer);
+const vids = videosDe(c.slug, c.trailer);
+const temAulaGratis = vids.some((v) => v.tipo === 'aula-gratis');
 const aulasReais = c.aulas.filter((a) => a.tipo !== 'apresentacao');
 
 const imgOg = c.horizontal ?? c.professor?.cena;
@@ -35,9 +38,10 @@ const temQuiz = c.perguntas.length >= 3;
 const temCuriosidades = c.curiosidades.length > 0;
 const secoes = [
   { id: 'visao', rotulo: 'Visão geral' },
+  ...(vids.length ? [{ id: 'videos', rotulo: temAulaGratis ? 'Aula grátis' : 'Vídeo' }] : []),
   { id: 'aulas', rotulo: `Aulas (${c.nAulas})` },
   ...(temQuiz || temCuriosidades ? [{ id: 'quiz', rotulo: 'Quiz' }] : []),
-  ...(profs.length ? [{ id: 'professor', rotulo: profs.length > 1 ? 'Professores' : 'Professor' }] : []),
+  ...(profs.length ? [{ id: 'professor', rotulo: rotuloProfs(profs) }] : []),
   { id: 'inscricao', rotulo: 'Inscrição' },
 ];
 
@@ -53,7 +57,7 @@ const jsonLd = {
   name: c.titulo,
   description: c.sinopseCurta,
   inLanguage: 'pt-BR',
-  provider: { '@type': 'Organization', name: `${cfg.nome} Educação Familiar`, url: Astro.site?.toString() },
+  provider: { '@type': 'Organization', name: cfg.nome, url: Astro.site?.toString() },
   ...(profs.length ? { instructor: profs.map((p) => ({ '@type': 'Person', name: p.nome })) } : {}),
   hasCourseInstance: {
     '@type': 'CourseInstance',
@@ -86,19 +90,8 @@ const jsonLd = {
           </nav>
           <h1>{c.titulo}</h1>
           <p class="curso-topo__frase">{c.frase}</p>
+          <ProfDestaque profs={profs} />
           <div class="meta">
-            {profs.length > 0 && (
-              <a class="prof-mini" href={url(`/professores/${profs[0].slug}/`)}>
-                <span class="avatar-grupo">
-                  {profs.map((p) => (
-                    <span class="avatar">
-                      {p.foto ? <Image src={p.foto} alt="" width={80} height={80} quality={70} /> : iniciais(p.nome)}
-                    </span>
-                  ))}
-                </span>
-                <span class="prof-mini__nome">com {nomes}</span>
-              </a>
-            )}
             <span><Icone nome="aulas" />{plural(c.nAulas, 'aula')}</span>
             {c.duracaoTexto && <span><Icone nome="relogio" />{c.duracaoTexto}</span>}
             {c.lancamento && <span class="chip chip--novo">Novo</span>}
@@ -108,9 +101,10 @@ const jsonLd = {
               <Icone nome={ctaExterno ? 'carrinho' : 'seta-link'} />
               {ctaExterno ? `Inscreva-se${c.oferta.preco ? ` · ${c.oferta.preco}` : ''}` : algumaOferta ? 'Ver opções de inscrição' : 'Quero fazer este curso'}
             </a>
-            <a class="botao botao--vidro" href="#aulas"><Icone nome="aulas" /> Ver as aulas</a>
-            {trailer && (
-              <button class="botao botao--vidro" type="button" data-trailer={trailer}><Icone nome="play" /> Assistir trailer</button>
+            {vids.length > 0 ? (
+              <a class="botao botao--vidro" href="#videos"><Icone nome="play" /> {temAulaGratis ? 'Assistir aula grátis' : 'Ver a apresentação'}</a>
+            ) : (
+              <a class="botao botao--vidro" href="#aulas"><Icone nome="aulas" /> Ver as aulas</a>
             )}
           </div>
         </div>
@@ -151,7 +145,7 @@ const jsonLd = {
         <dl>
           {profs.length > 0 && (
             <>
-              <dt>{profs.length > 1 ? 'Professores' : 'Professor'}</dt>
+              <dt>{rotuloProfs(profs)}</dt>
               <dd>
                 {profs.map((p, i) => (
                   <>
@@ -188,6 +182,8 @@ const jsonLd = {
       </aside>
     </div>
   </section>
+
+  <Videos videos={vids} />
 
   {c.oQueVaiAprender.length > 0 && (
     <section class="secao secao--clara">
@@ -267,12 +263,12 @@ const jsonLd = {
               )}
             </div>
             <div class="prof-bloco__texto">
-              <span class="sobretitulo">{p === c.professor ? 'Quem dá o curso' : 'Também no curso'}</span>
+              <span class="sobretitulo">{p === c.professor ? (p.feminino ? 'Conheça sua professora' : 'Conheça seu professor') : 'Também no curso'}</span>
               <h3>{p.nome}</h3>
               {p.miniBio && <p class="texto-2">{p.miniBio}</p>}
               <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:6px">
                 <a class="botao botao--vidro botao--pequeno" href={url(`/professores/${p.slug}/`)}>
-                  <Icone nome="pessoa" /> Página do professor
+                  <Icone nome="pessoa" /> {p.feminino ? 'Página da professora' : 'Página do professor'}
                 </a>
                 {p.cursos.length > 1 && <span class="chip" style="align-self:center">{plural(p.cursos.length, 'curso')} na Tutora</span>}
               </div>
@@ -327,14 +323,6 @@ const jsonLd = {
         {ctaExterno ? 'Inscrever-se' : algumaOferta ? 'Ver opções' : 'Saber mais'}
       </a>
     </div>
-    {trailer && (
-      <dialog class="modal" data-modal-trailer aria-label="Trailer do curso">
-        <button class="botao botao--vidro botao--pequeno modal__fechar" type="button" data-fechar-trailer>
-          <Icone nome="fechar" /> Fechar
-        </button>
-        <div class="modal__video" data-video></div>
-      </dialog>
-    )}
   </div>
 </Base>
 
@@ -369,20 +357,4 @@ const jsonLd = {
     atualizar();
   }
 
-  // Trailer (carrega o vídeo só quando a pessoa pede)
-  const botao = document.querySelector<HTMLButtonElement>('[data-trailer]');
-  const modal = document.querySelector<HTMLDialogElement>('[data-modal-trailer]');
-  if (botao && modal) {
-    const video = modal.querySelector<HTMLElement>('[data-video]')!;
-    botao.addEventListener('click', () => {
-      video.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${botao.dataset.trailer}?autoplay=1&rel=0" title="Trailer do curso" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
-      modal.showModal();
-    });
-    const fechar = () => {
-      modal.close();
-      video.innerHTML = '';
-    };
-    modal.querySelector('[data-fechar-trailer]')?.addEventListener('click', fechar);
-    modal.addEventListener('close', () => (video.innerHTML = ''));
-  }
 </script>

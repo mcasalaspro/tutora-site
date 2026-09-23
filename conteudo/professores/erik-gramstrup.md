@@ -1,15 +1,15 @@
 ---
-# Biografia do site antigo da Tutora (tutoracursos.com.br, 2025). Pode editar à vontade.
+# Biografia do site antigo da Tutora (2025), revisada em 23/09/2026. Pode editar à vontade.
 slug: erik-gramstrup
 nome: Erik Gramstrup
-mini_bio: Formado em Direito há mais de 30 anos, o professor Erik Gramstrup é professor na Pontifícia Universidade Católica de São Paulo e atua como docente nas áreas do Direito Civil e História do Direito.
+mini_bio: "Erik Gramstrup, formado em direito há mais de 30 anos, é professor da PUC-SP nas áreas de direito civil e história do direito."
 formacao: []
 site: ''
 instagram: ''
 ---
 
-Formado em Direito há mais de 30 anos, o professor Erik Gramstrup é professor na Pontifícia Universidade Católica de São Paulo e atua como docente nas áreas do Direito Civil e História do Direito. É mestre e doutor em Direito Civil, além de especialista em Direito Tributário.
+Erik Gramstrup é mestre e doutor em direito civil e especialista em direito tributário. Formado em direito há mais de 30 anos, é professor da Pontifícia Universidade Católica de São Paulo (PUC-SP), onde leciona direito civil e história do direito.
 
-Conta com diversas publicações científicas, artigos e livros, como Responsabilidade Civil na Engenharia Genética.
+É autor de diversas publicações científicas, entre artigos e livros, como Responsabilidade Civil na Engenharia Genética.
 
-Tem a Filosofia como uma paixão pessoal, especialmente Aristóteles e sua extensa obra.
+Tem uma paixão pessoal pela filosofia, em especial por Aristóteles e sua extensa obra. Na Tutora, dá os cursos História do Direito Romano e Filosofia da Natureza, este dedicado a Aristóteles.

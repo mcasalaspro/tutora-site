@@ -5,8 +5,8 @@
 # ─────────────────────────────────────────────────────────────────────────────
 
 nome: "Tutora"
-slogan: "educação familiar"
-descricao: "Catálogo de cursos da Tutora: história, filosofia, literatura, direito e educação dos filhos, com professores de referência."
+slogan: "cursos de formação humana"
+descricao: "Cursos de formação humana: história, filosofia, literatura, direito e educação, com professores de referência."
 
 # Contato e redes (deixe "" para esconder)
 contato:
@@ -17,9 +17,9 @@ contato:
 
 # Textos da página inicial
 home:
-  titulo_regular: "Somos uma escola de"
-  titulo_destaque: "educação familiar."
-  subtitulo: "Cursos em vídeo para quem quer entender melhor o mundo, a própria história e a educação dos filhos."
+  titulo_regular: "Cursos de"
+  titulo_destaque: "formação humana."
+  subtitulo: "História, filosofia, literatura, direito e educação em aulas com professores de referência: para entender o mundo, pensar com clareza e crescer como pessoa."
 
 # Áreas do catálogo. O campo "area" de cada curso precisa ser igual a um destes nomes.
 areas:

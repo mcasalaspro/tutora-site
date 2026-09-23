@@ -72,6 +72,8 @@ const professores = defineCollection({
     formacao: lista,
     site: texto,
     instagram: texto,
+    /** "feminino" troca os rótulos para "professora" ("Conheça sua professora"). */
+    genero: z.enum(['masculino', 'feminino']).default('masculino'),
     ordem: z.number().optional(),
   }),
 });

@@ -1,6 +1,8 @@
 ---
 import Base from '../../layouts/Base.astro';
 import Capa from '../../components/Capa.astro';
+import Videos from '../../components/Videos.astro';
+import { videosDe } from '../../lib/videos';
 import { cursos } from '../../lib/catalogo';
 import { config } from '../../lib/config';
 import { url, plural } from '../../lib/formatar';
@@ -21,6 +23,7 @@ const itens = (await cursos())
   .sort((a, b) => (posTrilha.get(a.slug) ?? 1e6) - (posTrilha.get(b.slug) ?? 1e6) || a.titulo.localeCompare(b.titulo, 'pt-BR'));
 const todos = await cursos();
 const outras = cfg.areas.filter((a) => a.slug !== area.slug && todos.some((c) => c.area === a.nome));
+const vids = videosDe(`area:${area.slug}`);
 ---
 <Base titulo={area.nome} descricao={`${area.descricao ?? ''} ${plural(itens.length, 'curso')} na Tutora.`} topoSolido atual="cursos">
   <div class="conteiner">
@@ -40,4 +43,5 @@ const outras = cfg.areas.filter((a) => a.slug !== area.slug && todos.some((c) =>
       {outras.map((a) => <a class="chip" href={url(`/areas/${a.slug}/`)}>{a.nome}</a>)}
     </div>
   </div>
+  <Videos videos={vids} titulo="Assista a uma aula" mostrarTitulo />
 </Base>

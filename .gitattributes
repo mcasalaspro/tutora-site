@@ -1,3 +1,5 @@
+# Todo arquivo de texto fica com quebra de linha LF (evita os avisos "LF will be replaced by CRLF").
+* text=auto eol=lf
 # Arquivos .bat precisam de quebra de linha do Windows (CRLF) para rodar direito.
 *.bat text eol=crlf
 *.cmd text eol=crlf

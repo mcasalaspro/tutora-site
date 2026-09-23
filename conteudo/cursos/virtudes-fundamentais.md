@@ -162,7 +162,6 @@ cursos_relacionados:
 - filosofia-do-direito
 - teatro-grego-tragedia
 - filosofia-da-educacao
-- guia-das-emocoes
 destaque_home: true
 lancamento: false
 ---

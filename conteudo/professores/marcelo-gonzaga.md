@@ -1,11 +1,11 @@
 ---
-# Biografia do site antigo da Tutora (tutoracursos.com.br, 2025). Pode editar à vontade.
+# Biografia do site antigo da Tutora (2025), revisada em 23/09/2026. Pode editar à vontade.
 slug: marcelo-gonzaga
 nome: Marcelo Gonzaga
-mini_bio: Marcelo Gonzaga é formado em Direito e História, pós-graduado em Educação, e atualmente cursa Pedagogia.
+mini_bio: "Marcelo Gonzaga dá aulas há mais de 20 anos e trabalha como tutor: elabora currículos personalizados e orienta famílias."
 formacao: []
 site: ''
 instagram: ''
 ---
 
-Marcelo Gonzaga é formado em Direito e História, pós-graduado em Educação, e atualmente cursa Pedagogia. Conta com mais de 20 anos de experiência dando aulas e se consolidou como tutor, elaborando currículos personalizados e orientando famílias.
+Marcelo Gonzaga é formado em direito e em história, pós-graduado em educação e atualmente cursa pedagogia. Com mais de 20 anos de experiência como professor, consolidou-se como tutor, elaborando currículos personalizados e orientando famílias.

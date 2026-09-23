@@ -59,7 +59,7 @@ export function plural(n: number, singular: string, pluralForma?: string): strin
   return `${n} ${n === 1 ? singular : pluralForma ?? singular + 's'}`;
 }
 
-/** Iniciais para avatar sem foto: "Marcelo Danucalov" → "MD" */
+/** Iniciais para avatar sem foto: "Mauro Keller" → "MK" */
 export function iniciais(nome: string): string {
   const partes = nome.split(/\s+/).filter((p) => p && !/^(de|da|do|dos|das|e)$/i.test(p));
   return ((partes[0]?.[0] ?? '') + (partes.length > 1 ? partes[partes.length - 1][0] : '')).toUpperCase();

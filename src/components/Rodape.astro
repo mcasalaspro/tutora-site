@@ -18,7 +18,6 @@ const c = cfg.contato;
         <a class="rodape__marca" href={url('/')} aria-label={`${cfg.nome} — página inicial`}>
           <Logo titulo={cfg.nome} />
         </a>
-        <span class="rodape__slogan">{cfg.slogan}</span>
         <p>{cfg.descricao}</p>
         <div class="rodape__redes">
           {c.instagram && <a href={c.instagram} target="_blank" rel="noopener" aria-label="Instagram"><Icone nome="instagram" /></a>}
@@ -32,6 +31,8 @@ const c = cfg.contato;
         <ul>
           <li><a href={url('/cursos/')}>Todos os cursos</a></li>
           <li><a href={url('/professores/')}>Professores</a></li>
+          <li><a href={url('/quiz/')}>Quiz</a></li>
+          <li><a href={url('/descubra/')}>Descubra seu curso</a></li>
           <li><a href={url('/#assinatura')}>Assinatura</a></li>
         </ul>
       </div>
@@ -53,7 +54,7 @@ const c = cfg.contato;
       </div>
     </div>
     <div class="rodape__base">
-      <span>© {ano} {cfg.nome} Educação Familiar. Todos os direitos reservados.</span>
+      <span>© {ano} {cfg.nome}. Todos os direitos reservados.</span>
       <span>Compras processadas pela Hotmart.</span>
     </div>
   </div>

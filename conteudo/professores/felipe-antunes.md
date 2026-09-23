@@ -1,15 +1,13 @@
 ---
-# Biografia do site antigo da Tutora (tutoracursos.com.br, 2025). Pode editar à vontade.
+# Biografia do site antigo da Tutora (2025), revisada em 23/09/2026. Pode editar à vontade.
 slug: felipe-antunes
 nome: Felipe Antunes
-mini_bio: Pediatra, Dr. Felipe Antunes dedica há uma década seu trabalho a crianças e adolescentes, numa abordagem que soma medicina e pedagogia.
+mini_bio: "Felipe Antunes é pediatra e se dedica há mais de dez anos a crianças e adolescentes, com uma abordagem que une medicina e pedagogia."
 formacao: []
 site: ''
 instagram: ''
 ---
 
-Dr. Felipe Antunes possui uma trajetória marcante de uma década dedicada ao atendimento de crianças e adolescentes.
+Pediatra, Felipe Antunes atende crianças e adolescentes há mais de dez anos. A paixão pela educação o levou a uma abordagem humanizada, que soma conhecimentos de medicina e de pedagogia.
 
-Além de pediatra, sua paixão pela educação o conduziu a uma abordagem humanizada que soma conhecimentos de medicina e pedagogia.
-
-Com uma visão realista, ele se empenha em capacitar pais, educadores e profissionais da saúde sobre as melhores maneiras para cuidar e entender as necessidades de seus filhos.
+Com uma visão realista, empenha-se em capacitar pais, educadores e profissionais da saúde para cuidar melhor das crianças e entender suas necessidades.

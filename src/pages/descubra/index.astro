@@ -1,0 +1,345 @@
+---
+/**
+ * "Descubra seu curso": questionário curto que sugere cursos e uma trilha.
+ * Perguntas, pesos, motivos e trilhas ficam em conteudo/descubra.md (editável pela equipe).
+ */
+import Base from '../../layouts/Base.astro';
+import Capa from '../../components/Capa.astro';
+import Icone from '../../components/Icone.astro';
+import { cursos, nomesProfessores } from '../../lib/catalogo';
+import { descubra } from '../../lib/paginas-extras';
+import { url, plural } from '../../lib/formatar';
+
+const d = descubra();
+const lista = await cursos();
+const porSlug = new Map(lista.map((c) => [c.slug, c]));
+
+// etiquetas de cada curso + duração (curto/medio/longo), calculada pela soma das aulas
+const PESO_DURACAO = 2;
+const dadosCursos: Record<string, { tags: Record<string, number>; p: string }> = {};
+for (const [slug, tags] of Object.entries(d.cursos)) {
+  const c = porSlug.get(slug);
+  if (!c) continue;
+  const dur = c.minutos <= d.duracao.curto_ate_min ? 'curto' : c.minutos >= d.duracao.longo_a_partir_min ? 'longo' : 'medio';
+  dadosCursos[slug] = { tags: { ...tags, [dur]: (tags[dur] ?? 0) + PESO_DURACAO }, p: c.professorSlug };
+}
+const usados = new Set([
+  ...Object.keys(dadosCursos),
+  ...d.pontoDePartida.filter((s) => porSlug.has(s)),
+  ...d.trilhas.flatMap((t) => t.cursos.filter((s) => porSlug.has(s))),
+]);
+const dados = JSON.stringify({
+  perguntas: d.perguntas,
+  motivos: d.motivos,
+  cursos: dadosCursos,
+  pontoDePartida: d.pontoDePartida.filter((s) => porSlug.has(s)),
+  trilhas: d.trilhas.map((t) => ({ ...t, cursos: t.cursos.filter((s) => porSlug.has(s)) })).filter((t) => t.cursos.length > 1),
+}).replace(/</g, '\\u003c');
+const nPerguntas = d.perguntas.length;
+---
+<Base titulo="Descubra seu curso" descricao={d.subtitulo || d.titulo} topoSolido atual="descubra">
+  <div class="conteiner descubra" data-descubra>
+    <script type="application/json" data-dados set:html={dados}></script>
+    <header class="cab-pagina">
+      <span class="sobretitulo">Descubra seu curso</span>
+      <h1>{d.titulo}</h1>
+      {d.subtitulo && <p>{d.subtitulo}</p>}
+      <p class="texto-3 dc-leva"><Icone nome="relogio" /> Cerca de 1 minuto · até {nPerguntas} perguntas</p>
+    </header>
+
+    <section class="dc-tela" data-tela="perguntas" aria-label="Perguntas">
+      <div class="dc-caixa">
+        <div class="dc-cab">
+          <div class="dc-progresso" aria-hidden="true"><i data-barra></i></div>
+          <span class="chip" data-passo></span>
+        </div>
+        <h2 class="dc-pergunta" data-pergunta tabindex="-1"></h2>
+        <p class="dc-ajuda" data-ajuda></p>
+        <div class="dc-opcoes" data-opcoes></div>
+        <div class="dc-nav">
+          <button class="botao botao--vidro" type="button" data-voltar><Icone nome="seta-esq" /> Voltar</button>
+          <button class="botao botao--laranja" type="button" data-continuar></button>
+        </div>
+      </div>
+    </section>
+
+    <section class="dc-tela" data-tela="resultado" hidden aria-label="Sugestões">
+      <span class="sobretitulo">Resultado</span>
+      <h2 class="titulo-secao dc-titulo" data-titulo-resultado tabindex="-1">Os cursos que mais combinam com você</h2>
+      <div class="dc-principal" data-principal></div>
+      <div data-bloco-outros>
+        <h3 class="dc-sub">Também combinam com você</h3>
+        <div class="dc-outros" data-outros></div>
+      </div>
+      <div class="dc-trilha" data-bloco-trilha>
+        <h3 class="dc-sub" data-trilha-nome></h3>
+        <p class="texto-2" data-trilha-desc></p>
+        <div class="dc-trilha__passos" data-trilha></div>
+      </div>
+      <div class="dc-acoes">
+        <button class="botao botao--laranja" type="button" data-refazer><Icone nome="refazer" /> Refazer o teste</button>
+        <a class="botao botao--vidro" href={url('/cursos/')}><Icone nome="grade" /> Ver todos os cursos</a>
+        <a class="botao botao--vidro" href={url('/quiz/')}><Icone nome="pergunta" /> Testar seus conhecimentos</a>
+      </div>
+    </section>
+
+    {lista.filter((c) => usados.has(c.slug)).map((c) => (
+      <template data-card={c.slug}>
+        <article class="dc-card">
+          <div class="dc-card__capa"><Capa curso={c} tamanhos="(max-width: 700px) 120px, 240px" /></div>
+          <div class="dc-card__txt">
+            <span class="dc-card__rotulo" data-rotulo></span>
+            <a class="dc-card__titulo" href={url(`/cursos/${c.slug}/`)}>{c.titulo}</a>
+            <span class="dc-card__meta">{[nomesProfessores(c), plural(c.nAulas, 'aula'), c.duracaoTexto].filter(Boolean).join(' · ')}</span>
+            <p class="dc-card__frase">{c.frase}</p>
+            <div class="dc-card__porque" data-porque hidden>
+              <strong>Por que este curso</strong>
+              <ul data-motivos></ul>
+            </div>
+            <a class="link-seta" href={url(`/cursos/${c.slug}/`)}>Conhecer o curso <Icone nome="seta-link" /></a>
+          </div>
+        </article>
+      </template>
+    ))}
+  </div>
+</Base>
+
+<script>
+  interface Opcao {
+    texto: string;
+    pontos: Record<string, number>;
+    marca?: string;
+    exclusiva?: boolean;
+  }
+  interface Pergunta {
+    id: string;
+    pergunta: string;
+    ajuda: string;
+    tipo: 'uma' | 'varias';
+    maximo: number;
+    mostrarSe: string;
+    opcoes: Opcao[];
+  }
+  interface Dados {
+    perguntas: Pergunta[];
+    motivos: Record<string, string>;
+    cursos: Record<string, { tags: Record<string, number>; p: string }>;
+    pontoDePartida: string[];
+    trilhas: { nome: string; descricao: string; cursos: string[] }[];
+  }
+
+  const raiz = document.querySelector<HTMLElement>('[data-descubra]');
+  if (raiz) {
+    const dados: Dados = JSON.parse(raiz.querySelector('[data-dados]')?.textContent || '{}');
+    const $ = <T extends HTMLElement = HTMLElement>(s: string) => raiz.querySelector<T>(s)!;
+    const respostas = new Map<string, Set<number>>(); // id da pergunta → índices escolhidos
+    let passo = 0;
+    let jaInteragiu = false; // na primeira pergunta, o foco fica onde a pessoa está
+
+    const marcas = () => {
+      const m = new Set<string>();
+      for (const p of dados.perguntas) {
+        for (const i of respostas.get(p.id) ?? []) {
+          const marca = p.opcoes[i]?.marca;
+          if (marca) m.add(marca);
+        }
+      }
+      return m;
+    };
+    const visiveis = () => {
+      const m = marcas();
+      return dados.perguntas.filter((p) => !p.mostrarSe || m.has(p.mostrarSe));
+    };
+
+    const mostrarTela = (nome: string) => {
+      raiz.querySelectorAll<HTMLElement>('[data-tela]').forEach((t) => (t.hidden = t.dataset.tela !== nome));
+      const topo = raiz.getBoundingClientRect().top + window.scrollY - 80;
+      if (window.scrollY > topo) window.scrollTo({ top: Math.max(0, topo), behavior: 'smooth' });
+    };
+
+    function desenhar() {
+      const lista = visiveis();
+      passo = Math.min(passo, lista.length - 1);
+      const p = lista[passo];
+      const escolhidas = respostas.get(p.id) ?? new Set<number>();
+      $('[data-passo]').textContent = `Pergunta ${passo + 1} de ${lista.length}`;
+      $('[data-barra]').style.width = `${Math.round((passo / lista.length) * 100)}%`;
+      const titulo = $('[data-pergunta]');
+      titulo.textContent = p.pergunta;
+      const ajuda = $('[data-ajuda]');
+      ajuda.textContent = p.ajuda;
+      ajuda.hidden = !p.ajuda;
+      const caixa = $('[data-opcoes]');
+      caixa.innerHTML = '';
+      caixa.setAttribute('role', p.tipo === 'uma' ? 'radiogroup' : 'group');
+      caixa.setAttribute('aria-label', p.pergunta);
+      p.opcoes.forEach((o, i) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'dc-opcao';
+        b.setAttribute('role', p.tipo === 'uma' ? 'radio' : 'checkbox');
+        b.setAttribute('aria-checked', String(escolhidas.has(i)));
+        b.innerHTML = '<span class="dc-opcao__marca" aria-hidden="true"></span><span></span>';
+        (b.lastElementChild as HTMLElement).textContent = o.texto;
+        b.addEventListener('click', () => escolher(p, i));
+        caixa.appendChild(b);
+      });
+      $('[data-voltar]').hidden = passo === 0;
+      atualizarContinuar(p);
+      if (jaInteragiu) titulo.focus({ preventScroll: true });
+      jaInteragiu = true;
+    }
+
+    function atualizarContinuar(p: Pergunta) {
+      const n = respostas.get(p.id)?.size ?? 0;
+      const ultimo = passo === visiveis().length - 1;
+      $('[data-continuar]').textContent = n === 0 ? 'Pular' : ultimo ? 'Ver minhas sugestões →' : 'Continuar →';
+    }
+
+    function escolher(p: Pergunta, i: number) {
+      const atual = new Set(respostas.get(p.id) ?? []);
+      if (p.tipo === 'uma') {
+        atual.clear();
+        atual.add(i);
+      } else if (atual.has(i)) {
+        atual.delete(i);
+      } else {
+        if (p.opcoes[i].exclusiva) atual.clear();
+        else p.opcoes.forEach((o, j) => o.exclusiva && atual.delete(j));
+        if (p.maximo && atual.size >= p.maximo) {
+          // no limite: a escolha mais antiga dá lugar à nova
+          const primeira = atual.values().next().value;
+          if (primeira !== undefined) atual.delete(primeira);
+        }
+        atual.add(i);
+      }
+      respostas.set(p.id, atual);
+      raiz!.querySelectorAll<HTMLButtonElement>('.dc-opcao').forEach((b, j) => b.setAttribute('aria-checked', String(atual.has(j))));
+      atualizarContinuar(p);
+      if (p.tipo === 'uma') window.setTimeout(avancar, 260);
+    }
+
+    function avancar() {
+      const lista = visiveis();
+      if (passo < lista.length - 1) {
+        passo++;
+        desenhar();
+      } else resultado();
+    }
+
+    // ── cálculo ──
+    function perfil(): Record<string, number> {
+      const soma: Record<string, number> = {};
+      for (const p of visiveis()) {
+        for (const i of respostas.get(p.id) ?? []) {
+          for (const [t, v] of Object.entries(p.opcoes[i]?.pontos ?? {})) soma[t] = (soma[t] ?? 0) + v;
+        }
+      }
+      return soma;
+    }
+    const nota = (slug: string, pf: Record<string, number>) =>
+      Object.entries(dados.cursos[slug]?.tags ?? {}).reduce((s, [t, peso]) => s + (pf[t] ?? 0) * peso, 0);
+    const motivos = (slug: string, pf: Record<string, number>) =>
+      Object.entries(dados.cursos[slug]?.tags ?? {})
+        .map(([t, peso]) => [t, (pf[t] ?? 0) * peso] as const)
+        .filter(([t, v]) => v > 0 && dados.motivos[t])
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 3)
+        .map(([t]) => dados.motivos[t]);
+
+    function cartao(slug: string, rotulo: string, porque: string[], classe = ''): HTMLElement | null {
+      const t = raiz!.querySelector<HTMLTemplateElement>(`template[data-card="${slug}"]`);
+      if (!t) return null;
+      const el = t.content.firstElementChild!.cloneNode(true) as HTMLElement;
+      if (classe) el.classList.add(classe);
+      el.querySelector('[data-rotulo]')!.textContent = rotulo;
+      if (porque.length) {
+        const ul = el.querySelector('[data-motivos]')!;
+        porque.forEach((m) => {
+          const li = document.createElement('li');
+          li.textContent = m.charAt(0).toUpperCase() + m.slice(1);
+          ul.appendChild(li);
+        });
+        (el.querySelector('[data-porque]') as HTMLElement).hidden = false;
+      }
+      return el;
+    }
+
+    function resultado() {
+      const pf = perfil();
+      const ranking = Object.keys(dados.cursos)
+        .map((s) => ({ s, n: nota(s, pf) }))
+        .filter((x) => x.n > 0)
+        .sort((a, b) => b.n - a.n);
+      // no máximo dois cursos do mesmo professor entre os três sugeridos
+      const escolhidos: string[] = [];
+      const porProf = new Map<string, number>();
+      for (const { s } of ranking) {
+        const p = dados.cursos[s].p;
+        if ((porProf.get(p) ?? 0) >= 2) continue;
+        escolhidos.push(s);
+        porProf.set(p, (porProf.get(p) ?? 0) + 1);
+        if (escolhidos.length === 3) break;
+      }
+      const semPerfil = escolhidos.length === 0;
+      const finais = semPerfil ? dados.pontoDePartida.slice(0, 3) : escolhidos;
+
+      $('[data-titulo-resultado]').textContent = semPerfil
+        ? 'Alguns bons pontos de partida'
+        : 'Os cursos que mais combinam com você';
+      const principal = $('[data-principal]');
+      principal.innerHTML = '';
+      const c0 = cartao(finais[0], semPerfil ? 'Para começar' : 'O mais indicado para você', semPerfil ? [] : motivos(finais[0], pf), 'dc-card--grande');
+      if (c0) principal.appendChild(c0);
+      const outros = $('[data-outros]');
+      outros.innerHTML = '';
+      finais.slice(1).forEach((s) => {
+        const c = cartao(s, semPerfil ? 'Para começar' : 'Também indicado', semPerfil ? [] : motivos(s, pf));
+        if (c) outros.appendChild(c);
+      });
+      $('[data-bloco-outros]').hidden = finais.length < 2;
+
+      // trilha: a de maior nota média
+      const trilhas = dados.trilhas
+        .map((t) => ({ t, media: t.cursos.reduce((s, c) => s + nota(c, pf), 0) / t.cursos.length }))
+        .sort((a, b) => b.media - a.media);
+      const bloco = $('[data-bloco-trilha]');
+      if (!semPerfil && trilhas.length && trilhas[0].media > 0) {
+        const { t } = trilhas[0];
+        $('[data-trilha-nome]').textContent = `Uma trilha para você: ${t.nome}`;
+        $('[data-trilha-desc]').textContent = t.descricao;
+        const passos = $('[data-trilha]');
+        passos.innerHTML = '';
+        t.cursos.forEach((s, i) => {
+          const modelo = raiz!.querySelector<HTMLTemplateElement>(`template[data-card="${s}"]`);
+          const poster = modelo?.content.querySelector('.poster')?.cloneNode(true) as HTMLElement | undefined;
+          if (!poster) return;
+          const passo = document.createElement('div');
+          passo.className = 'passo';
+          passo.innerHTML = `<span class="passo__num" aria-hidden="true">${i + 1}</span>`;
+          passo.appendChild(poster);
+          passos.appendChild(passo);
+        });
+        bloco.hidden = false;
+      } else bloco.hidden = true;
+
+      mostrarTela('resultado');
+      $('[data-titulo-resultado]').focus({ preventScroll: true });
+    }
+
+    $('[data-continuar]').addEventListener('click', avancar);
+    $('[data-voltar]').addEventListener('click', () => {
+      if (passo > 0) {
+        passo--;
+        desenhar();
+      }
+    });
+    $('[data-refazer]').addEventListener('click', () => {
+      respostas.clear();
+      passo = 0;
+      mostrarTela('perguntas');
+      desenhar();
+    });
+    desenhar();
+  }
+</script>

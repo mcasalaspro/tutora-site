@@ -33,7 +33,7 @@ const jsonLd = {
   '@type': 'Person',
   name: p.nome,
   description: descricao,
-  worksFor: { '@type': 'Organization', name: `${cfg.nome} Educação Familiar` },
+  worksFor: { '@type': 'Organization', name: cfg.nome },
 };
 const bio = paragrafos(p.bioCompleta);
 ---
