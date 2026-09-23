@@ -1,0 +1,170 @@
+---
+import Base from '../../layouts/Base.astro';
+import Capa from '../../components/Capa.astro';
+import Icone from '../../components/Icone.astro';
+import { cursos, professores, nomesProfessores } from '../../lib/catalogo';
+import { config } from '../../lib/config';
+import { normalizar, plural } from '../../lib/formatar';
+
+const cfg = config();
+const lista = await cursos();
+const profs = (await professores()).filter((p) => p.cursos.length > 0);
+const areas = cfg.areas.filter((a) => lista.some((c) => c.area === a.nome));
+// Três faixas de texto para a busca dar pesos diferentes: título > área, professor e tópicos > o resto.
+const buscaTitulo = (c: (typeof lista)[number]) => normalizar(c.titulo);
+const buscaMeio = (c: (typeof lista)[number]) => normalizar([c.area, nomesProfessores(c), ...c.topicos].join(' '));
+const buscaTexto = (c: (typeof lista)[number]) =>
+  normalizar(
+    [c.frase, c.sinopseCurta, ...c.aulas.flatMap((a) => [a.titulo, ...a.autores, ...a.topicos])].join(' '),
+  );
+---
+<Base
+  titulo="Catálogo de cursos"
+  descricao={`Os ${lista.length} cursos da ${cfg.nome}: busque por tema, autor ou professor e filtre por área.`}
+  topoSolido
+  atual="cursos"
+>
+  <div class="conteiner">
+    <header class="cab-pagina">
+      <span class="sobretitulo">Catálogo</span>
+      <h1>Todos os cursos</h1>
+      <p>
+        {plural(lista.length, 'curso')} e {lista.reduce((s, c) => s + c.nAulas, 0)} aulas. Busque por tema, autor, obra ou
+        professor.
+      </p>
+    </header>
+
+    <div id="busca" data-catalogo>
+      <div class="busca">
+        <Icone nome="busca" />
+        <label class="sr-only" for="campo-busca">Buscar cursos</label>
+        <input id="campo-busca" type="search" placeholder="Tema, autor, obra ou professor" autocomplete="off" data-q />
+      </div>
+      <div class="filtros" role="group" aria-label="Filtrar por área">
+        <button class="filtro" type="button" aria-pressed="true" data-area="">Todas as áreas</button>
+        {areas.map((a) => (
+          <button class="filtro" type="button" aria-pressed="false" data-area={a.slug}>{a.nome}</button>
+        ))}
+        <label class="sr-only" for="filtro-prof">Professor</label>
+        <select class="seletor" id="filtro-prof" data-prof>
+          <option value="">Todos os professores</option>
+          {profs.map((p) => <option value={p.slug}>{p.nome}</option>)}
+        </select>
+      </div>
+      <p class="resultado-info" aria-live="polite" data-info>{plural(lista.length, 'curso')}</p>
+      <div class="grade" data-grade>
+        {lista.map((c) => (
+          <div
+            data-item
+            data-area={c.areaSlug}
+            data-profs={[c.professorSlug, ...c.convidados.map((p) => p.slug)].join(' ')}
+            data-titulo={buscaTitulo(c)}
+            data-meio={buscaMeio(c)}
+            data-texto={buscaTexto(c)}
+          >
+            <Capa curso={c} tamanhos="(max-width: 600px) 45vw, 200px" />
+          </div>
+        ))}
+      </div>
+      <div class="vazio" data-vazio hidden>
+        <p><strong>Nenhum curso encontrado.</strong></p>
+        <p>Tente outra palavra ou limpe os filtros.</p>
+        <button class="botao botao--contorno botao--pequeno" type="button" data-limpar>Limpar busca</button>
+      </div>
+    </div>
+  </div>
+</Base>
+
+<script>
+  const raiz = document.querySelector<HTMLElement>('[data-catalogo]');
+  if (raiz) {
+    const q = raiz.querySelector<HTMLInputElement>('[data-q]')!;
+    const prof = raiz.querySelector<HTMLSelectElement>('[data-prof]')!;
+    const botoes = [...raiz.querySelectorAll<HTMLButtonElement>('[data-area]')].filter((b) => b.tagName === 'BUTTON');
+    const itens = [...raiz.querySelectorAll<HTMLElement>('[data-item]')];
+    const info = raiz.querySelector<HTMLElement>('[data-info]')!;
+    const vazio = raiz.querySelector<HTMLElement>('[data-vazio]')!;
+    const norm = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+    const palavras = (s: string) => s.split(/[^a-z0-9]+/).filter(Boolean);
+    const grade = raiz.querySelector<HTMLElement>('[data-grade]')!;
+    // cada curso guarda as palavras de cada faixa; um termo "casa" com o começo de uma palavra
+    const indice = itens.map((el, pos) => ({
+      el,
+      pos,
+      titulo: palavras(el.dataset.titulo || ''),
+      meio: palavras(el.dataset.meio || ''),
+      texto: palavras(el.dataset.texto || ''),
+    }));
+    // termos de até 2 letras ("fé", "lei") só valem como palavra inteira; os maiores casam com o começo da palavra
+    const bate = (w: string, termo: string) => (termo.length <= 2 ? w === termo : w.startsWith(termo));
+    const vezes = (lista: string[], termo: string) => lista.reduce((n, w) => n + (bate(w, termo) ? 1 : 0), 0);
+    const pontos = (it: (typeof indice)[number], termos: string[]) => {
+      let total = 0;
+      for (const t of termos) {
+        if (vezes(it.titulo, t)) total += 10;
+        else if (vezes(it.meio, t)) total += 4;
+        else {
+          const n = vezes(it.texto, t);
+          if (!n) return -1;
+          total += 1 + Math.min(n, 6) * 0.3; // quanto mais o curso fala do termo, mais sobe
+        }
+      }
+      return total;
+    };
+    let area = '';
+
+    const params = new URLSearchParams(location.search);
+    q.value = params.get('q') || '';
+    area = params.get('area') || '';
+    prof.value = params.get('prof') || '';
+
+    function aplicar(atualizarUrl = true) {
+      const termos = palavras(norm(q.value));
+      let n = 0;
+      for (const it of indice) {
+        const ok =
+          (!area || it.el.dataset.area === area) &&
+          (!prof.value || (it.el.dataset.profs || '').split(' ').includes(prof.value)) &&
+          (!termos.length || pontos(it, termos) >= 0);
+        it.el.hidden = !ok;
+        if (ok) n++;
+      }
+      // com busca, os mais relevantes vêm primeiro; sem busca, volta a ordem original
+      const ordenados = termos.length ? [...indice].sort((a, b) => pontos(b, termos) - pontos(a, termos) || a.pos - b.pos) : indice;
+      ordenados.forEach((x) => grade.appendChild(x.el));
+      botoes.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.area === area)));
+      info.textContent = (n === 1 ? '1 curso' : `${n} cursos`) + (q.value.trim() ? ` para “${q.value.trim()}”` : '');
+      vazio.hidden = n > 0;
+      if (atualizarUrl) {
+        const p = new URLSearchParams();
+        if (q.value.trim()) p.set('q', q.value.trim());
+        if (area) p.set('area', area);
+        if (prof.value) p.set('prof', prof.value);
+        const s = p.toString();
+        history.replaceState(null, '', location.pathname + (s ? '?' + s : '') + location.hash);
+      }
+    }
+    q.addEventListener('input', () => aplicar());
+    prof.addEventListener('change', () => aplicar());
+    botoes.forEach((b) =>
+      b.addEventListener('click', () => {
+        area = b.dataset.area || '';
+        aplicar();
+      }),
+    );
+    raiz.querySelector('[data-limpar]')?.addEventListener('click', () => {
+      q.value = '';
+      area = '';
+      prof.value = '';
+      aplicar();
+      q.focus();
+    });
+    aplicar(false);
+    // o salto para a âncora #busca tira o foco do campo; devolve depois do salto
+    const focarSeBusca = () => {
+      if (location.hash === '#busca') setTimeout(() => q.focus({ preventScroll: true }), 80);
+    };
+    focarSeBusca();
+    window.addEventListener('hashchange', focarSeBusca);
+  }
+</script>

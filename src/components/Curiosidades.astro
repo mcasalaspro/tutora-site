@@ -1,0 +1,68 @@
+---
+/** "Você sabia?" — cartões de curiosidades, embaralhados a cada visita, com setas no desktop. */
+import Icone from './Icone.astro';
+import type { Curiosidade } from '../lib/quiz';
+
+interface Props {
+  itens: Curiosidade[];
+  maximo?: number;
+}
+const { itens, maximo = 12 } = Astro.props;
+const NOMES: Record<string, string> = {
+  historica: 'Da história',
+  cotidiano: 'No dia a dia',
+  provocativa: 'Para pensar',
+  referencia: 'Referência',
+};
+---
+<div class="curiosidades fileira" data-curiosidades data-maximo={maximo}>
+  <button class="fileira__seta fileira__seta--esq" type="button" aria-label="Curiosidades anteriores" data-seta="-1" disabled>
+    <Icone nome="seta-esq" />
+  </button>
+  <div class="fileira__trilho" data-trilho>
+    {itens.map((c) => (
+      <article class="curiosidade">
+        <span class="curiosidade__tipo">{NOMES[c.categoria] ?? 'Você sabia?'}</span>
+        <p>{c.texto}</p>
+      </article>
+    ))}
+  </div>
+  <button class="fileira__seta fileira__seta--dir" type="button" aria-label="Mais curiosidades" data-seta="1">
+    <Icone nome="seta-dir" />
+  </button>
+</div>
+
+<script>
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-curiosidades]')) {
+    const trilho = raiz.querySelector<HTMLElement>('[data-trilho]');
+    if (!trilho) continue;
+    const max = Number(raiz.dataset.maximo || 12);
+    const cartoes = [...trilho.children];
+    for (let i = cartoes.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [cartoes[i], cartoes[j]] = [cartoes[j], cartoes[i]];
+    }
+    cartoes.forEach((c, i) => {
+      (c as HTMLElement).hidden = i >= max;
+      trilho.appendChild(c);
+    });
+    // depois de reordenar, a fileira volta para o começo (o navegador às vezes mantém a rolagem no meio)
+    trilho.scrollLeft = 0;
+
+    const setas = raiz.querySelectorAll<HTMLButtonElement>('[data-seta]');
+    const atualizar = () => {
+      const fim = trilho.scrollWidth - trilho.clientWidth - 4;
+      setas.forEach((s) => {
+        s.disabled = Number(s.dataset.seta) < 0 ? trilho.scrollLeft <= 4 : trilho.scrollLeft >= fim;
+      });
+    };
+    setas.forEach((s) =>
+      s.addEventListener('click', () =>
+        trilho.scrollBy({ left: Number(s.dataset.seta) * trilho.clientWidth * 0.85, behavior: 'smooth' }),
+      ),
+    );
+    trilho.addEventListener('scroll', atualizar, { passive: true });
+    window.addEventListener('resize', atualizar);
+    atualizar();
+  }
+</script>

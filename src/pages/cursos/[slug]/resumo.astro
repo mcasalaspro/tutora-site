@@ -1,0 +1,251 @@
+---
+/**
+ * Resumo completo do curso — para quem quer mais detalhes.
+ * Página clara e pronta para imprimir ou salvar em PDF.
+ */
+import { render } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import Icone from '../../../components/Icone.astro';
+import Logo from '../../../components/Logo.astro';
+import ListaAulas from '../../../components/ListaAulas.astro';
+import { cursos, cursoPorSlug, nomesProfessores } from '../../../lib/catalogo';
+import { config } from '../../../lib/config';
+import { url, urlAbsoluta, paragrafos, plural, normalizar } from '../../../lib/formatar';
+
+export async function getStaticPaths() {
+  return (await cursos()).map((c) => ({ params: { slug: c.slug } }));
+}
+const c = (await cursoPorSlug(Astro.params.slug!))!;
+const { Content } = await render(c.entry);
+const temCorpo = Boolean(c.entry.body?.trim());
+const nomes = nomesProfessores(c);
+// Autores sem repetição: "Dante" e "Dante Alighieri" viram um só (fica a forma mais completa).
+const chave = (s: string) => normalizar(s.replace(/\(.*?\)/g, '')).replace(/\s+/g, ' ').trim();
+const mesmo = (a: string, b: string) => a === b || a.startsWith(b + ' ') || b.startsWith(a + ' ') || a.endsWith(' ' + b) || b.endsWith(' ' + a);
+const autores: string[] = [];
+for (const a of c.aulas.flatMap((x) => x.autores)) {
+  const i = autores.findIndex((u) => mesmo(chave(u), chave(a)));
+  if (i < 0) autores.push(a);
+  else if (a.length > autores[i].length) autores[i] = a;
+}
+const enderecoCurso = urlAbsoluta(`/cursos/${c.slug}/`, Astro.site);
+const cfg = config();
+---
+<Base titulo={`Resumo: ${c.titulo}`} descricao={`Resumo completo do curso ${c.titulo}: sinopse e o que se discute em cada uma das ${c.nAulas} aulas.`} topoSolido atual="cursos">
+  <article class="resumo">
+    <div class="conteiner resumo__folha">
+      <div class="so-imprimir resumo__timbre">
+        <Logo titulo={cfg.nome} />
+        <span>{enderecoCurso}</span>
+      </div>
+      <nav class="migalhas nao-imprimir" aria-label="Você está em">
+        <a href={url('/cursos/')}>Cursos</a><span aria-hidden="true">/</span>
+        <a href={url(`/cursos/${c.slug}/`)}>{c.titulo}</a><span aria-hidden="true">/</span><span>Resumo</span>
+      </nav>
+      <header class="resumo__cab">
+        <span class="sobretitulo">Resumo do curso · {c.area}</span>
+        <h1>{c.titulo}</h1>
+        {c.frase && <p class="resumo__frase">{c.frase}</p>}
+        <p class="resumo__meta">
+          {nomes && <span>Com {nomes}</span>}
+          <span>{plural(c.nAulas, 'aula')}</span>
+          {c.duracaoTexto && <span>{c.duracaoTexto} de vídeo</span>}
+          {c.formato && <span>{c.formato}</span>}
+        </p>
+        <div class="resumo__acoes nao-imprimir">
+          <a class="botao botao--laranja botao--pequeno" href={url(`/cursos/${c.slug}/`)}><Icone nome="seta-esq" /> Voltar ao curso</a>
+          <button class="botao botao--contorno botao--pequeno" type="button" data-imprimir><Icone nome="impressora" /> Imprimir ou salvar PDF</button>
+        </div>
+      </header>
+
+      <section>
+        <h2>Visão geral</h2>
+        {paragrafos(c.sinopseLonga).map((p) => <p set:html={p.replace(/\*(.+?)\*/g, '<em>$1</em>')} />)}
+      </section>
+
+      {temCorpo && (
+        <section class="resumo__corpo">
+          <h2>O percurso do curso</h2>
+          <Content />
+        </section>
+      )}
+
+      {c.oQueVaiAprender.length > 0 && (
+        <section>
+          <h2>O que você vai aprender</h2>
+          <ul>
+            {c.oQueVaiAprender.map((t) => <li>{t}</li>)}
+          </ul>
+        </section>
+      )}
+
+      <section>
+        <h2>Aula por aula</h2>
+        <ListaAulas aulas={c.aulas} detalhado />
+      </section>
+
+      {autores.length > 0 && (
+        <section>
+          <h2>Autores, obras e figuras discutidos</h2>
+          <p>{autores.join(' · ')}</p>
+        </section>
+      )}
+
+    </div>
+  </article>
+</Base>
+
+<style>
+  .resumo {
+    background: var(--cinza);
+    color: var(--azul);
+    --texto: var(--azul);
+    --texto-2: rgba(48, 52, 84, 0.88);
+    --texto-3: rgba(48, 52, 84, 0.7);
+    --linha: rgba(48, 52, 84, 0.16);
+    --linha-2: rgba(48, 52, 84, 0.3);
+    padding: clamp(28px, 5vw, 64px) 0 clamp(40px, 6vw, 80px);
+  }
+  .resumo__folha {
+    max-width: 920px;
+  }
+  .resumo .migalhas a {
+    color: var(--azul);
+  }
+  .resumo__cab {
+    margin: 18px 0 28px;
+    padding-bottom: 28px;
+    border-bottom: 2px solid var(--azul);
+  }
+  .resumo .sobretitulo {
+    color: #c2410c;
+  }
+  .resumo h1 {
+    font-size: clamp(2.1rem, 1.5rem + 2.6vw, 3.4rem);
+    margin: 10px 0 12px;
+  }
+  .resumo__frase {
+    font-size: 1.15rem;
+    font-weight: 500;
+  }
+  .resumo__meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--texto-2);
+  }
+  .resumo__acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .resumo section {
+    margin: 36px 0;
+  }
+  .resumo h2 {
+    font-size: 1.6rem;
+    margin-bottom: 14px;
+  }
+  .resumo p,
+  .resumo li {
+    line-height: 1.7;
+  }
+  .resumo ul {
+    padding-left: 1.2em;
+  }
+  .resumo li + li {
+    margin-top: 6px;
+  }
+  .resumo__corpo :global(p) {
+    margin-bottom: 1em;
+  }
+  .resumo__corpo :global(h2),
+  .resumo__corpo :global(h3) {
+    font-size: 1.25rem;
+    margin: 22px 0 8px;
+  }
+  .resumo :global(.aula__num) {
+    color: rgba(48, 52, 84, 0.6);
+  }
+  .resumo :global(.aula__comentario) {
+    border-left-color: var(--laranja);
+  }
+  .resumo :global(.chip) {
+    background: rgba(48, 52, 84, 0.08);
+    color: var(--azul);
+  }
+  .resumo :global(.chip--verde) {
+    background: rgba(30, 202, 211, 0.18);
+    color: #0b6c72;
+  }
+  .resumo :global(.aula__partes summary) {
+    color: #0b6c72;
+  }
+  .resumo :global(.aula__partes li) {
+    background: rgba(255, 255, 255, 0.6);
+  }
+  .resumo :global(.botao--contorno) {
+    color: var(--azul);
+  }
+  .so-imprimir {
+    display: none;
+  }
+  .resumo :global(.aula__num--texto) {
+    color: #b8430f;
+  }
+  @media print {
+    :global(.topo),
+    :global(.rodape),
+    :global(.pular),
+    .nao-imprimir {
+      display: none !important;
+    }
+    :global(html),
+    :global(body) {
+      background: #fff !important;
+      color-scheme: light;
+    }
+    :global(.com-topo-solido main) {
+      padding-top: 0;
+    }
+    .resumo {
+      background: #fff;
+      padding: 0;
+    }
+    .resumo :global(.aula) {
+      break-inside: avoid;
+    }
+    .resumo h2,
+    .resumo :global(h3) {
+      break-after: avoid;
+    }
+    .resumo__cab {
+      margin-top: 0;
+    }
+    .so-imprimir {
+      display: flex;
+    }
+    .resumo__timbre {
+      justify-content: space-between;
+      align-items: center;
+      gap: 16px;
+      padding-bottom: 12px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--linha-2);
+      font-size: 0.8rem;
+      color: var(--texto-3);
+    }
+    .resumo__timbre :global(svg) {
+      height: 26px;
+      width: auto;
+      color: var(--azul);
+    }
+  }
+</style>
+
+<script>
+  document.querySelector('[data-imprimir]')?.addEventListener('click', () => window.print());
+</script>

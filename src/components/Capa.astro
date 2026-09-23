@@ -1,0 +1,56 @@
+---
+/**
+ * Cartão de curso em formato pôster (2:3), estilo streaming.
+ * - Com imagem (conteudo/imagens/cursos/<slug>-poster.jpg): foto + título por cima.
+ * - Sem imagem: capa provisória tipográfica (base azul da marca, acento laranja, área no alto).
+ */
+import { Image } from 'astro:assets';
+import Logo from './Logo.astro';
+import type { Curso } from '../lib/catalogo';
+import { nomesProfessores } from '../lib/catalogo';
+import { url, plural } from '../lib/formatar';
+
+interface Props {
+  curso: Curso;
+  carregamento?: 'lazy' | 'eager';
+  tamanhos?: string;
+  semLink?: boolean;
+  titulo?: 'h2' | 'h3' | 'span';
+}
+const { curso: c, carregamento = 'lazy', tamanhos = '(max-width: 600px) 42vw, 212px', semLink = false } = Astro.props;
+const img = c.poster ?? c.horizontal;
+const prof = nomesProfessores(c);
+const Tag = semLink ? 'div' : 'a';
+// Tamanho do título da capa provisória: a maior palavra precisa caber na largura (84% do cartão).
+const maiorPalavra = Math.max(...c.titulo.split(/\s+/).map((w) => w.length));
+let escala = Math.min(12.8, 84 / (0.6 * maiorPalavra));
+if (c.titulo.length > 48) escala = Math.min(escala, 10);
+else if (c.titulo.length > 34) escala = Math.min(escala, 11.4);
+const estiloTitulo = `font-size:clamp(0.8rem, ${escala.toFixed(2)}cqw, 2.2rem)`;
+const rotulo = `${c.titulo}${prof ? `, com ${prof}` : ''}. ${plural(c.nAulas, 'aula')}${c.duracaoTexto ? `, ${c.duracaoTexto}` : ''}.`;
+---
+<Tag class="poster" href={semLink ? undefined : url(`/cursos/${c.slug}/`)} aria-label={semLink ? undefined : rotulo}>
+  {img ? (
+    <>
+      <Image src={img} alt="" widths={[240, 360, 520]} sizes={tamanhos} loading={carregamento} quality={78} />
+      <span class="poster__degrade" aria-hidden="true"></span>
+      <span class="poster__info">
+        <span class="poster__titulo">{c.titulo}</span>
+        {prof && <span class="poster__prof">{prof}</span>}
+      </span>
+    </>
+  ) : (
+    <span class="capa-tipo" aria-hidden={semLink ? undefined : 'true'}>
+      <Logo variante="simbolo" class="capa-tipo__simbolo" titulo="" />
+      <span class="capa-tipo__sobre">{c.area}</span>
+      <span class="capa-tipo__titulo" style={estiloTitulo}>{c.titulo}</span>
+      <span class="capa-tipo__rodape">
+        {prof && <span>{prof}</span>}
+        <span>{plural(c.nAulas, 'aula')}</span>
+      </span>
+    </span>
+  )}
+  {c.lancamento && (
+    <span class="poster__selos"><span class="chip chip--novo">Novo</span></span>
+  )}
+</Tag>

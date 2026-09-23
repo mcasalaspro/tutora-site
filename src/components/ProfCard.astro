@@ -1,0 +1,33 @@
+---
+/**
+ * Cartão quadrado do professor (a foto 1080×1080 já traz o nome gravado).
+ * Sem página própria (nenhum curso e nenhuma biografia ainda), o cartão não tem link.
+ */
+import { Image } from 'astro:assets';
+import type { Professor } from '../lib/catalogo';
+import { temPagina } from '../lib/catalogo';
+import { iniciais, url, plural } from '../lib/formatar';
+
+interface Props {
+  prof: Professor;
+  tamanhos?: string;
+}
+const { prof: p, tamanhos = '(max-width: 600px) 45vw, 220px' } = Astro.props;
+const comLink = temPagina(p);
+const Tag = comLink ? 'a' : 'div';
+---
+<Tag
+  class:list={['prof-card', { 'prof-card--foto': Boolean(p.foto), 'prof-card--estatico': !comLink }]}
+  href={comLink ? url(`/professores/${p.slug}/`) : undefined}
+  aria-label={comLink ? `${p.nome}${p.cursos.length ? `, ${plural(p.cursos.length, 'curso')}` : ''}` : undefined}
+>
+  {p.foto ? (
+    <Image src={p.foto} alt={comLink ? '' : p.nome} widths={[220, 330, 480]} sizes={tamanhos} loading="lazy" quality={78} />
+  ) : (
+    <>
+      <span class="prof-card__sem-foto" aria-hidden="true"><b>{iniciais(p.nome)}</b></span>
+      <span class="prof-card__nome">{p.nome}</span>
+    </>
+  )}
+  {p.cursos.length > 0 && <span class="prof-card__qtd chip chip--laranja">{plural(p.cursos.length, 'curso')}</span>}
+</Tag>

@@ -1,0 +1,386 @@
+---
+import { Image, getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import FundoImagem from '../../components/FundoImagem.astro';
+import Capa from '../../components/Capa.astro';
+import Fileira from '../../components/Fileira.astro';
+import ListaAulas from '../../components/ListaAulas.astro';
+import Quiz from '../../components/Quiz.astro';
+import Curiosidades from '../../components/Curiosidades.astro';
+import Ofertas from '../../components/Ofertas.astro';
+import Icone from '../../components/Icone.astro';
+import { cursos, cursoPorSlug, relacionados, doMesmoProfessor, totais, nomesProfessores } from '../../lib/catalogo';
+import { config } from '../../lib/config';
+import { ofertaDe } from '../../lib/precos';
+import { url, paragrafos, plural, iniciais, idYoutube } from '../../lib/formatar';
+
+export async function getStaticPaths() {
+  return (await cursos()).map((c) => ({ params: { slug: c.slug } }));
+}
+
+const c = (await cursoPorSlug(Astro.params.slug!))!;
+const cfg = config();
+const doProf = await doMesmoProfessor(c);
+const rel = await relacionados(c, 8, doProf.map((x) => x.slug));
+const tot = await totais();
+const profs = [c.professor, ...c.convidados].filter(Boolean) as NonNullable<typeof c.professor>[];
+const nomes = nomesProfessores(c);
+const trailer = idYoutube(c.trailer);
+const aulasReais = c.aulas.filter((a) => a.tipo !== 'apresentacao');
+
+const imgOg = c.horizontal ?? c.professor?.cena;
+const og = imgOg ? (await getImage({ src: imgOg, width: 1200, format: 'jpg', quality: 80 })).src : undefined;
+
+const temQuiz = c.perguntas.length >= 3;
+const temCuriosidades = c.curiosidades.length > 0;
+const secoes = [
+  { id: 'visao', rotulo: 'Visão geral' },
+  { id: 'aulas', rotulo: `Aulas (${c.nAulas})` },
+  ...(temQuiz || temCuriosidades ? [{ id: 'quiz', rotulo: 'Quiz' }] : []),
+  ...(profs.length ? [{ id: 'professor', rotulo: profs.length > 1 ? 'Professores' : 'Professor' }] : []),
+  { id: 'inscricao', rotulo: 'Inscrição' },
+];
+
+const ctaLink = c.oferta.disponivel ? c.oferta.link : '#inscricao';
+const ctaExterno = c.oferta.disponivel;
+const assinaturaDisponivel = ofertaDe('assinatura').disponivel;
+const algumaOferta = c.oferta.disponivel || assinaturaDisponivel;
+const semImagem = !c.horizontal && !c.professor?.cena;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Course',
+  name: c.titulo,
+  description: c.sinopseCurta,
+  inLanguage: 'pt-BR',
+  provider: { '@type': 'Organization', name: `${cfg.nome} Educação Familiar`, url: Astro.site?.toString() },
+  ...(profs.length ? { instructor: profs.map((p) => ({ '@type': 'Person', name: p.nome })) } : {}),
+  hasCourseInstance: {
+    '@type': 'CourseInstance',
+    courseMode: 'online',
+    ...(c.minutos ? { courseWorkload: `PT${Math.round(c.minutos / 60)}H` } : {}),
+  },
+  ...(c.oferta.preco && c.oferta.disponivel
+    ? {
+        offers: {
+          '@type': 'Offer',
+          price: c.oferta.preco.replace(/[^\d,]/g, '').replace(',', '.'),
+          priceCurrency: 'BRL',
+          url: c.oferta.link,
+          category: 'Paid',
+        },
+      }
+    : {}),
+};
+---
+<Base titulo={c.titulo} descricao={c.sinopseCurta} imagem={og} tipo="article" atual="cursos" jsonLd={jsonLd}>
+  <section class:list={['curso-topo', { 'curso-topo--sem-imagem': semImagem }]}>
+    <FundoImagem imagem={c.horizontal} foto={c.professor?.cena} />
+    <div class="conteiner curso-topo__conteudo">
+      <div class="curso-topo__grade">
+        <div class="curso-topo__texto">
+          <nav class="migalhas" aria-label="Você está em">
+            <a href={url('/cursos/')}>Cursos</a>
+            <span aria-hidden="true">/</span>
+            <a href={url(`/areas/${c.areaSlug}/`)}>{c.area}</a>
+          </nav>
+          <h1>{c.titulo}</h1>
+          <p class="curso-topo__frase">{c.frase}</p>
+          <div class="meta">
+            {profs.length > 0 && (
+              <a class="prof-mini" href={url(`/professores/${profs[0].slug}/`)}>
+                <span class="avatar-grupo">
+                  {profs.map((p) => (
+                    <span class="avatar">
+                      {p.foto ? <Image src={p.foto} alt="" width={80} height={80} quality={70} /> : iniciais(p.nome)}
+                    </span>
+                  ))}
+                </span>
+                <span class="prof-mini__nome">com {nomes}</span>
+              </a>
+            )}
+            <span><Icone nome="aulas" />{plural(c.nAulas, 'aula')}</span>
+            {c.duracaoTexto && <span><Icone nome="relogio" />{c.duracaoTexto}</span>}
+            {c.lancamento && <span class="chip chip--novo">Novo</span>}
+          </div>
+          <div class="curso-topo__acoes">
+            <a class="botao botao--laranja" href={ctaLink} target={ctaExterno ? '_blank' : undefined} rel={ctaExterno ? 'noopener' : undefined}>
+              <Icone nome={ctaExterno ? 'carrinho' : 'seta-link'} />
+              {ctaExterno ? `Inscreva-se${c.oferta.preco ? ` · ${c.oferta.preco}` : ''}` : algumaOferta ? 'Ver opções de inscrição' : 'Quero fazer este curso'}
+            </a>
+            <a class="botao botao--vidro" href="#aulas"><Icone nome="aulas" /> Ver as aulas</a>
+            {trailer && (
+              <button class="botao botao--vidro" type="button" data-trailer={trailer}><Icone nome="play" /> Assistir trailer</button>
+            )}
+          </div>
+        </div>
+        <div class="curso-topo__poster" aria-hidden="true">
+          <Capa curso={c} semLink carregamento="eager" tamanhos="232px" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <nav class="subnav" aria-label="Seções do curso">
+    <div class="conteiner subnav__trilho">
+      {secoes.map((s) => <a href={`#${s.id}`} data-subnav={s.id}>{s.rotulo}</a>)}
+    </div>
+  </nav>
+
+  <section class="secao" id="visao" data-secao="visao">
+    <div class="conteiner visao">
+      <div>
+        <span class="sobretitulo">Sinopse</span>
+        <h2 class="titulo-secao" style="margin:10px 0 22px">Do que trata o curso</h2>
+        <div class="prosa">
+          {paragrafos(c.sinopseLonga).map((p) => <p set:html={p.replace(/\*(.+?)\*/g, '<em>$1</em>')} />)}
+        </div>
+        {c.paraQuemE.length > 0 && (
+          <div style="margin-top:36px">
+            <h3 style="font-size:1.35rem;margin-bottom:16px">Para quem é</h3>
+            <ul class="lista-check">
+              {c.paraQuemE.map((t) => <li><Icone nome="check" /><span>{t}</span></li>)}
+            </ul>
+          </div>
+        )}
+      </div>
+      <aside class="ficha" aria-label="Ficha do curso">
+        <h3>Ficha do curso</h3>
+        <dl>
+          {profs.length > 0 && (
+            <>
+              <dt>{profs.length > 1 ? 'Professores' : 'Professor'}</dt>
+              <dd>
+                {profs.map((p, i) => (
+                  <>
+                    {i > 0 && (i === profs.length - 1 ? ' e ' : ', ')}
+                    <a href={url(`/professores/${p.slug}/`)}>{p.nome}</a>
+                  </>
+                ))}
+              </dd>
+            </>
+          )}
+          <dt>Aulas</dt>
+          <dd>{c.nAulas}</dd>
+          {c.duracaoTexto && (<><dt>Duração</dt><dd>{c.duracaoTexto} de vídeo</dd></>)}
+          <dt>Área</dt>
+          <dd><a href={url(`/areas/${c.areaSlug}/`)}>{c.area}</a></dd>
+          {c.formato && (<><dt>Formato</dt><dd class="ficha__formato">{c.formato}</dd></>)}
+        </dl>
+        <div class="ficha__preco">
+          {c.oferta.preco ? (
+            <>
+              <p class="ficha__valor">{c.oferta.preco}</p>
+              {c.oferta.parcelado ? <p class="ficha__parcelado">{c.oferta.parcelado}</p> : <p class="ficha__parcelado">no curso avulso</p>}
+            </>
+          ) : (
+            <p class="ficha__parcelado">{c.oferta.disponivel ? 'Preço na Hotmart' : cfg.oferta.texto_sem_link}</p>
+          )}
+          <a class="botao botao--laranja botao--bloco" href={ctaLink} target={ctaExterno ? '_blank' : undefined} rel={ctaExterno ? 'noopener' : undefined}>
+            {ctaExterno ? 'Comprar na Hotmart' : algumaOferta ? 'Ver opções de inscrição' : 'Saber quando abre'}
+          </a>
+          <a class="link-seta" style="margin-top:14px" href={url(`/cursos/${c.slug}/resumo/`)}>
+            <Icone nome="documento" /> Resumo completo do curso
+          </a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  {c.oQueVaiAprender.length > 0 && (
+    <section class="secao secao--clara">
+      <div class="conteiner">
+        <div class="secao__cab">
+          <div>
+            <span class="sobretitulo">Aprendizados</span>
+            <h2 class="titulo-secao" style="margin-top:10px">O que você vai aprender</h2>
+          </div>
+        </div>
+        <ul class="lista-check aprendizados">
+          {c.oQueVaiAprender.map((t) => <li><Icone nome="check" /><span>{t}</span></li>)}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  {c.importancia && (
+    <section class="secao secao--laranja">
+      <div class="conteiner importancia">
+        <div>
+          <span class="sobretitulo">Por que importa</span>
+          <h2 style="margin-top:12px"><span style="font-weight:400">Por que</span> estudar isso hoje</h2>
+        </div>
+        <div class="prosa">
+          {paragrafos(c.importancia).map((p) => <p>{p}</p>)}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="secao" id="aulas" data-secao="aulas">
+    <div class="conteiner">
+      <div class="secao__cab">
+        <div>
+          <span class="sobretitulo">Conteúdo</span>
+          <h2 class="titulo-secao" style="margin-top:10px">As {c.nAulas} aulas do curso</h2>
+          <p>Uma descrição e um breve comentário de cada aula, a partir do que é dito nelas.</p>
+        </div>
+        <a class="link-seta" href={url(`/cursos/${c.slug}/resumo/`)}>Resumo completo <Icone nome="seta-link" /></a>
+      </div>
+      <ListaAulas aulas={c.aulas} />
+    </div>
+  </section>
+
+  {(temQuiz || temCuriosidades) && (
+    <section class="secao" id="quiz" data-secao="quiz" style="padding-top:0">
+      <div class="conteiner">
+        {temQuiz && <Quiz perguntas={c.perguntas} tema={c.titulo} linkCompra="#inscricao" />}
+        {temCuriosidades && (
+          <div style="margin-top:56px">
+            <div class="secao__cab" style="margin-bottom:6px">
+              <div>
+                <span class="sobretitulo">Você sabia?</span>
+                <h2 class="titulo-secao" style="margin-top:10px">Curiosidades sobre o tema</h2>
+              </div>
+            </div>
+            <Curiosidades itens={c.curiosidades} />
+          </div>
+        )}
+      </div>
+    </section>
+  )}
+
+  {profs.length > 0 && (
+    <section class="secao" id="professor" data-secao="professor" style="padding-top:0">
+      <div class:list={['conteiner', 'profs-grade', { 'profs-grade--varios': profs.length > 1 }]}>
+        {profs.map((p) => (
+          <article class="prof-bloco">
+            <div class="prof-bloco__foto">
+              {p.cena ? (
+                <Image src={p.cena} alt={`${p.nome} em gravação`} widths={[480, 720, 940]} sizes="(max-width: 800px) 100vw, 50vw" loading="lazy" quality={76} />
+              ) : p.foto ? (
+                <Image src={p.foto} alt={p.nome} widths={[480, 720]} sizes="(max-width: 800px) 100vw, 50vw" loading="lazy" quality={76} />
+              ) : (
+                <span class="prof-card__sem-foto" aria-hidden="true" style="container-type:inline-size"><b>{iniciais(p.nome)}</b></span>
+              )}
+            </div>
+            <div class="prof-bloco__texto">
+              <span class="sobretitulo">{p === c.professor ? 'Quem dá o curso' : 'Também no curso'}</span>
+              <h3>{p.nome}</h3>
+              {p.miniBio && <p class="texto-2">{p.miniBio}</p>}
+              <div style="display:flex;flex-wrap:wrap;gap:12px;margin-top:6px">
+                <a class="botao botao--vidro botao--pequeno" href={url(`/professores/${p.slug}/`)}>
+                  <Icone nome="pessoa" /> Página do professor
+                </a>
+                {p.cursos.length > 1 && <span class="chip" style="align-self:center">{plural(p.cursos.length, 'curso')} na Tutora</span>}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
+
+  {doProf.length > 0 && c.professor && (
+    <Fileira titulo={`Outros cursos de ${c.professor.nome}`} link={url(`/professores/${c.professor.slug}/`)} textoLink="Ver professor">
+      {doProf.map((x) => <Capa curso={x} />)}
+    </Fileira>
+  )}
+
+  {rel.length > 0 && (
+    <Fileira titulo="Cursos relacionados" descricao="Temas vizinhos, próximos passos da trilha e cursos da mesma área." link={url(`/areas/${c.areaSlug}/`)} textoLink="Ver a área">
+      {rel.map((x) => <Capa curso={x} />)}
+    </Fileira>
+  )}
+
+  <section class="secao" id="inscricao" data-secao="inscricao">
+    <div class="conteiner inscricao">
+      <div class="secao__cab">
+        <div>
+          <span class="sobretitulo">Inscrição</span>
+          {algumaOferta ? (
+            <>
+              <h2 class="titulo-secao" style="margin-top:10px">Comece agora</h2>
+              <p>Compre só este curso ou assine a {cfg.nome} e tenha acesso a todo o catálogo.</p>
+            </>
+          ) : (
+            <>
+              <h2 class="titulo-secao" style="margin-top:10px">{cfg.oferta.texto_sem_link}</h2>
+              <p>{cfg.oferta.texto_espera}</p>
+            </>
+          )}
+        </div>
+      </div>
+      <Ofertas curso={c} totalCursos={tot.cursos} />
+    </div>
+  </section>
+
+  <div slot="depois">
+    <div class="barra-compra" data-barra-compra>
+      <div class="barra-compra__txt">
+        <strong>{c.titulo}</strong>
+        <span>{c.oferta.preco || (c.oferta.disponivel ? 'Na Hotmart' : cfg.oferta.texto_sem_link)}</span>
+      </div>
+      <a class="botao botao--laranja botao--pequeno" href={ctaLink} target={ctaExterno ? '_blank' : undefined} rel={ctaExterno ? 'noopener' : undefined}>
+        {ctaExterno ? 'Inscrever-se' : algumaOferta ? 'Ver opções' : 'Saber mais'}
+      </a>
+    </div>
+    {trailer && (
+      <dialog class="modal" data-modal-trailer aria-label="Trailer do curso">
+        <button class="botao botao--vidro botao--pequeno modal__fechar" type="button" data-fechar-trailer>
+          <Icone nome="fechar" /> Fechar
+        </button>
+        <div class="modal__video" data-video></div>
+      </dialog>
+    )}
+  </div>
+</Base>
+
+<script>
+  // Seção ativa no submenu
+  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-subnav]')];
+  const alvos = links.map((l) => document.getElementById(l.dataset.subnav!)).filter(Boolean) as HTMLElement[];
+  if ('IntersectionObserver' in window && alvos.length) {
+    const obs = new IntersectionObserver(
+      (entradas) => {
+        for (const e of entradas) {
+          if (e.isIntersecting) links.forEach((l) => l.classList.toggle('ativo', l.dataset.subnav === e.target.id));
+        }
+      },
+      { rootMargin: '-45% 0px -50% 0px' },
+    );
+    alvos.forEach((a) => obs.observe(a));
+  }
+
+  // Barra de compra no celular: aparece depois do topo e some na seção de inscrição
+  const barra = document.querySelector<HTMLElement>('[data-barra-compra]');
+  const inscricao = document.getElementById('inscricao');
+  const topoCurso = document.querySelector<HTMLElement>('.curso-topo');
+  if (barra && inscricao && topoCurso) {
+    const atualizar = () => {
+      const passouTopo = topoCurso.getBoundingClientRect().bottom < 0;
+      const r = inscricao.getBoundingClientRect();
+      const naInscricao = r.top < window.innerHeight && r.bottom > 0;
+      barra.classList.toggle('visivel', passouTopo && !naInscricao);
+    };
+    window.addEventListener('scroll', atualizar, { passive: true });
+    atualizar();
+  }
+
+  // Trailer (carrega o vídeo só quando a pessoa pede)
+  const botao = document.querySelector<HTMLButtonElement>('[data-trailer]');
+  const modal = document.querySelector<HTMLDialogElement>('[data-modal-trailer]');
+  if (botao && modal) {
+    const video = modal.querySelector<HTMLElement>('[data-video]')!;
+    botao.addEventListener('click', () => {
+      video.innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${botao.dataset.trailer}?autoplay=1&rel=0" title="Trailer do curso" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>`;
+      modal.showModal();
+    });
+    const fechar = () => {
+      modal.close();
+      video.innerHTML = '';
+    };
+    modal.querySelector('[data-fechar-trailer]')?.addEventListener('click', fechar);
+    modal.addEventListener('close', () => (video.innerHTML = ''));
+  }
+</script>

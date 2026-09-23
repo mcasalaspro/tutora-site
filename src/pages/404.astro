@@ -1,0 +1,29 @@
+---
+import Base from '../layouts/Base.astro';
+import Capa from '../components/Capa.astro';
+import Icone from '../components/Icone.astro';
+import { cursos } from '../lib/catalogo';
+import { url } from '../lib/formatar';
+
+const sugestoes = (await cursos()).filter((c) => c.destaque).slice(0, 6);
+---
+<Base titulo="Página não encontrada" topoSolido semIndexar>
+  <div class="conteiner">
+    <header class="cab-pagina">
+      <span class="sobretitulo">Erro 404</span>
+      <h1>Esta página não existe.</h1>
+      <p>O endereço pode ter mudado ou o curso saiu do catálogo. Que tal procurar pelo tema?</p>
+      <form class="busca" action={url('/cursos/')} method="get" role="search" style="margin-top:22px;max-width:560px">
+        <Icone nome="busca" />
+        <label class="sr-only" for="busca-404">Buscar cursos</label>
+        <input id="busca-404" name="q" type="search" placeholder="Tema, autor ou professor" />
+      </form>
+    </header>
+    {sugestoes.length > 0 && (
+      <>
+        <h2 class="titulo-secao" style="margin:24px 0 20px">Sugestões</h2>
+        <div class="grade">{sugestoes.map((c) => <Capa curso={c} />)}</div>
+      </>
+    )}
+  </div>
+</Base>

@@ -1,0 +1,203 @@
+---
+import Base from '../layouts/Base.astro';
+import FundoImagem from '../components/FundoImagem.astro';
+import Capa from '../components/Capa.astro';
+import Fileira from '../components/Fileira.astro';
+import ProfCard from '../components/ProfCard.astro';
+import Logo from '../components/Logo.astro';
+import Icone from '../components/Icone.astro';
+import { cursos, professores, totais, nomesProfessores } from '../lib/catalogo';
+import { config, linkAviso } from '../lib/config';
+import { ofertaDe } from '../lib/precos';
+import { url, plural } from '../lib/formatar';
+
+const cfg = config();
+const lista = await cursos();
+const profs = (await professores()).filter((p) => p.cursos.length > 0);
+const tot = await totais();
+const porSlug = new Map(lista.map((c) => [c.slug, c]));
+let destaques = lista.filter((c) => c.destaque);
+if (destaques.length === 0) destaques = lista.filter((c) => c.professor?.cena).slice(0, 5);
+destaques = destaques.slice(0, 6);
+const novos = lista.filter((c) => c.lancamento);
+const trilhas = cfg.trilhas
+  .map((t) => ({ ...t, itens: t.cursos.map((s) => porSlug.get(s)).filter((c): c is NonNullable<typeof c> => Boolean(c)) }))
+  .filter((t) => t.itens.length > 1);
+const areas = cfg.areas
+  .map((a) => ({ ...a, itens: lista.filter((c) => c.area === a.nome) }))
+  .filter((a) => a.itens.length > 0);
+const assinatura = ofertaDe('assinatura');
+const aviso = linkAviso('Aviso de inscrições: assinatura');
+const TEMPO = 8000;
+---
+<Base titulo={cfg.nome} atual="inicio">
+  <h1 class="sr-only">{cfg.nome}: catálogo de cursos de {cfg.slogan}</h1>
+
+  <section class="vitrine" data-vitrine data-tempo={TEMPO} aria-roledescription="carrossel" aria-label="Cursos em destaque">
+    {destaques.map((c, i) => (
+      <article
+        class:list={['vitrine__slide', { ativo: i === 0 }]}
+        aria-roledescription="slide"
+        aria-label={`${i + 1} de ${destaques.length}: ${c.titulo}`}
+        data-slide
+      >
+        <FundoImagem imagem={c.horizontal} foto={c.professor?.cena} carregamento={i === 0 ? 'eager' : 'lazy'} />
+        <div class="vitrine__conteudo">
+          <span class="sobretitulo">Em destaque · {c.area}</span>
+          <h2 class="vitrine__titulo">{c.titulo}</h2>
+          <p class="vitrine__frase">{c.frase}</p>
+          <div class="meta">
+            {nomesProfessores(c) && <span><Icone nome="pessoa" />{nomesProfessores(c)}</span>}
+            <span><Icone nome="aulas" />{plural(c.nAulas, 'aula')}</span>
+            {c.duracaoTexto && <span><Icone nome="relogio" />{c.duracaoTexto}</span>}
+          </div>
+          <div class="vitrine__acoes">
+            <a class="botao botao--laranja" href={url(`/cursos/${c.slug}/`)}><Icone nome="play" /> Conhecer o curso</a>
+            <a class="botao botao--vidro" href={url(`/cursos/${c.slug}/#aulas`)}><Icone nome="aulas" /> Ver as aulas</a>
+          </div>
+        </div>
+      </article>
+    ))}
+    {destaques.length > 1 && (
+      <div class="vitrine__pontos" role="group" aria-label="Escolher destaque">
+        {destaques.map((c, i) => (
+          <button
+            class:list={['vitrine__ponto', { ativo: i === 0 }]}
+            type="button"
+            aria-label={`Mostrar ${c.titulo}`}
+            aria-current={i === 0 ? 'true' : undefined}
+            data-ponto={i}
+            style={`--tempo:${TEMPO}ms`}
+          ></button>
+        ))}
+      </div>
+    )}
+  </section>
+
+  <div class="apos-vitrine">
+    {novos.length > 0 && (
+      <Fileira titulo="Lançamentos">
+        {novos.map((c) => <Capa curso={c} />)}
+      </Fileira>
+    )}
+
+    {trilhas.map((t) => (
+      <Fileira titulo={t.titulo} descricao={t.descricao}>
+        {t.itens.map((c, i) => (
+          <div class="passo">
+            <span class="passo__num" aria-hidden="true">{i + 1}</span>
+            <Capa curso={c} />
+          </div>
+        ))}
+      </Fileira>
+    ))}
+
+    {areas.map((a) => (
+      <Fileira titulo={a.nome} descricao={a.descricao} link={url(`/areas/${a.slug}/`)} textoLink="Ver a área">
+        {a.itens.map((c) => <Capa curso={c} />)}
+      </Fileira>
+    ))}
+
+    <Fileira titulo="Professores" descricao="Quem ensina na Tutora." link={url('/professores/')} textoLink="Ver todos">
+      {profs.map((p) => <ProfCard prof={p} tamanhos="212px" />)}
+    </Fileira>
+  </div>
+
+  <section class="secao secao--clara" style="margin-top:clamp(40px,6vw,80px)">
+    <div class="conteiner manifesto">
+      <div>
+        <span class="sobretitulo">Tutora</span>
+        <h2 class="titulo-display" style="margin:14px 0 18px">
+          <span class="leve">{cfg.home.titulo_regular}</span><br />{cfg.home.titulo_destaque}
+        </h2>
+        <p class="texto-2" style="font-size:1.08rem;max-width:52ch">{cfg.home.subtitulo}</p>
+        <form class="busca" action={url('/cursos/')} method="get" role="search" style="margin-top:26px;max-width:560px">
+          <Icone nome="busca" />
+          <label class="sr-only" for="busca-home">Buscar cursos, temas ou professores</label>
+          <input id="busca-home" name="q" type="search" placeholder="Tema, autor ou professor" autocomplete="off" />
+        </form>
+      </div>
+      <div class="numeros">
+        <div class="numero"><strong>{tot.cursos}</strong><span>cursos no catálogo</span></div>
+        <div class="numero"><strong>{tot.aulas}</strong><span>aulas em vídeo</span></div>
+        <div class="numero"><strong>{tot.horas}h</strong><span>de conteúdo</span></div>
+        <div class="numero"><strong>{tot.professores}</strong><span>professores</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="secao" id="assinatura" style="padding-bottom:0">
+    <div class="conteiner">
+      <div class="chamada">
+        <div>
+          <span class="sobretitulo">Assinatura</span>
+          <h2 style="margin-top:12px">Todos os {tot.cursos} cursos numa assinatura só.</h2>
+          <p>
+            {assinatura.preco
+              ? `Por ${assinatura.preco}${assinatura.parcelado ? ` (${assinatura.parcelado})` : ''}, você acessa o catálogo inteiro da Tutora.`
+              : 'Acesse o catálogo inteiro da Tutora com um único plano.'}
+          </p>
+        </div>
+        <div class="chamada__acoes">
+          {assinatura.disponivel ? (
+            <a class="botao botao--escuro" href={assinatura.link} target="_blank" rel="noopener"><Icone nome="estrela" /> Assinar na Hotmart</a>
+          ) : (
+            <>
+              <span class="chamada__breve">{cfg.oferta.texto_sem_link}</span>
+              {aviso && (
+                <a class="botao botao--escuro" href={aviso} target={/^https?:/.test(aviso) ? '_blank' : undefined} rel={/^https?:/.test(aviso) ? 'noopener' : undefined}>
+                  <Icone nome="email" /> {cfg.oferta.texto_aviso}
+                </a>
+              )}
+            </>
+          )}
+        </div>
+        <Logo variante="simbolo" class="chamada__simbolo" titulo="" />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<script>
+  const vitrine = document.querySelector<HTMLElement>('[data-vitrine]');
+  if (vitrine) {
+    const slides = [...vitrine.querySelectorAll<HTMLElement>('[data-slide]')];
+    const pontos = [...vitrine.querySelectorAll<HTMLButtonElement>('[data-ponto]')];
+    const tempo = Number(vitrine.dataset.tempo || 8000);
+    const calmo = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let atual = 0;
+    let timer: number | undefined;
+    const mostrar = (i: number) => {
+      atual = (i + slides.length) % slides.length;
+      slides.forEach((s, j) => {
+        s.classList.toggle('ativo', j === atual);
+        s.inert = j !== atual;
+      });
+      pontos.forEach((p, j) => {
+        p.classList.remove('ativo');
+        if (j === atual) {
+          void p.offsetWidth; // reinicia a animação da barrinha
+          p.classList.add('ativo');
+          p.setAttribute('aria-current', 'true');
+        } else p.removeAttribute('aria-current');
+      });
+    };
+    const iniciar = () => {
+      if (calmo || slides.length < 2) return;
+      parar();
+      timer = window.setInterval(() => mostrar(atual + 1), tempo);
+    };
+    const parar = () => timer && window.clearInterval(timer);
+    slides.forEach((s, j) => (s.inert = j !== 0));
+    pontos.forEach((p, j) =>
+      p.addEventListener('click', () => {
+        mostrar(j);
+        iniciar();
+      }),
+    );
+    vitrine.addEventListener('mouseenter', parar);
+    vitrine.addEventListener('mouseleave', iniciar);
+    vitrine.addEventListener('focusin', parar);
+    iniciar();
+  }
+</script>

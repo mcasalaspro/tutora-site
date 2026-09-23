@@ -1,0 +1,114 @@
+---
+/** Lista de aulas no estilo "episódios": número, título, duração, descrição, comentário e tópicos. */
+import Icone from './Icone.astro';
+import type { Aula } from '../lib/catalogo';
+import { duracaoCurta, plural } from '../lib/formatar';
+
+interface Props {
+  aulas: Aula[];
+  /** quantas aulas aparecem antes do botão "Ver todas" (no celular, `visiveisMovel`) */
+  visiveis?: number;
+  visiveisMovel?: number;
+  /** modo do resumo completo: tudo aberto, com autores */
+  detalhado?: boolean;
+}
+const { aulas, visiveis = 10, visiveisMovel = 5, detalhado = false } = Astro.props;
+
+// Coluna da esquerda: "Aula 3" → "03"; "Aula 2.4" → "2.4"; introduções, apresentações e extras viram uma palavra curta.
+function numero(a: Aula): { texto: string; ehNumero: boolean } {
+  if (a.tipo === 'extra') return { texto: 'Extra', ehNumero: false };
+  if (a.tipo === 'apresentacao' || /^introdu/i.test(a.rotulo)) return { texto: 'Intro', ehNumero: false };
+  const m = a.rotulo.match(/(\d+(?:\.\d+)?)\s*$/);
+  if (m) return { texto: m[1].includes('.') ? m[1] : m[1].padStart(2, '0'), ehNumero: true };
+  return { texto: 'Aula', ehNumero: false };
+}
+
+// Sobretítulo acima do título da aula
+function rotulo(a: Aula): string {
+  if (a.tipo === 'apresentacao') return a.modulo ? 'Apresentação do módulo' : 'Apresentação do curso';
+  if (/^introdu/i.test(a.rotulo)) return 'Introdução ao curso';
+  return a.rotulo;
+}
+
+let modAtual = '';
+const itens: ({ tipo: 'modulo'; nome: string; primeira: number } | { tipo: 'aula'; aula: Aula; indice: number })[] = [];
+aulas.forEach((a, i) => {
+  if (a.modulo && a.modulo !== modAtual) {
+    modAtual = a.modulo;
+    itens.push({ tipo: 'modulo', nome: a.modulo, primeira: i });
+  }
+  itens.push({ tipo: 'aula', aula: a, indice: i });
+});
+const recolher = !detalhado && aulas.length > visiveis + 2;
+const recolherMovel = !detalhado && aulas.length > visiveisMovel + 2;
+---
+<ol class:list={['aulas', { recolhida: recolher, 'recolhida-movel': recolherMovel, 'aulas--resumida': !detalhado }]} data-aulas>
+  {itens.map((it) => {
+    if (it.tipo === 'modulo') {
+      return (
+        <li class:list={['aulas__modulo', { alem: recolher && it.primeira >= visiveis, 'alem-movel': recolherMovel && it.primeira >= visiveisMovel }]}>
+          <h3>{it.nome}</h3>
+        </li>
+      );
+    }
+    const a = it.aula;
+    const n = numero(a);
+    return (
+      <li
+        class:list={[
+          'aula',
+          `aula--${a.tipo}`,
+          { alem: recolher && it.indice >= visiveis, 'alem-movel': recolherMovel && it.indice >= visiveisMovel },
+        ]}
+      >
+        <div class:list={['aula__num', { 'aula__num--texto': !n.ehNumero }]} aria-hidden="true">{n.texto}</div>
+        <div class="aula__corpo">
+          <h3 class="aula__titulo">
+            <span class="aula__rotulo">{rotulo(a)}</span>
+            {a.titulo}
+          </h3>
+          {a.descricao && <p class="aula__desc">{a.descricao}</p>}
+          {a.comentario && <p class="aula__comentario">{a.comentario}</p>}
+          {(a.topicos.length > 0 || (detalhado && a.autores.length > 0)) && (
+            <div class="aula__topicos">
+              {a.topicos.map((t) => <span class="chip">{t}</span>)}
+              {detalhado && a.autores.map((t) => <span class="chip chip--verde">{t}</span>)}
+            </div>
+          )}
+          {a.partes.length > 1 && (
+            <details class="aula__partes" open={detalhado}>
+              <summary><Icone nome="seta-dir" />{plural(a.partes.length, 'parte')} nesta aula</summary>
+              <ol>
+                {a.partes.map((p, j) => (
+                  <li>
+                    <strong>Parte {j + 1}: {p.titulo}{p.duracaoMin ? ` · ${duracaoCurta(p.duracaoMin)}` : ''}</strong>
+                    {p.resumo && <span>{p.resumo}</span>}
+                  </li>
+                ))}
+              </ol>
+            </details>
+          )}
+        </div>
+        <div class="aula__dur">{duracaoCurta(a.duracaoMin)}</div>
+      </li>
+    );
+  })}
+</ol>
+{(recolher || recolherMovel) && (
+  <div class:list={['aulas-mais', { 'aulas-mais--so-movel': !recolher }]}>
+    <button class="botao botao--contorno" type="button" data-ver-todas>
+      Ver todas as aulas
+      <Icone nome="seta-baixo" />
+    </button>
+  </div>
+)}
+
+<script>
+  for (const b of document.querySelectorAll<HTMLButtonElement>('[data-ver-todas]')) {
+    b.addEventListener('click', () => {
+      const lista = b.parentElement?.previousElementSibling;
+      lista?.classList.remove('recolhida', 'recolhida-movel');
+      b.parentElement?.remove();
+    });
+  }
+</script>

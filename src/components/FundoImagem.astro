@@ -1,0 +1,40 @@
+---
+/**
+ * Fundo de banner (vitrine da home, topo do curso, topo do professor).
+ * Ordem de preferência: imagem horizontal do curso → foto do professor
+ * com filtro azul da marca (o mesmo em todas) → fundo liso com o símbolo.
+ */
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import Logo from './Logo.astro';
+
+interface Props {
+  imagem?: ImageMetadata;
+  foto?: ImageMetadata;
+  foco?: string;
+  carregamento?: 'lazy' | 'eager';
+}
+const { imagem, foto, foco, carregamento = 'eager' } = Astro.props;
+const src = imagem ?? foto;
+const tingido = !imagem && Boolean(foto);
+---
+<div
+  class:list={['fundo-img', { 'fundo-img--tingido': tingido }]}
+  style={foco ? `--foco:${foco}` : undefined}
+  aria-hidden="true"
+>
+  {src ? (
+    <Image
+      src={src}
+      alt=""
+      widths={[640, 960, 1280, 1920]}
+      sizes="100vw"
+      loading={carregamento}
+      fetchpriority={carregamento === 'eager' ? 'high' : 'auto'}
+      quality={72}
+    />
+  ) : (
+    <Logo variante="simbolo" class="fundo-img__simbolo" titulo="" />
+  )}
+  <div class="fundo-img__degrade"></div>
+</div>

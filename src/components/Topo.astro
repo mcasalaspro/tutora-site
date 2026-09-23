@@ -1,0 +1,103 @@
+---
+import Logo from './Logo.astro';
+import Icone from './Icone.astro';
+import { url } from '../lib/formatar';
+import { config } from '../lib/config';
+import { ofertaDe } from '../lib/precos';
+import { cursos } from '../lib/catalogo';
+
+interface Props {
+  solido?: boolean;
+  atual?: 'inicio' | 'cursos' | 'professores' | '';
+}
+const { solido = false, atual = '' } = Astro.props;
+const cfg = config();
+const assinatura = ofertaDe('assinatura');
+const lista = await cursos();
+const areasComCursos = cfg.areas.filter((a) => lista.some((c) => c.area === a.nome));
+const itens = [
+  { id: 'inicio', rotulo: 'Início', href: url('/') },
+  { id: 'cursos', rotulo: 'Cursos', href: url('/cursos/') },
+  { id: 'professores', rotulo: 'Professores', href: url('/professores/') },
+];
+---
+<header class:list={['topo', { 'topo--solido': solido }]} data-topo>
+  <a class="topo__marca" href={url('/')} aria-label={`${cfg.nome} — página inicial`}>
+    <Logo titulo={cfg.nome} />
+  </a>
+  <nav class="topo__nav" aria-label="Principal">
+    {itens.map((i) => (
+      <a href={i.href} aria-current={atual === i.id ? 'page' : undefined}>{i.rotulo}</a>
+    ))}
+  </nav>
+  <div class="topo__acoes">
+    <a class="topo__busca" href={url('/cursos/#busca')} aria-label="Buscar cursos">
+      <Icone nome="busca" />
+      <span>Buscar</span>
+    </a>
+    <a
+      class="botao botao--laranja botao--pequeno topo__assinar"
+      href={assinatura.link || url('/#assinatura')}
+      target={assinatura.link ? '_blank' : undefined}
+      rel={assinatura.link ? 'noopener' : undefined}
+    >Assinar</a>
+    <button class="topo__menu-botao" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-movel" data-abrir-menu>
+      <Icone nome="menu" />
+    </button>
+  </div>
+</header>
+
+<div class="menu-movel" id="menu-movel" data-menu role="dialog" aria-modal="true" aria-label="Menu">
+  <div class="menu-movel__cab">
+    <Logo class="logo" titulo={cfg.nome} />
+    <button class="topo__menu-botao" type="button" aria-label="Fechar menu" data-fechar-menu style="display:inline-flex">
+      <Icone nome="fechar" />
+    </button>
+  </div>
+  {itens.map((i) => (
+    <a class="item" href={i.href}>{i.rotulo}</a>
+  ))}
+  <div class="areas">
+    {areasComCursos.map((a) => (
+      <a class="chip" href={url(`/areas/${a.slug}/`)}>{a.nome}</a>
+    ))}
+  </div>
+  <a class="botao botao--laranja" href={assinatura.link || url('/#assinatura')}>Assinar a Tutora</a>
+</div>
+
+<script>
+  const topo = document.querySelector<HTMLElement>('[data-topo]');
+  if (topo && !topo.classList.contains('topo--solido')) {
+    const aoRolar = () => topo.classList.toggle('solido', window.scrollY > 40);
+    aoRolar();
+    window.addEventListener('scroll', aoRolar, { passive: true });
+  }
+  // No celular (o CSS só aplica abaixo de 760px), o topo some ao rolar para baixo e volta ao rolar para cima.
+  let ultimoY = window.scrollY;
+  window.addEventListener(
+    'scroll',
+    () => {
+      const y = window.scrollY;
+      const html = document.documentElement;
+      if (Math.abs(y - ultimoY) < 6) return;
+      html.classList.toggle('topo-oculto', y > ultimoY && y > 160 && !html.style.overflow);
+      ultimoY = y;
+    },
+    { passive: true },
+  );
+  const menu = document.querySelector<HTMLElement>('[data-menu]');
+  const abrir = document.querySelector<HTMLButtonElement>('[data-abrir-menu]');
+  const fechar = document.querySelector<HTMLButtonElement>('[data-fechar-menu]');
+  const alternar = (aberto: boolean) => {
+    menu?.classList.toggle('aberto', aberto);
+    abrir?.setAttribute('aria-expanded', String(aberto));
+    document.documentElement.style.overflow = aberto ? 'hidden' : '';
+    if (aberto) fechar?.focus();
+    else abrir?.focus();
+  };
+  abrir?.addEventListener('click', () => alternar(true));
+  fechar?.addEventListener('click', () => alternar(false));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && menu?.classList.contains('aberto')) alternar(false);
+  });
+</script>

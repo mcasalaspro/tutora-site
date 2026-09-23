@@ -1,0 +1,216 @@
+---
+/**
+ * Quiz divertido: rodadas de 5 perguntas sorteadas do arquivo conteudo/quizzes/<slug>.md,
+ * com resposta na hora, explicação e placar no fim.
+ */
+import Icone from './Icone.astro';
+import type { Pergunta } from '../lib/quiz';
+
+interface Props {
+  perguntas: Pergunta[];
+  tema: string;
+  linkCompra?: string;
+  porRodada?: number;
+}
+const { perguntas, tema, linkCompra = '#inscricao', porRodada = 5 } = Astro.props;
+const dados = JSON.stringify({ perguntas, porRodada, linkCompra }).replace(/</g, '\\u003c');
+---
+<div class="quiz" data-quiz>
+  <script type="application/json" data-quiz-dados set:html={dados}></script>
+  <div class="quiz__tela" data-tela="inicio">
+    <div class="quiz__inicio">
+      <div>
+        <span class="sobretitulo">Quiz</span>
+        <h3 class="quiz__enunciado">Quanto você já sabe sobre {tema}?</h3>
+        <p>
+          {porRodada} perguntas rápidas, sorteadas entre {perguntas.length}. Você vê a resposta na hora, com uma
+          explicação curta. Dá para jogar quantas rodadas quiser.
+        </p>
+        <div class="quiz__rodape">
+          <button class="botao botao--laranja" type="button" data-comecar>
+            <Icone nome="play" /> Começar o quiz
+          </button>
+        </div>
+      </div>
+      <div class="quiz__icone" aria-hidden="true"><Icone nome="pergunta" /></div>
+    </div>
+  </div>
+  <div class="quiz__tela" data-tela="pergunta" hidden>
+    <div class="quiz__cab">
+      <div class="quiz__progresso" data-progresso aria-hidden="true"></div>
+      <span class="chip" data-contador></span>
+    </div>
+    <h3 class="quiz__enunciado" data-enunciado tabindex="-1"></h3>
+    <div class="quiz__opcoes" data-opcoes role="group" aria-label="Alternativas"></div>
+    <div class="quiz__retorno" data-retorno hidden aria-live="polite">
+      <strong data-veredito></strong>
+      <p data-explicacao></p>
+    </div>
+    <div class="quiz__rodape">
+      <button class="botao botao--laranja" type="button" data-proxima hidden>Próxima pergunta <Icone nome="seta-link" /></button>
+    </div>
+  </div>
+  <div class="quiz__tela" data-tela="fim" hidden>
+    <span class="sobretitulo">Resultado</span>
+    <p class="quiz__placar" data-placar></p>
+    <h3 class="quiz__enunciado" data-mensagem tabindex="-1"></h3>
+    <div class="quiz__rodape">
+      <button class="botao botao--laranja" type="button" data-de-novo><Icone nome="refazer" /> Jogar outra rodada</button>
+      <a class="botao botao--vidro" href={linkCompra}>Conhecer o curso completo</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  interface P {
+    enunciado: string;
+    tipo: string;
+    dificuldade: string;
+    alternativas: string[];
+    correta: number;
+    explicacao: string;
+  }
+  const ACERTOS = ['Isso mesmo.', 'Acertou.', 'Exatamente.', 'Muito bem.', 'Certíssimo.'];
+  const ERROS = ['Não foi dessa vez.', 'Quase.', 'Resposta errada.', 'Ainda não.'];
+  const LETRAS = 'ABCDEF';
+
+  function sortear<T>(lista: T[]): T[] {
+    const a = [...lista];
+    for (let i = a.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  for (const raiz of document.querySelectorAll<HTMLElement>('[data-quiz]')) {
+    const dados = JSON.parse(raiz.querySelector('[data-quiz-dados]')?.textContent || '{}');
+    const todas: P[] = dados.perguntas || [];
+    const porRodada: number = Math.min(dados.porRodada || 5, todas.length);
+    const tela = (nome: string) =>
+      raiz.querySelectorAll<HTMLElement>('[data-tela]').forEach((t) => (t.hidden = t.dataset.tela !== nome));
+    const $ = <T extends HTMLElement>(s: string) => raiz.querySelector<T>(s)!;
+    let usadas = new Set<number>();
+    let rodada: P[] = [];
+    let atual = 0;
+    let acertos = 0;
+    let resultados: boolean[] = [];
+    let ordem: number[] = []; // ordem em que as alternativas da pergunta atual aparecem
+
+    // Se a troca de tela deixou o topo do quiz acima da área visível, rola até ele.
+    const trazerParaVista = () => {
+      const topo = raiz.getBoundingClientRect().top;
+      if (topo < 0 || topo > window.innerHeight * 0.6) raiz.scrollIntoView({ block: 'start', behavior: 'smooth' });
+    };
+
+    function montarRodada() {
+      // mistura níveis: tenta levar fácil, média e difícil em cada rodada
+      let restantes = todas.map((_, i) => i).filter((i) => !usadas.has(i));
+      if (restantes.length < porRodada) {
+        usadas = new Set();
+        restantes = todas.map((_, i) => i);
+      }
+      const porNivel: Record<string, number[]> = { facil: [], media: [], dificil: [] };
+      sortear(restantes).forEach((i) => (porNivel[todas[i].dificuldade] ?? porNivel.media).push(i));
+      const escolha: number[] = [];
+      const ordem = ['facil', 'media', 'dificil', 'facil', 'media', 'dificil', 'media'];
+      let k = 0;
+      while (escolha.length < porRodada && k < 50) {
+        const nivel = ordem[k % ordem.length];
+        const i = porNivel[nivel].shift();
+        if (i !== undefined) escolha.push(i);
+        else if (!Object.values(porNivel).some((l) => l.length)) break;
+        k++;
+      }
+      escolha.forEach((i) => usadas.add(i));
+      rodada = escolha.map((i) => todas[i]);
+      atual = 0;
+      acertos = 0;
+      resultados = [];
+    }
+
+    function mostrarPergunta() {
+      const p = rodada[atual];
+      tela('pergunta');
+      $('[data-contador]').textContent = `Pergunta ${atual + 1} de ${rodada.length}`;
+      $('[data-progresso]').innerHTML = rodada
+        .map((_, i) => `<i class="${i < atual ? (resultados[i] ? 'feito' : 'errado') : i === atual ? 'atual' : ''}"></i>`)
+        .join('');
+      const enunciado = $('[data-enunciado]');
+      enunciado.textContent = p.enunciado;
+      const opcoes = $('[data-opcoes]');
+      opcoes.innerHTML = '';
+      // alternativas embaralhadas a cada vez (verdadeiro/falso mantém a ordem)
+      const indices = p.alternativas.map((_, i) => i);
+      ordem = p.tipo === 'verdadeiro_falso' ? indices : sortear(indices);
+      ordem.forEach((original, pos) => {
+        const b = document.createElement('button');
+        b.type = 'button';
+        b.className = 'quiz__opcao';
+        b.innerHTML = `<span class="quiz__letra">${p.tipo === 'verdadeiro_falso' ? (original === 0 ? 'V' : 'F') : LETRAS[pos]}</span><span></span>`;
+        (b.lastElementChild as HTMLElement).textContent = p.alternativas[original];
+        b.addEventListener('click', () => responder(original));
+        opcoes.appendChild(b);
+      });
+      $('[data-retorno]').hidden = true;
+      $('[data-proxima]').hidden = true;
+      enunciado.focus({ preventScroll: true });
+      trazerParaVista();
+    }
+
+    function responder(i: number) {
+      const p = rodada[atual];
+      const certo = i === p.correta;
+      if (certo) acertos++;
+      resultados[atual] = certo;
+      const botoes = $('[data-opcoes]').querySelectorAll<HTMLButtonElement>('button');
+      botoes.forEach((b, pos) => {
+        b.disabled = true;
+        if (ordem[pos] === p.correta) b.classList.add('certa');
+        else if (ordem[pos] === i) b.classList.add('errada');
+      });
+      const ret = $('[data-retorno]');
+      ret.hidden = false;
+      ret.className = 'quiz__retorno ' + (certo ? 'acertou' : 'errou');
+      const lista = certo ? ACERTOS : ERROS;
+      $('[data-veredito]').textContent = lista[Math.floor(Math.random() * lista.length)];
+      $('[data-explicacao]').textContent = p.explicacao;
+      const prox = $('[data-proxima]');
+      prox.hidden = false;
+      prox.innerHTML = atual + 1 < rodada.length ? 'Próxima pergunta →' : 'Ver meu resultado →';
+      prox.focus({ preventScroll: true });
+    }
+
+    function fim() {
+      tela('fim');
+      $('[data-placar]').textContent = `${acertos}/${rodada.length}`;
+      const r = acertos / rodada.length;
+      const msg =
+        r === 1
+          ? 'Gabaritou. Você já conhece bem o tema. O curso vai mais fundo.'
+          : r >= 0.6
+            ? 'Mandou bem. Tem muita coisa boa para descobrir no curso.'
+            : r >= 0.3
+              ? 'Bom começo. O curso responde a essas e a muitas outras perguntas.'
+              : 'Esse tema guarda boas surpresas. Que tal conhecer o curso?';
+      const m = $('[data-mensagem]');
+      m.textContent = msg;
+      m.focus({ preventScroll: true });
+      trazerParaVista();
+    }
+
+    $('[data-comecar]').addEventListener('click', () => {
+      montarRodada();
+      mostrarPergunta();
+    });
+    $('[data-proxima]').addEventListener('click', () => {
+      atual++;
+      if (atual < rodada.length) mostrarPergunta();
+      else fim();
+    });
+    $('[data-de-novo]').addEventListener('click', () => {
+      montarRodada();
+      mostrarPergunta();
+    });
+  }
+</script>

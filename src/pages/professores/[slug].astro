@@ -1,0 +1,109 @@
+---
+import { getImage } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import FundoImagem from '../../components/FundoImagem.astro';
+import Capa from '../../components/Capa.astro';
+import Fileira from '../../components/Fileira.astro';
+import ProfCard from '../../components/ProfCard.astro';
+import Icone from '../../components/Icone.astro';
+import { cursos, professores, professor as buscarProf, temPagina } from '../../lib/catalogo';
+import { config } from '../../lib/config';
+import { url, plural, paragrafos, duracaoTotal } from '../../lib/formatar';
+
+export async function getStaticPaths() {
+  return (await professores()).filter(temPagina).map((p) => ({ params: { slug: p.slug } }));
+}
+const cfg = config();
+const p = (await buscarProf(Astro.params.slug!))!;
+const todos = await cursos();
+const seus = todos.filter((c) => p.cursos.includes(c.slug));
+const aulas = seus.reduce((s, c) => s + c.nAulas, 0);
+const minutos = seus.reduce((s, c) => s + c.minutos, 0);
+const areas = [...new Set(seus.map((c) => c.area))];
+const outros = (await professores()).filter((x) => x.slug !== p.slug && x.cursos.length > 0);
+const img = p.cena ?? p.foto;
+const og = img ? (await getImage({ src: img, width: 1200, format: 'jpg', quality: 80 })).src : undefined;
+const descricao =
+  p.miniBio ||
+  (seus.length
+    ? `Cursos com ${p.nome} na ${cfg.nome}: ${seus.map((c) => c.titulo).join(', ')}.`
+    : `${p.nome} na ${cfg.nome}.`);
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: p.nome,
+  description: descricao,
+  worksFor: { '@type': 'Organization', name: `${cfg.nome} Educação Familiar` },
+};
+const bio = paragrafos(p.bioCompleta);
+---
+<Base titulo={p.nome} descricao={descricao} imagem={og} atual="professores" jsonLd={jsonLd}>
+  <section class="prof-topo">
+    <FundoImagem foto={undefined} imagem={p.cena ?? p.foto} />
+    <div class="conteiner">
+      <div class="prof-topo__conteudo">
+        <nav class="migalhas" aria-label="Você está em">
+          <a href={url('/professores/')}>Professores</a>
+        </nav>
+        <h1>{p.nome}</h1>
+        {p.miniBio && (
+          <p class="texto-2" style="font-size:1.08rem;max-width:56ch">{p.miniBio}</p>
+        )}
+        {seus.length > 0 && (
+          <div class="meta" style="margin-top:14px">
+            <span><Icone nome="livro" />{plural(seus.length, 'curso')}</span>
+            <span><Icone nome="aulas" />{plural(aulas, 'aula')}</span>
+            {minutos > 0 && <span><Icone nome="relogio" />{duracaoTotal(minutos)}</span>}
+          </div>
+        )}
+        {areas.length > 0 && (
+          <div class="filtros" style="margin-top:16px">
+            {areas.map((a) => {
+              const ar = cfg.areas.find((x) => x.nome === a);
+              return ar ? <a class="chip" href={url(`/areas/${ar.slug}/`)}>{a}</a> : <span class="chip">{a}</span>;
+            })}
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  {seus.length > 0 ? (
+    <section class="secao secao--compacta">
+      <div class="conteiner">
+        <div class="secao__cab">
+          <h2 class="titulo-secao">Cursos de {p.nome}</h2>
+        </div>
+        <div class="grade">
+          {seus.map((c) => <Capa curso={c} tamanhos="(max-width: 600px) 45vw, 200px" />)}
+        </div>
+      </div>
+    </section>
+  ) : (
+    <section class="secao secao--compacta">
+      <div class="conteiner"><p class="vazio">Os cursos de {p.nome} entram no catálogo em breve.</p></div>
+    </section>
+  )}
+
+  {(bio.length > 0 || p.formacao.length > 0) && (
+    <section class="secao secao--compacta">
+      <div class="conteiner">
+        <div style="max-width:900px">
+          <h2 class="titulo-secao" style="margin-bottom:18px">Sobre {p.nome.split(' ')[0]}</h2>
+          {bio.length > 0 && <div class="prosa">{bio.map((t) => <p>{t}</p>)}</div>}
+          {p.formacao.length > 0 && (
+            <ul class="lista-check" style="margin-top:20px">
+              {p.formacao.map((f) => <li><Icone nome="check" /><span>{f}</span></li>)}
+            </ul>
+          )}
+        </div>
+      </div>
+    </section>
+  )}
+
+  {outros.length > 0 && (
+    <Fileira titulo="Outros professores" link={url('/professores/')} textoLink="Ver todos">
+      {outros.map((x) => <ProfCard prof={x} tamanhos="212px" />)}
+    </Fileira>
+  )}
+</Base>

@@ -1,0 +1,60 @@
+---
+import Logo from './Logo.astro';
+import Icone from './Icone.astro';
+import { url } from '../lib/formatar';
+import { config } from '../lib/config';
+import { cursos } from '../lib/catalogo';
+
+const cfg = config();
+const lista = await cursos();
+const areasComCursos = cfg.areas.filter((a) => lista.some((c) => c.area === a.nome));
+const ano = new Date().getFullYear();
+const c = cfg.contato;
+---
+<footer class="rodape">
+  <div class="conteiner">
+    <div class="rodape__grade">
+      <div>
+        <a class="rodape__marca" href={url('/')} aria-label={`${cfg.nome} — página inicial`}>
+          <Logo titulo={cfg.nome} />
+        </a>
+        <span class="rodape__slogan">{cfg.slogan}</span>
+        <p>{cfg.descricao}</p>
+        <div class="rodape__redes">
+          {c.instagram && <a href={c.instagram} target="_blank" rel="noopener" aria-label="Instagram"><Icone nome="instagram" /></a>}
+          {c.youtube && <a href={c.youtube} target="_blank" rel="noopener" aria-label="YouTube"><Icone nome="youtube" /></a>}
+          {c.facebook && <a href={c.facebook} target="_blank" rel="noopener" aria-label="Facebook"><Icone nome="facebook" /></a>}
+          {c.email && <a href={`mailto:${c.email}`} aria-label="E-mail"><Icone nome="email" /></a>}
+        </div>
+      </div>
+      <div>
+        <h4>Catálogo</h4>
+        <ul>
+          <li><a href={url('/cursos/')}>Todos os cursos</a></li>
+          <li><a href={url('/professores/')}>Professores</a></li>
+          <li><a href={url('/#assinatura')}>Assinatura</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Áreas</h4>
+        <ul>
+          {areasComCursos.map((a) => (
+            <li><a href={url(`/areas/${a.slug}/`)}>{a.nome}</a></li>
+          ))}
+        </ul>
+      </div>
+      <div>
+        <h4>Contato</h4>
+        <ul>
+          {c.email && <li><a href={`mailto:${c.email}`}>{c.email}</a></li>}
+          {c.instagram && <li><a href={c.instagram} target="_blank" rel="noopener">Instagram</a></li>}
+          {c.youtube && <li><a href={c.youtube} target="_blank" rel="noopener">YouTube</a></li>}
+        </ul>
+      </div>
+    </div>
+    <div class="rodape__base">
+      <span>© {ano} {cfg.nome} Educação Familiar. Todos os direitos reservados.</span>
+      <span>Compras processadas pela Hotmart.</span>
+    </div>
+  </div>
+</footer>

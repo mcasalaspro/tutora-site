@@ -1,0 +1,43 @@
+---
+import Base from '../../layouts/Base.astro';
+import Capa from '../../components/Capa.astro';
+import { cursos } from '../../lib/catalogo';
+import { config } from '../../lib/config';
+import { url, plural } from '../../lib/formatar';
+
+export async function getStaticPaths() {
+  const lista = await cursos();
+  return config()
+    .areas.filter((a) => lista.some((c) => c.area === a.nome))
+    .map((a) => ({ params: { area: a.slug } }));
+}
+const cfg = config();
+const area = cfg.areas.find((a) => a.slug === Astro.params.area)!;
+// Cursos que fazem parte de uma trilha aparecem na ordem da trilha; os demais, em ordem alfabética.
+const posTrilha = new Map<string, number>();
+cfg.trilhas.forEach((t, i) => t.cursos.forEach((s, j) => posTrilha.has(s) || posTrilha.set(s, i * 1000 + j)));
+const itens = (await cursos())
+  .filter((c) => c.area === area.nome)
+  .sort((a, b) => (posTrilha.get(a.slug) ?? 1e6) - (posTrilha.get(b.slug) ?? 1e6) || a.titulo.localeCompare(b.titulo, 'pt-BR'));
+const todos = await cursos();
+const outras = cfg.areas.filter((a) => a.slug !== area.slug && todos.some((c) => c.area === a.nome));
+---
+<Base titulo={area.nome} descricao={`${area.descricao ?? ''} ${plural(itens.length, 'curso')} na Tutora.`} topoSolido atual="cursos">
+  <div class="conteiner">
+    <header class="cab-pagina">
+      <nav class="migalhas" aria-label="Você está em">
+        <a href={url('/cursos/')}>Cursos</a><span aria-hidden="true">/</span><span>{area.nome}</span>
+      </nav>
+      <h1>{area.nome}</h1>
+      {area.descricao && <p>{area.descricao}</p>}
+      <p class="texto-3" style="font-size:.95rem;font-weight:600">{plural(itens.length, 'curso')} · {itens.reduce((s, c) => s + c.nAulas, 0)} aulas</p>
+    </header>
+    <div class="grade">
+      {itens.map((c) => <Capa curso={c} tamanhos="(max-width: 600px) 45vw, 200px" />)}
+    </div>
+    <div class="filtros" style="margin-top:48px">
+      <span class="texto-3" style="font-weight:600;font-size:.9rem;margin-right:6px">Outras áreas:</span>
+      {outras.map((a) => <a class="chip" href={url(`/areas/${a.slug}/`)}>{a.nome}</a>)}
+    </div>
+  </div>
+</Base>

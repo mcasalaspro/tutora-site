@@ -1,0 +1,80 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  CONFIGURAÇÕES GERAIS DO SITE
+#  Edite os valores à direita dos dois-pontos. Mantenha as aspas e o recuo.
+#  Linhas que começam com # são comentários (o site ignora).
+# ─────────────────────────────────────────────────────────────────────────────
+
+nome: "Tutora"
+slogan: "educação familiar"
+descricao: "Catálogo de cursos da Tutora: história, filosofia, literatura, direito e educação dos filhos, com professores de referência."
+
+# Contato e redes (deixe "" para esconder)
+contato:
+  email: "contato@tutoracursos.com.br"
+  instagram: "https://instagram.com/tutoracursos"
+  youtube: "https://youtube.com/@tutoracursos"
+  facebook: ""
+
+# Textos da página inicial
+home:
+  titulo_regular: "Somos uma escola de"
+  titulo_destaque: "educação familiar."
+  subtitulo: "Cursos em vídeo para quem quer entender melhor o mundo, a própria história e a educação dos filhos."
+
+# Áreas do catálogo. O campo "area" de cada curso precisa ser igual a um destes nomes.
+areas:
+  - nome: "Educação dos Filhos"
+    slug: "educacao-dos-filhos"
+    descricao: "Princípios e práticas para educar com clareza, firmeza e afeto."
+  - nome: "Família e Casamento"
+    slug: "familia-e-casamento"
+    descricao: "Para cuidar do laço mais importante da vida."
+  - nome: "Filosofia e Formação do Juízo"
+    slug: "filosofia-e-formacao-do-juizo"
+    descricao: "Pensar bem é o primeiro passo para viver bem."
+  - nome: "Literatura e Cultura"
+    slug: "literatura-e-cultura"
+    descricao: "As grandes obras e o imaginário que formaram o Ocidente."
+  - nome: "História e Política"
+    slug: "historia-e-politica"
+    descricao: "Compreender o passado para agir no presente."
+  - nome: "Direito e Vida Pública"
+    slug: "direito-e-vida-publica"
+    descricao: "A tradição jurídica e a vida em sociedade."
+
+# Trilhas: sequências de cursos que fazem sentido em ordem (aparecem como fileiras na home).
+trilhas:
+  - titulo: "Trilha de História: da Grécia ao século XX"
+    descricao: "Treze cursos em ordem cronológica para enxergar a história do Ocidente de ponta a ponta."
+    cursos:
+      - gregos-fundamento-do-ocidente
+      - roma
+      - imperio-bizantino
+      - os-francos-e-o-nascimento-da-cristandade
+      - alta-idade-media
+      - baixa-idade-media
+      - renascimento
+      - mercantilismo
+      - revolucoes-burguesas
+      - revolucao-francesa
+      - era-napoleonica
+      - o-grande-seculo-xix
+      - inicio-seculo-xx-guerra-e-revolucao
+
+# O que aparece nos cartões de compra (preço e link ficam em precos.csv)
+oferta:
+  avulso_titulo: "Curso avulso"
+  avulso_itens:
+    - "Todas as aulas deste curso em vídeo"
+    - "Compra segura pela Hotmart"
+  assinatura_titulo: "Assinatura Tutora"
+  assinatura_itens:
+    - "Acesso a todos os cursos do catálogo"
+    - "Compra segura pela Hotmart"
+  # Enquanto um curso (ou a assinatura) não tiver link da Hotmart no precos.csv:
+  texto_sem_link: "Inscrições em breve"
+  texto_espera: "As inscrições ainda não abriram. Se quiser, avisamos você quando abrirem."
+  texto_aviso: "Avise-me quando abrir"
+  # Para onde vai o botão "Avise-me": um link de WhatsApp, de formulário etc.
+  # Se ficar "", o botão abre um e-mail para o endereço de contato acima.
+  link_aviso: ""

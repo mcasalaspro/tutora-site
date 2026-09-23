@@ -1,0 +1,17 @@
+# Arquivos .bat precisam de quebra de linha do Windows (CRLF) para rodar direito.
+*.bat text eol=crlf
+*.cmd text eol=crlf
+# O resto fica com LF
+*.md text eol=lf
+*.csv text eol=lf
+*.yaml text eol=lf
+*.astro text eol=lf
+*.ts text eol=lf
+*.mjs text eol=lf
+*.css text eol=lf
+*.json text eol=lf
+*.jpg binary
+*.jpeg binary
+*.png binary
+*.webp binary
+*.woff2 binary

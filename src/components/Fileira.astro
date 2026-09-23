@@ -1,0 +1,57 @@
+---
+/** Fileira horizontal com rolagem (estilo streaming) e setas no desktop. */
+import Icone from './Icone.astro';
+
+interface Props {
+  titulo: string;
+  descricao?: string;
+  link?: string;
+  textoLink?: string;
+  larga?: boolean;
+  id?: string;
+}
+const { titulo, descricao, link, textoLink = 'Ver todos', larga = false, id } = Astro.props;
+---
+<section class:list={['fileira', { 'fileira--larga': larga }]} id={id} data-fileira aria-label={titulo}>
+  <div class="fileira__cab">
+    <div>
+      <h2 class="fileira__titulo">{titulo}</h2>
+      {descricao && <p class="fileira__desc">{descricao}</p>}
+    </div>
+    {link && (
+      <a class="link-seta" href={link}>{textoLink}<Icone nome="seta-link" /></a>
+    )}
+  </div>
+  <button class="fileira__seta fileira__seta--esq" type="button" aria-label="Voltar" data-seta="-1" disabled>
+    <Icone nome="seta-esq" />
+  </button>
+  <div class="fileira__trilho" data-trilho tabindex="-1">
+    <slot />
+  </div>
+  <button class="fileira__seta fileira__seta--dir" type="button" aria-label="Avançar" data-seta="1">
+    <Icone nome="seta-dir" />
+  </button>
+</section>
+
+<script>
+  for (const f of document.querySelectorAll<HTMLElement>('[data-fileira]')) {
+    const trilho = f.querySelector<HTMLElement>('[data-trilho]');
+    const setas = f.querySelectorAll<HTMLButtonElement>('[data-seta]');
+    if (!trilho) continue;
+    const atualizar = () => {
+      const max = trilho.scrollWidth - trilho.clientWidth - 4;
+      setas.forEach((s) => {
+        const dir = Number(s.dataset.seta);
+        s.disabled = dir < 0 ? trilho.scrollLeft <= 4 : trilho.scrollLeft >= max;
+      });
+    };
+    setas.forEach((s) =>
+      s.addEventListener('click', () => {
+        trilho.scrollBy({ left: Number(s.dataset.seta) * trilho.clientWidth * 0.85, behavior: 'smooth' });
+      }),
+    );
+    trilho.addEventListener('scroll', atualizar, { passive: true });
+    window.addEventListener('resize', atualizar);
+    atualizar();
+  }
+</script>

@@ -1,0 +1,32 @@
+---
+import Base from '../../layouts/Base.astro';
+import ProfCard from '../../components/ProfCard.astro';
+import { professores } from '../../lib/catalogo';
+import { config } from '../../lib/config';
+
+const cfg = config();
+const lista = await professores();
+const comCursos = lista.filter((p) => p.cursos.length > 0);
+const semCursos = lista.filter((p) => p.cursos.length === 0);
+---
+<Base titulo="Professores" descricao={`Conheça os professores da ${cfg.nome} e os cursos de cada um.`} topoSolido atual="professores">
+  <div class="conteiner">
+    <header class="cab-pagina">
+      <span class="sobretitulo">Quem ensina</span>
+      <h1>Professores</h1>
+      <p>Historiadores, filósofos, juristas, educadores e professores de literatura. Escolha um nome para ver os cursos.</p>
+    </header>
+    <div class="grade" style="grid-template-columns:repeat(auto-fill,minmax(clamp(150px,30vw,220px),1fr))">
+      {comCursos.map((p) => <ProfCard prof={p} />)}
+    </div>
+    {semCursos.length > 0 && (
+      <>
+        <h2 class="titulo-secao" style="margin:64px 0 8px">Também na Tutora</h2>
+        <p class="texto-3" style="margin-bottom:24px">Professores que também fazem parte da {cfg.nome}.</p>
+        <div class="grade" style="grid-template-columns:repeat(auto-fill,minmax(clamp(150px,30vw,220px),1fr))">
+          {semCursos.map((p) => <ProfCard prof={p} />)}
+        </div>
+      </>
+    )}
+  </div>
+</Base>
