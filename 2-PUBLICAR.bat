@@ -23,6 +23,15 @@ if not exist ".git" (
   exit /b 1
 )
 
+rem ---- O Git arruma a pasta .git sozinho de vez em quando. No Windows, OneDrive,
+rem ---- Dropbox ou antivirus prendem essas pastas e ele fica perguntando
+rem ---- "Should I try again? y/n". Desligamos a arrumacao automatica e a pergunta,
+rem ---- e tambem os avisos inofensivos de LF/CRLF.
+set "GIT_ASK_YESNO=false"
+git config gc.auto 0
+git config maintenance.auto false
+git config core.safecrlf false
+
 git add -A
 git diff --cached --quiet
 if errorlevel 1 (
