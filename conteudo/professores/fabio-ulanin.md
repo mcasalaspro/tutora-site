@@ -1,15 +1,13 @@
 ---
-# Biografia PROVISÓRIA, escrita a partir do que o professor diz nas aulas.
-# Substitua pela oficial: mini_bio (1 ou 2 frases) e a biografia completa abaixo das linhas ---.
-# Ao editar, apague estas três linhas de aviso.
+# Biografia do site antigo da Tutora (tutoracursos.com.br, 2025). Pode editar à vontade.
 slug: fabio-ulanin
 nome: Fabio Ulanin
-mini_bio: Professor de literatura, conduz na Tutora a leitura comentada de nove obras de língua portuguesa da lista de leituras da FUVEST.
+mini_bio: Fabio Ulanin é professor há 30 anos, mestre em Crítica Literária pela PUC-SP, especializado em literatura brasileira, literatura portuguesa e filosofia medievalista.
 formacao: []
 site: ''
 instagram: ''
 ---
 
-Fabio Ulanin é professor de literatura e leciona na Tutora na área de Literatura e Cultura.
+Fabio Ulanin é professor há 30 anos, mestre em Crítica Literária pela PUC-SP, especializado em literatura brasileira, literatura portuguesa e filosofia medievalista.
 
-Seu curso, Literaturas de Língua Portuguesa para a FUVEST, percorre nove obras cobradas no vestibular, das liras de Marília de Dirceu, de Tomás Antônio Gonzaga, aos contos de Nós Matamos o Cão Tinhoso, do moçambicano Luís Bernardo Honwana, passando por Machado de Assis, Fernando Pessoa, Carlos Drummond de Andrade, Graciliano Ramos, Cecília Meireles, Guimarães Rosa e Milton Hatoum. Cada obra recebe três aulas, com contexto histórico e leitura comentada de trechos. É pensado para vestibulandos, mas também para pais e professores.
+Coordenou curso de Letras e lecionou em diversos cursos do ensino superior. Hoje, leciona para Ensino Fundamental e Médio voltados para inclusão social.

@@ -1,15 +1,15 @@
 ---
-# Biografia PROVISÓRIA, escrita a partir do que o professor diz nas aulas.
-# Substitua pela oficial: mini_bio (1 ou 2 frases) e a biografia completa abaixo das linhas ---.
-# Ao editar, apague estas três linhas de aviso.
+# Biografia do site antigo da Tutora (tutoracursos.com.br, 2025). Pode editar à vontade.
 slug: felipe-antunes
 nome: Felipe Antunes
-mini_bio: Atende crianças e pais em consultório e ensina na Tutora a educar os filhos com amor e critério, das fases do desenvolvimento à autoridade.
+mini_bio: Pediatra, Dr. Felipe Antunes dedica há uma década seu trabalho a crianças e adolescentes, numa abordagem que soma medicina e pedagogia.
 formacao: []
 site: ''
 instagram: ''
 ---
 
-Felipe Antunes atende crianças e pais em consultório e dá aulas sobre desenvolvimento infantil. Parte dos exemplos do curso vem dessa prática.
+Dr. Felipe Antunes possui uma trajetória marcante de uma década dedicada ao atendimento de crianças e adolescentes.
 
-Na Tutora, é o professor de Harmonia Familiar, curso sobre a educação dos filhos com amor e critério: o que esperar de cada fase do desenvolvimento, como formar hábitos de alimentação, higiene, ordem e sono, como conquistar a obediência e como exercer uma autoridade que nasce da bondade. Dirige-se a pais e também a professores.
+Além de pediatra, sua paixão pela educação o conduziu a uma abordagem humanizada que soma conhecimentos de medicina e pedagogia.
+
+Com uma visão realista, ele se empenha em capacitar pais, educadores e profissionais da saúde sobre as melhores maneiras para cuidar e entender as necessidades de seus filhos.

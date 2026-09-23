@@ -3,36 +3,49 @@
  * Fundo de banner (vitrine da home, topo do curso, topo do professor).
  * Ordem de preferência: imagem horizontal do curso → foto do professor
  * com filtro azul da marca (o mesmo em todas) → fundo liso com o símbolo.
+ *
+ * Quando o curso tem as duas imagens (horizontal e pôster), o celular recebe o pôster:
+ * a horizontal cortada numa tela em pé mostraria só a metade escura da ilustração.
+ * No celular o pôster vira uma faixa no alto e o texto entra sobre o terço de baixo dele.
  */
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
 import Logo from './Logo.astro';
 
 interface Props {
   imagem?: ImageMetadata;
   foto?: ImageMetadata;
+  /** pôster 2:3 do curso, usado no celular quando há imagem horizontal */
+  movel?: ImageMetadata;
   foco?: string;
   carregamento?: 'lazy' | 'eager';
 }
-const { imagem, foto, foco, carregamento = 'eager' } = Astro.props;
+const { imagem, foto, movel, foco, carregamento = 'eager' } = Astro.props;
 const src = imagem ?? foto;
 const tingido = !imagem && Boolean(foto);
+const arte = Boolean(imagem && movel);
+const fonteMovel = arte && movel ? await getImage({ src: movel, widths: [480, 720, 1024], format: 'webp', quality: 74 }) : undefined;
 ---
 <div
-  class:list={['fundo-img', { 'fundo-img--tingido': tingido }]}
+  class:list={['fundo-img', { 'fundo-img--tingido': tingido, 'fundo-img--arte': arte }]}
   style={foco ? `--foco:${foco}` : undefined}
   aria-hidden="true"
 >
   {src ? (
-    <Image
-      src={src}
-      alt=""
-      widths={[640, 960, 1280, 1920]}
-      sizes="100vw"
-      loading={carregamento}
-      fetchpriority={carregamento === 'eager' ? 'high' : 'auto'}
-      quality={72}
-    />
+    <picture>
+      {fonteMovel && (
+        <source media="(max-width: 760px) and (orientation: portrait)" srcset={fonteMovel.srcSet.attribute} sizes="100vw" type="image/webp" />
+      )}
+      <Image
+        src={src}
+        alt=""
+        widths={[640, 960, 1280, 1920]}
+        sizes="100vw"
+        loading={carregamento}
+        fetchpriority={carregamento === 'eager' ? 'high' : 'auto'}
+        quality={72}
+      />
+    </picture>
   ) : (
     <Logo variante="simbolo" class="fundo-img__simbolo" titulo="" />
   )}

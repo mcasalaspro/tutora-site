@@ -36,7 +36,10 @@ const rotulo = `${c.titulo}${prof ? `, com ${prof}` : ''}. ${plural(c.nAulas, 'a
       <span class="poster__degrade" aria-hidden="true"></span>
       <span class="poster__info">
         <span class="poster__titulo">{c.titulo}</span>
-        {prof && <span class="poster__prof">{prof}</span>}
+        <span class="capa-tipo__rodape poster__rodape">
+          {prof && <span>{prof}</span>}
+          <span>{plural(c.nAulas, 'aula')}</span>
+        </span>
       </span>
     </>
   ) : (

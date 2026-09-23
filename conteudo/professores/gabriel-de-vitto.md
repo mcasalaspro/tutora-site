@@ -1,15 +1,13 @@
 ---
-# Biografia PROVISÓRIA, escrita a partir do que o professor diz nas aulas.
-# Substitua pela oficial: mini_bio (1 ou 2 frases) e a biografia completa abaixo das linhas ---.
-# Ao editar, apague estas três linhas de aviso.
+# Biografia do site antigo da Tutora (tutoracursos.com.br, 2025). Pode editar à vontade.
 slug: gabriel-de-vitto
 nome: Gabriel De Vitto
-mini_bio: Professor de filosofia, ensina na Tutora uma introdução ao ato de filosofar e um curso sobre Agostinho e Dionísio Areopagita.
+mini_bio: Gabriel de Vitto é professor de Filosofia no Ensino Superior, mestre em Filosofia pela PUC-SP e doutorando na Universidade de Navarra.
 formacao: []
 site: ''
 instagram: ''
 ---
 
-Gabriel De Vitto é professor de filosofia e leciona na Tutora na área de Filosofia e Formação do Juízo.
+Gabriel de Vitto é professor de Filosofia no Ensino Superior, mestre em Filosofia pela PUC-SP e doutorando na Universidade de Navarra.
 
-É o professor de O Que É Filosofar, introdução à filosofia que, a partir do livro homônimo de Josef Pieper, se concentra no próprio ato de filosofar e no que distingue a filosofia da poesia, da ciência e da religião; e de Patrística: Agostinho e Dionísio Areopagita, que situa os dois autores em seu contexto, com o neoplatonismo de Plotino e Proclo, e acompanha a herança que deixaram à Idade Média.
+Tem experiência na área de Filosofia, com ênfase em Ética, Metafísica, Epistemologia e Antropologia Filosófica, dedicando-se especialmente ao estudo das relações entre filosofia clássica (tomista) e contemporânea (fenomenológica).

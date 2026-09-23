@@ -1,15 +1,15 @@
 ---
-# Biografia PROVISÓRIA, escrita a partir do que o professor diz nas aulas.
-# Substitua pela oficial: mini_bio (1 ou 2 frases) e a biografia completa abaixo das linhas ---.
-# Ao editar, apague estas três linhas de aviso.
+# Biografia do site antigo da Tutora (tutoracursos.com.br, 2025). Pode editar à vontade.
 slug: bernardo-de-moraes
 nome: Bernardo de Moraes
-mini_bio: Civilista e professor universitário há mais de duas décadas, ensina na Tutora uma introdução ao direito para leigos e iniciantes.
+mini_bio: Bacharel em Direito (USP), Especialista em Direito Romano (Università di Roma), Doutor em Direito Civil/Direito Romano (USP) e Livre-docente em Direito Romano (USP).
 formacao: []
 site: ''
 instagram: ''
 ---
 
-Bernardo de Moraes é civilista e professor universitário, com mais de duas décadas de docência no ensino superior. Dá aulas de direito civil e de direito romano numa faculdade de direito e se apresenta também como pesquisador e historiador do direito, com interesse especial pelo direito brasileiro do Império. Estudou na Itália.
+Bacharel em Direito (USP), Especialista em Direito Romano (Università di Roma), Doutor em Direito Civil/Direito Romano (USP) e Livre-docente em Direito Romano (USP). É também Professor Associado e Docente Permanente da FDUSP e Professor Titular Doutor da FAAP.
 
-Na Tutora, é o professor de Brevíssima Introdução ao Direito, curso para leigos e iniciantes que explica o que é o direito, para que serve, como se divide em ramos e como se organizam as leis no Brasil, com atenção às raízes romanas do direito brasileiro.
+Membro do “Grupo para la Armonización del Derecho en América Latina” (GADAL), que discute a elaboração de um “Código Marco de Obligaciones para América Latina”. Autor de livros e artigos publicados na América Latina, Europa e Ásia.
+
+Vencedor do “Prêmio Orlando Gomes 2018” e um dos pesquisadores responsáveis pela revisão e tradução complementar da primeira versão em língua portuguesa do Digesto de Justiniano (tradutor principal: Conselheiro Vasconcellos).

@@ -162,12 +162,16 @@ Cada curso usa **duas imagens**. Enquanto elas não existem, o site mostra uma c
 
 | Arquivo | Tamanho | Onde aparece |
 |---|---|---|
-| `conteudo/imagens/cursos/<slug>-horizontal.jpg` | **1920 × 1080** (16:9) | Topo da página do curso, carrossel da home, prévia no WhatsApp/Facebook |
-| `conteudo/imagens/cursos/<slug>-poster.jpg` | **1000 × 1500** (2:3) | Fileiras, catálogo, páginas de área e de professor |
+| `conteudo/imagens/cursos/<slug>-horizontal.jpg` | **1920 × 1080** (16:9) | Topo da página do curso e carrossel da home no computador e no tablet, prévia no WhatsApp/Facebook |
+| `conteudo/imagens/cursos/<slug>-poster.jpg` | **1000 × 1500** (2:3) | Fileiras, catálogo, páginas de área e de professor, e o topo do curso e o carrossel da home no celular |
 | `conteudo/imagens/professores/<slug>.jpg` | 1080 × 1080 | Card do professor (a foto já traz o nome gravado) |
 | `conteudo/imagens/professores/<slug>-cena.jpg` | 940 × 788 | Topo da página do professor e bloco "Quem dá o curso" |
 
-- JPG ou WebP, até ~300 KB (o site gera sozinho versões menores e mais leves).
+- Mande sempre as duas imagens do curso. No celular em pé, o topo usa o pôster, porque a horizontal
+  cortada numa tela estreita mostraria só a metade escura da ilustração. Sem a horizontal, o topo
+  continua com a foto do professor.
+- JPG, PNG ou WebP (o site gera sozinho versões menores e mais leves). Os PNGs que saem dos geradores
+  de imagem costumam ter 2 a 3 MB: funcionam, mas pesam no repositório; em JPG ficam com ~200 KB.
 - **Não escreva o título na imagem**: o site escreve por cima. Veja os gabaritos em
   `conteudo/imagens/_modelos/`, que mostram onde fica o texto e onde pôr o assunto principal.
 - O nome do arquivo precisa seguir o padrão exato (`<slug>-horizontal.jpg`, `<slug>-poster.jpg`).

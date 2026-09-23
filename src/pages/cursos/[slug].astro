@@ -74,8 +74,8 @@ const jsonLd = {
 };
 ---
 <Base titulo={c.titulo} descricao={c.sinopseCurta} imagem={og} tipo="article" atual="cursos" jsonLd={jsonLd}>
-  <section class:list={['curso-topo', { 'curso-topo--sem-imagem': semImagem }]}>
-    <FundoImagem imagem={c.horizontal} foto={c.professor?.cena} />
+  <section class:list={['curso-topo', { 'curso-topo--sem-imagem': semImagem, 'curso-topo--arte': Boolean(c.horizontal && c.poster) }]}>
+    <FundoImagem imagem={c.horizontal} movel={c.poster} foto={c.professor?.cena} />
     <div class="conteiner curso-topo__conteudo">
       <div class="curso-topo__grade">
         <div class="curso-topo__texto">
@@ -114,9 +114,11 @@ const jsonLd = {
             )}
           </div>
         </div>
-        <div class="curso-topo__poster" aria-hidden="true">
-          <Capa curso={c} semLink carregamento="eager" tamanhos="232px" />
-        </div>
+        {!c.horizontal && (
+          <div class="curso-topo__poster" aria-hidden="true">
+            <Capa curso={c} semLink carregamento="eager" tamanhos="232px" />
+          </div>
+        )}
       </div>
     </div>
   </section>

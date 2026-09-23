@@ -36,12 +36,12 @@ const TEMPO = 8000;
   <section class="vitrine" data-vitrine data-tempo={TEMPO} aria-roledescription="carrossel" aria-label="Cursos em destaque">
     {destaques.map((c, i) => (
       <article
-        class:list={['vitrine__slide', { ativo: i === 0 }]}
+        class:list={['vitrine__slide', { ativo: i === 0, 'vitrine__slide--arte': Boolean(c.horizontal && c.poster) }]}
         aria-roledescription="slide"
         aria-label={`${i + 1} de ${destaques.length}: ${c.titulo}`}
         data-slide
       >
-        <FundoImagem imagem={c.horizontal} foto={c.professor?.cena} carregamento={i === 0 ? 'eager' : 'lazy'} />
+        <FundoImagem imagem={c.horizontal} movel={c.poster} foto={c.professor?.cena} carregamento={i === 0 ? 'eager' : 'lazy'} />
         <div class="vitrine__conteudo">
           <span class="sobretitulo">Em destaque · {c.area}</span>
           <h2 class="vitrine__titulo">{c.titulo}</h2>

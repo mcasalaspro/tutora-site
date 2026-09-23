@@ -620,14 +620,14 @@ a.chip:hover {
   background: linear-gradient(to top, rgba(23, 23, 38, 0.96) 8%, rgba(23, 23, 38, 0));
 }
 
+/* mesma margem e mesmo rodapé (professor · aulas) da capa provisória, para a fileira ficar uniforme */
 .poster__info {
   position: absolute;
-  left: 7cqw;
-  right: 7cqw;
-  bottom: 7cqw;
+  left: 8cqw;
+  right: 8cqw;
+  bottom: 8cqw;
   display: flex;
   flex-direction: column;
-  gap: 4px;
 }
 
 .poster__titulo {
@@ -639,10 +639,8 @@ a.chip:hover {
   text-wrap: balance;
 }
 
-.poster__prof {
-  font-size: clamp(0.66rem, 6cqw, 0.82rem);
-  font-weight: 600;
-  color: var(--texto-2);
+.poster__rodape {
+  color: var(--branco);
 }
 
 .poster__selos {
@@ -1024,7 +1022,12 @@ a.chip:hover {
   background: var(--azul);
 }
 
-.fundo-img > img {
+/* a imagem vem dentro de <picture> (pôster no celular); o picture não ocupa caixa própria */
+.fundo-img picture {
+  display: contents;
+}
+
+.fundo-img img {
   position: absolute;
   inset: 0;
   width: 100%;
@@ -1034,7 +1037,7 @@ a.chip:hover {
 }
 
 /* foto do professor com filtro de cor (brandbook: bloco de cor no modo "Color") */
-.fundo-img--tingido > img {
+.fundo-img--tingido img {
   filter: grayscale(1) contrast(1.08) brightness(0.92);
 }
 
@@ -1075,6 +1078,49 @@ a.chip:hover {
   .fundo-img__degrade {
     background:
       linear-gradient(0deg, var(--fundo) 6%, rgba(23, 23, 38, 0.86) 48%, rgba(23, 23, 38, 0.35) 100%);
+  }
+}
+
+/* imagem do curso: o assunto da ilustração fica no terço direito (a metade esquerda é escura, para o texto) */
+.fundo-img--arte img {
+  object-position: var(--foco, 72% 35%);
+}
+
+/* celular em pé com imagem do curso: entra o pôster (ver FundoImagem.astro), inteiro, numa faixa no alto;
+   o texto começa sobre o terço de baixo do pôster, que a ilustração deixa calmo e escuro */
+@media (max-width: 760px) and (orientation: portrait) {
+  :root {
+    --faixa-arte: min(150vw, 88vh);
+  }
+
+  .fundo-img--arte {
+    bottom: auto;
+    height: var(--faixa-arte);
+  }
+
+  .fundo-img--arte img {
+    object-position: 50% 20%;
+  }
+
+  .fundo-img--arte .fundo-img__degrade {
+    background:
+      linear-gradient(0deg, var(--fundo) 0%, rgba(29, 31, 53, 0.85) 20%, rgba(29, 31, 53, 0) 50%),
+      linear-gradient(180deg, rgba(23, 23, 38, 0.55) 0%, rgba(23, 23, 38, 0) 18%);
+  }
+
+  .curso-topo.curso-topo--arte {
+    min-height: 0;
+    align-items: start;
+  }
+
+  /* abaixo da faixa aparece o fundo da vitrine: tem de ser o mesmo tom em que a faixa termina */
+  .vitrine {
+    background: var(--fundo);
+  }
+
+  .curso-topo--arte .curso-topo__conteudo,
+  .vitrine__slide--arte .vitrine__conteudo {
+    padding-top: max(calc(var(--topo) + 48px), calc(var(--faixa-arte) * 0.6));
   }
 }
 
@@ -2321,12 +2367,12 @@ a.chip:hover {
   isolation: isolate;
 }
 
-.prof-topo .fundo-img > img {
+.prof-topo .fundo-img img {
   object-position: 70% 30%;
 }
 
 @media (min-width: 801px) {
-  .prof-topo .fundo-img > img {
+  .prof-topo .fundo-img img {
     left: 34%;
     width: 66%;
     -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 32%);
