@@ -28,6 +28,8 @@ rem ---- Dropbox ou antivirus prendem essas pastas e ele fica perguntando
 rem ---- "Should I try again? y/n". Desligamos a arrumacao automatica e a pergunta,
 rem ---- e tambem os avisos inofensivos de LF/CRLF.
 set "GIT_ASK_YESNO=false"
+rem ---- Sem paginador: listas longas nao param a janela em "(END)".
+git config core.pager ""
 git config gc.auto 0
 git config maintenance.auto false
 git config core.safecrlf false
@@ -36,7 +38,7 @@ git add -A
 git diff --cached --quiet
 if errorlevel 1 (
   echo  Arquivos alterados:
-  git diff --cached --name-status
+  git --no-pager diff --cached --name-status
   echo.
   set "MSG="
   set /p "MSG= Descreva a alteracao em poucas palavras (ou so Enter): "
