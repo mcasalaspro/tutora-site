@@ -33,7 +33,7 @@ const c = cfg.contato;
           <li><a href={url('/professores/')}>Professores</a></li>
           <li><a href={url('/quiz/')}>Quiz</a></li>
           <li><a href={url('/descubra/')}>Descubra seu curso</a></li>
-          <li><a href={url('/#assinatura')}>Assinatura</a></li>
+          <li><a href={url('/#acesso-completo')}>{cfg.oferta.acesso_titulo}</a></li>
         </ul>
       </div>
       <div>
@@ -55,7 +55,7 @@ const c = cfg.contato;
     </div>
     <div class="rodape__base">
       <span>© {ano} {cfg.nome}. Todos os direitos reservados.</span>
-      <span>Compras processadas pela Hotmart.</span>
+      <span>Compras processadas pela Hotmart. <a href={url('/privacidade/')}>Política de privacidade</a></span>
     </div>
   </div>
 </footer>

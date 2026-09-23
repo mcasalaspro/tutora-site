@@ -36,9 +36,10 @@ const dados = JSON.stringify({
 }).replace(/</g, '\\u003c');
 ---
 <Base titulo={q.titulo} descricao={q.subtitulo || 'Quiz com perguntas dos cursos da Tutora.'} topoSolido atual="quiz">
-  <div class="conteiner quiz-geral" data-quiz-geral>
+  <div class="conteiner quiz-geral" data-quiz-geral data-fase="escolha">
     <script type="application/json" data-dados set:html={dados}></script>
-    <header class="cab-pagina">
+    <!-- durante o jogo e no resultado, o cabeçalho sai da tela (continua para leitores de tela) para tudo caber sem rolar -->
+    <header class="cab-pagina cab-pagina--compacta qg-cab">
       <span class="sobretitulo">Quiz</span>
       <h1>{q.titulo}</h1>
       {q.subtitulo && <p>{q.subtitulo}</p>}
@@ -55,15 +56,17 @@ const dados = JSON.stringify({
           </button>
         ))}
       </div>
-      <h2 class="qg-passo"><span aria-hidden="true">2</span> Quantas perguntas?</h2>
-      <div class="qg-qtd" role="radiogroup" aria-label="Número de perguntas">
-        {q.quantidades.map((n, i) => (
-          <button type="button" class="qg-qtd__op" role="radio" aria-checked={i === 0 ? 'true' : 'false'} data-qtd={n}>{n}</button>
-        ))}
-      </div>
-      <div class="qg-comecar">
-        <button class="botao botao--laranja" type="button" data-comecar><Icone nome="play" /> Começar o quiz</button>
-        <p class="qg-aviso" data-aviso role="status"></p>
+      <div class="qg-linha">
+        <h2 class="qg-passo"><span aria-hidden="true">2</span> Quantas perguntas?</h2>
+        <div class="qg-qtd" role="radiogroup" aria-label="Número de perguntas">
+          {q.quantidades.map((n, i) => (
+            <button type="button" class="qg-qtd__op" role="radio" aria-checked={i === 0 ? 'true' : 'false'} data-qtd={n}>{n}</button>
+          ))}
+        </div>
+        <div class="qg-comecar">
+          <p class="qg-aviso" data-aviso role="status"></p>
+          <button class="botao botao--laranja" type="button" data-comecar><Icone nome="play" /> Começar o quiz</button>
+        </div>
       </div>
     </section>
 
@@ -72,27 +75,30 @@ const dados = JSON.stringify({
         <div class="quiz__cab">
           <div class="quiz__progresso" data-progresso aria-hidden="true"></div>
           <span class="chip" data-contador></span>
+          <button class="quiz__sair" type="button" data-sair><Icone nome="seta-esq" /> Trocar de tema</button>
         </div>
         <span class="sobretitulo" data-tema-nome></span>
         <h2 class="quiz__enunciado" data-enunciado tabindex="-1"></h2>
         <div class="quiz__opcoes" data-opcoes role="group" aria-label="Alternativas"></div>
-        <div class="quiz__retorno" data-retorno hidden aria-live="polite">
-          <strong data-veredito></strong>
-          <p data-explicacao></p>
+        <div class="quiz__retorno" data-retorno hidden>
+          <div class="quiz__retorno-txt">
+            <strong data-veredito></strong>
+            <p data-explicacao></p>
+          </div>
+          <button class="botao botao--laranja" type="button" data-proxima></button>
         </div>
-        <div class="quiz__rodape">
-          <button class="botao botao--laranja" type="button" data-proxima hidden></button>
-          <button class="botao botao--vidro botao--pequeno" type="button" data-sair>Trocar de tema</button>
-        </div>
+        <p class="sr-only" aria-live="polite" data-anuncio></p>
       </div>
       <aside class="qg-curso" data-curso aria-label="Curso que trata deste tema"></aside>
     </section>
 
-    <section class="qg-tela" data-tela="fim" hidden aria-label="Resultado">
+    <section class="qg-tela qg-fim-tela" data-tela="fim" hidden aria-label="Resultado">
       <div class="quiz qg-fim">
         <span class="sobretitulo" data-fim-tema></span>
-        <p class="quiz__placar" data-placar></p>
-        <h2 class="quiz__enunciado" data-mensagem tabindex="-1"></h2>
+        <div class="qg-fim__topo">
+          <p class="quiz__placar" data-placar></p>
+          <h2 class="quiz__enunciado" data-mensagem tabindex="-1"></h2>
+        </div>
         <h3 class="qg-sub">Seu placar por área</h3>
         <div class="qg-areas" data-areas></div>
         <div class="quiz__rodape">
@@ -155,15 +161,12 @@ const dados = JSON.stringify({
     const $ = <T extends HTMLElement = HTMLElement>(s: string) => raiz.querySelector<T>(s)!;
     const $$ = <T extends HTMLElement = HTMLElement>(s: string) => [...raiz.querySelectorAll<T>(s)];
     const telas = $$('[data-tela]');
-    // Troca de tela; se o começo da tela nova não estiver bem à vista, rola até ele.
+    // Troca de tela. No jogo e no resultado o cabeçalho da página sai de cena (o CSS usa data-fase),
+    // então a tela nova começa logo abaixo do topo: basta voltar ao início da página.
     const mostrarTela = (nome: string) => {
       telas.forEach((t) => (t.hidden = t.dataset.tela !== nome));
-      const tela = telas.find((t) => t.dataset.tela === nome);
-      if (!tela) return;
-      const r = tela.getBoundingClientRect();
-      if (r.top < 70 || r.top > window.innerHeight * 0.35) {
-        window.scrollTo({ top: Math.max(0, r.top + window.scrollY - 90), behavior: 'smooth' });
-      }
+      raiz.dataset.fase = nome;
+      if (window.scrollY > 0) window.scrollTo({ top: 0 });
     };
 
     const sortear = <T,>(l: T[]): T[] => {
@@ -301,7 +304,7 @@ const dados = JSON.stringify({
         opcoes.appendChild(b);
       });
       $('[data-retorno]').hidden = true;
-      $('[data-proxima]').hidden = true;
+      $('[data-anuncio]').textContent = '';
       if (cursoNaTela !== p.curso) {
         const lado = $('[data-curso]');
         lado.replaceChildren(...[cartao(p.curso)].filter((x): x is HTMLElement => Boolean(x)));
@@ -323,12 +326,16 @@ const dados = JSON.stringify({
       ret.hidden = false;
       ret.className = 'quiz__retorno ' + (certo ? 'acertou' : 'errou');
       const frases = certo ? ACERTOS : ERROS;
-      $('[data-veredito]').textContent = frases[Math.floor(Math.random() * frases.length)];
+      const veredito = frases[Math.floor(Math.random() * frases.length)];
+      $('[data-veredito]').textContent = veredito;
       $('[data-explicacao]').textContent = p.x;
+      $('[data-anuncio]').textContent = `${veredito} ${p.x}`;
       const prox = $('[data-proxima]');
-      prox.hidden = false;
       prox.textContent = atual + 1 < rodada.length ? 'Próxima pergunta →' : 'Ver meu resultado →';
       prox.focus({ preventScroll: true });
+      // no celular a explicação pode ficar abaixo da dobra: traz o retorno (e o botão) para a vista
+      const r = ret.getBoundingClientRect();
+      if (r.bottom > window.innerHeight) ret.scrollIntoView({ block: 'end', behavior: 'smooth' });
     }
 
     function fim() {
@@ -406,6 +413,14 @@ const dados = JSON.stringify({
             curso: candidatos[0][0],
           });
         }
+      }
+      // tema de uma área só: ponto forte e ponto fraco caem na mesma área, então os títulos citam o curso
+      if (sug.length === 2 && forte && fraca && forte[0] === fraca[0]) {
+        const nome = (s: string) => dados.cursos[s]?.t ?? s;
+        sug[0].titulo = `Seu ponto forte: ${nome(sug[0].curso)}`;
+        sug[0].texto = 'Foi o assunto em que você mais acertou. Este curso leva adiante o que você já sabe.';
+        sug[1].titulo = `Para aprofundar: ${nome(sug[1].curso)}`;
+        sug[1].texto = 'Foi o assunto em que você mais errou. Este curso responde a essas perguntas, e a muitas outras.';
       }
       const caixa = $('[data-sugestoes]');
       caixa.innerHTML = '';

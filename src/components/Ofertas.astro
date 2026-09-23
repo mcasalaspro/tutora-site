@@ -1,13 +1,16 @@
 ---
 /**
- * Cartões de compra: curso avulso + assinatura (preços e links vêm de conteudo/precos.csv).
- * Sem link de compra, o cartão mostra "Em breve" e, no lugar do botão de compra, um "Avise-me quando abrir".
+ * Cartões de compra do curso (preços e links vêm de conteudo/precos.csv):
+ *   - Curso avulso (quando o curso tem produto próprio na Hotmart)
+ *   - Combo (quando o curso faz parte de um, ex.: Um Passeio pela História)
+ *   - Acesso Completo (todos os cursos)
+ * Sem link de compra nem combo, o cartão do avulso mostra "Em breve" e um "Avise-me quando abrir".
  */
 import Icone from './Icone.astro';
-import type { Curso } from '../lib/catalogo';
-import { ofertaDe } from '../lib/precos';
+import { cursos, type Curso } from '../lib/catalogo';
+import { acessoCompleto, combosDoCurso } from '../lib/precos';
 import { config, linkAviso } from '../lib/config';
-import { plural } from '../lib/formatar';
+import { plural, url, duracaoTotal } from '../lib/formatar';
 
 interface Props {
   curso: Curso;
@@ -16,67 +19,114 @@ interface Props {
 const { curso, totalCursos } = Astro.props;
 const cfg = config().oferta;
 const av = curso.oferta;
-const as = ofertaDe('assinatura');
-// "Compra segura pela Hotmart" só faz sentido quando já existe o link de compra
-const semHotmart = (lista: string[], disponivel: boolean) => (disponivel ? lista : lista.filter((t) => !/hotmart/i.test(t)));
-const itensAvulso = semHotmart(cfg.avulso_itens, av.disponivel).map((t) =>
+const ac = acessoCompleto();
+const lista = await cursos();
+const porSlug = new Map(lista.map((c) => [c.slug, c]));
+const combos = combosDoCurso(curso.slug).map((cb) => {
+  const itens = cb.cursos.map((s) => porSlug.get(s)).filter((c): c is Curso => Boolean(c));
+  const aulas = itens.reduce((n, c) => n + c.nAulas, 0);
+  const minutos = itens.reduce((n, c) => n + c.minutos, 0);
+  return { ...cb, itens, aulas, duracao: duracaoTotal(minutos) };
+});
+// o cartão do avulso aparece quando há produto avulso, ou quando não há nenhum combo (aí mostra "Em breve")
+const mostrarAvulso = av.disponivel || combos.length === 0;
+const nCartoes = (mostrarAvulso ? 1 : 0) + combos.length + 1;
+
+// "Compra segura pela Hotmart" e a garantia só fazem sentido quando já existe o link de compra
+const soComLink = (lista: string[], disponivel: boolean) =>
+  disponivel ? lista : lista.filter((t) => !/hotmart|garantia/i.test(t));
+const itensAvulso = soComLink(cfg.avulso_itens, av.disponivel).map((t) =>
   t.replace('Todas as aulas deste curso em vídeo', `${plural(curso.nAulas, 'aula')} em vídeo${curso.duracaoTexto ? ` (${curso.duracaoTexto})` : ''}`),
 );
-const itensAssinatura = semHotmart(cfg.assinatura_itens, as.disponivel).map((t) =>
+const itensAcesso = soComLink(cfg.acesso_itens, ac.disponivel).map((t) =>
   t.replace('Acesso a todos os cursos do catálogo', `Acesso a todos os ${totalCursos} cursos do catálogo`),
 );
 const avisoCurso = linkAviso(`Aviso de inscrições: ${curso.titulo}`);
-const avisoAssinatura = linkAviso('Aviso de inscrições: assinatura');
+const avisoAcesso = linkAviso(`Aviso de inscrições: ${cfg.acesso_titulo}`);
 const externo = (l: string) => (/^https?:/.test(l) ? { target: '_blank', rel: 'noopener' } : {});
 ---
-<div class="ofertas">
-  <article class="oferta">
-    <span class="sobretitulo">{cfg.avulso_titulo}</span>
-    <h3>{curso.titulo}</h3>
-    {av.preco ? (
-      <p class="oferta__valor">{av.preco}</p>
-    ) : av.disponivel ? (
-      <p class="oferta__valor oferta__valor--breve">Consulte na Hotmart</p>
-    ) : (
-      <span class="oferta__breve">Em breve</span>
-    )}
-    {av.parcelado && <p class="oferta__parcelado">{av.parcelado}</p>}
-    <ul class="lista-check">
-      {itensAvulso.map((t) => <li><Icone nome="check" /><span>{t}</span></li>)}
-    </ul>
-    {av.disponivel ? (
-      <a class="botao botao--laranja botao--bloco" href={av.link} target="_blank" rel="noopener">
-        <Icone nome="carrinho" /> Comprar na Hotmart
+<div class:list={['ofertas', { 'ofertas--3': nCartoes >= 3 }]}>
+  {mostrarAvulso && (
+    <article class="oferta">
+      <span class="sobretitulo">{cfg.avulso_titulo}</span>
+      <h3>{curso.titulo}</h3>
+      {av.preco ? (
+        <p class="oferta__valor">{av.preco}</p>
+      ) : av.disponivel ? (
+        <p class="oferta__valor oferta__valor--breve">Consulte na Hotmart</p>
+      ) : (
+        <span class="oferta__breve">Em breve</span>
+      )}
+      {av.parcelado && av.disponivel && <p class="oferta__parcelado">{av.parcelado}</p>}
+      <ul class="lista-check">
+        {itensAvulso.map((t) => <li><Icone nome="check" /><span>{t}</span></li>)}
+      </ul>
+      {av.disponivel ? (
+        <a class="botao botao--laranja botao--bloco" href={av.link} target="_blank" rel="noopener">
+          <Icone nome="carrinho" /> Comprar este curso
+        </a>
+      ) : avisoCurso ? (
+        <a class="botao botao--contorno botao--bloco" href={avisoCurso} {...externo(avisoCurso)}>
+          <Icone nome="email" /> {cfg.texto_aviso}
+        </a>
+      ) : null}
+      {av.disponivel && av.nomeHotmart && <p class="oferta__nota">Na Hotmart, este curso aparece como “{av.nomeHotmart}”.</p>}
+    </article>
+  )}
+
+  {combos.map((cb) => (
+    <article class="oferta oferta--combo">
+      <span class="oferta__selo chip">Combo · {plural(cb.itens.length, 'curso')}</span>
+      <span class="sobretitulo">Combo</span>
+      <h3>{cb.titulo}</h3>
+      {cb.descricao && <p class="oferta__desc">{cb.descricao}</p>}
+      {cb.preco ? <p class="oferta__valor">{cb.preco}</p> : <p class="oferta__valor oferta__valor--breve">Consulte na Hotmart</p>}
+      {cb.parcelado && <p class="oferta__parcelado">{cb.parcelado}</p>}
+      <ul class="lista-check">
+        <li><Icone nome="check" /><span>{plural(cb.itens.length, 'curso')}, {plural(cb.aulas, 'aula')} em vídeo{cb.duracao ? ` (${cb.duracao})` : ''}, incluindo este</span></li>
+        {cfg.combo_itens.map((t) => <li><Icone nome="check" /><span>{t}</span></li>)}
+      </ul>
+      <details class="oferta__cursos">
+        <summary>Ver os {plural(cb.itens.length, 'curso')} do combo</summary>
+        <ol>
+          {cb.itens.map((c) => (
+            <li>
+              {c.slug === curso.slug ? <strong>{c.titulo} <span>(este curso)</span></strong> : <a href={url(`/cursos/${c.slug}/`)}>{c.titulo}</a>}
+            </li>
+          ))}
+        </ol>
+      </details>
+      <a class="botao botao--laranja botao--bloco" href={cb.link} target="_blank" rel="noopener">
+        <Icone nome="carrinho" /> Comprar o combo
       </a>
-    ) : avisoCurso ? (
-      <a class="botao botao--contorno botao--bloco" href={avisoCurso} {...externo(avisoCurso)}>
-        <Icone nome="email" /> {cfg.texto_aviso}
-      </a>
-    ) : null}
-  </article>
-  <article class="oferta oferta--assinatura" id="assinatura-curso">
+      {cb.nomeHotmart && <p class="oferta__nota">Na Hotmart, aparece como “{cb.nomeHotmart}”.</p>}
+    </article>
+  ))}
+
+  <article class="oferta oferta--acesso" id="acesso-completo-curso">
     <span class="oferta__selo chip chip--laranja">Todos os cursos</span>
-    <span class="sobretitulo">{cfg.assinatura_titulo}</span>
-    <h3>Assine e estude tudo</h3>
-    {as.preco ? (
-      <p class="oferta__valor">{as.preco}</p>
-    ) : as.disponivel ? (
+    <span class="sobretitulo">{cfg.acesso_titulo}</span>
+    <h3>Os {totalCursos} cursos da Tutora</h3>
+    {ac.preco ? (
+      <p class="oferta__valor">{ac.preco}</p>
+    ) : ac.disponivel ? (
       <p class="oferta__valor oferta__valor--breve">Consulte na Hotmart</p>
     ) : (
       <span class="oferta__breve">Em breve</span>
     )}
-    {as.parcelado && <p class="oferta__parcelado">{as.parcelado}</p>}
+    {ac.parcelado && ac.disponivel && <p class="oferta__parcelado">{ac.parcelado}</p>}
     <ul class="lista-check">
-      {itensAssinatura.map((t) => <li><Icone nome="check" /><span>{t}</span></li>)}
+      {itensAcesso.map((t) => <li><Icone nome="check" /><span>{t}</span></li>)}
     </ul>
-    {as.disponivel ? (
-      <a class="botao botao--laranja botao--bloco" href={as.link} target="_blank" rel="noopener">
-        <Icone nome="estrela" /> Assinar na Hotmart
+    {ac.disponivel ? (
+      <a class="botao botao--laranja botao--bloco" href={ac.link} target="_blank" rel="noopener">
+        <Icone nome="estrela" /> Quero o {cfg.acesso_titulo}
       </a>
-    ) : avisoAssinatura ? (
-      <a class="botao botao--contorno botao--bloco" href={avisoAssinatura} {...externo(avisoAssinatura)}>
+    ) : avisoAcesso ? (
+      <a class="botao botao--contorno botao--bloco" href={avisoAcesso} {...externo(avisoAcesso)}>
         <Icone nome="email" /> {cfg.texto_aviso}
       </a>
     ) : null}
+    {ac.disponivel && ac.nomeHotmart && <p class="oferta__nota">Na Hotmart, aparece como “{ac.nomeHotmart}”.</p>}
   </article>
 </div>

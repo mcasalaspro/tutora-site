@@ -9,7 +9,7 @@ import Icone from '../components/Icone.astro';
 import ProfDestaque from '../components/ProfDestaque.astro';
 import { cursos, professores, totais } from '../lib/catalogo';
 import { config, linkAviso } from '../lib/config';
-import { ofertaDe } from '../lib/precos';
+import { acessoCompleto } from '../lib/precos';
 import { url, plural } from '../lib/formatar';
 
 const cfg = config();
@@ -27,8 +27,8 @@ const trilhas = cfg.trilhas
 const areas = cfg.areas
   .map((a) => ({ ...a, itens: lista.filter((c) => c.area === a.nome) }))
   .filter((a) => a.itens.length > 0);
-const assinatura = ofertaDe('assinatura');
-const aviso = linkAviso('Aviso de inscrições: assinatura');
+const acesso = acessoCompleto();
+const aviso = linkAviso(`Aviso de inscrições: ${cfg.oferta.acesso_titulo}`);
 const TEMPO = 8000;
 ---
 <Base titulo={cfg.nome} atual="inicio">
@@ -146,21 +146,25 @@ const TEMPO = 8000;
     </div>
   </section>
 
-  <section class="secao" id="assinatura" style="padding-bottom:0">
+  <section class="secao" id="acesso-completo" style="padding-bottom:0">
+    <span id="assinatura" aria-hidden="true"></span>
     <div class="conteiner">
       <div class="chamada">
         <div>
-          <span class="sobretitulo">Assinatura</span>
+          <span class="sobretitulo">{cfg.oferta.acesso_titulo}</span>
           <h2 style="margin-top:12px">Todos os {tot.cursos} cursos numa assinatura só.</h2>
           <p>
-            {assinatura.preco
-              ? `Por ${assinatura.preco}${assinatura.parcelado ? ` (${assinatura.parcelado})` : ''}, você acessa o catálogo inteiro da Tutora.`
-              : 'Acesse o catálogo inteiro da Tutora com um único plano.'}
+            {acesso.preco
+              ? `Por ${acesso.preco}${acesso.parcelado ? ` ${acesso.parcelado}` : ''}, você estuda o catálogo inteiro da ${cfg.nome}: ${tot.aulas} aulas com ${tot.professores} professores.`
+              : `Estude o catálogo inteiro da ${cfg.nome} com um único plano.`}
           </p>
         </div>
         <div class="chamada__acoes">
-          {assinatura.disponivel ? (
-            <a class="botao botao--escuro" href={assinatura.link} target="_blank" rel="noopener"><Icone nome="estrela" /> Assinar na Hotmart</a>
+          {acesso.disponivel ? (
+            <>
+              <a class="botao botao--escuro" href={acesso.link} target="_blank" rel="noopener"><Icone nome="estrela" /> Quero o {cfg.oferta.acesso_titulo}</a>
+              {acesso.nomeHotmart && <span class="chamada__nota">Na Hotmart, aparece como “{acesso.nomeHotmart}”.</span>}
+            </>
           ) : (
             <>
               <span class="chamada__breve">{cfg.oferta.texto_sem_link}</span>

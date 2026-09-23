@@ -2,9 +2,11 @@
  * Lê conteudo/precos.csv — a tabela central de preços e links da Hotmart.
  *
  * Aceita separador ";" (padrão do Excel em português) ou ",".
- * Colunas: slug; titulo; preco; preco_parcelado; link_hotmart; status; observacao
+ * Colunas: slug; titulo; preco; preco_parcelado; link_hotmart; status; nome_na_hotmart; cursos_do_combo; descricao; observacao
  *   status: ativo (padrão) | em-breve | oculto (esconde o curso do site)
- * A linha com slug "assinatura" define o plano de acesso a todos os cursos.
+ * Linhas especiais:
+ *   acesso-completo      o plano que dá acesso a todos os cursos (a antiga linha "assinatura" também vale)
+ *   combo-<nome>         um pacote de cursos; os cursos entram na coluna cursos_do_combo, separados por espaço
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -16,6 +18,9 @@ export interface Preco {
   preco_parcelado: string;
   link_hotmart: string;
   status: 'ativo' | 'em-breve' | 'oculto';
+  nome_na_hotmart: string;
+  cursos_do_combo: string[];
+  descricao: string;
   observacao: string;
 }
 
@@ -62,8 +67,9 @@ export function precos(): Map<string, Preco> {
   cache = new Map();
   if (!fs.existsSync(arquivo)) return cache;
   for (const r of lerCsv(fs.readFileSync(arquivo, 'utf8'))) {
-    const slug = (r.slug ?? '').trim();
+    let slug = (r.slug ?? '').trim();
     if (!slug) continue;
+    if (slug === 'assinatura') slug = 'acesso-completo';
     const st = (r.status ?? '').trim().toLowerCase();
     cache.set(slug, {
       slug,
@@ -72,6 +78,9 @@ export function precos(): Map<string, Preco> {
       preco_parcelado: r.preco_parcelado ?? '',
       link_hotmart: r.link_hotmart ?? '',
       status: st === 'oculto' ? 'oculto' : st === 'em-breve' || st === 'em breve' ? 'em-breve' : 'ativo',
+      nome_na_hotmart: (r.nome_na_hotmart ?? '').trim(),
+      cursos_do_combo: (r.cursos_do_combo ?? '').split(/[\s,|]+/).map((s) => s.trim()).filter(Boolean),
+      descricao: (r.descricao ?? '').trim(),
       observacao: r.observacao ?? '',
     });
   }
@@ -100,16 +109,24 @@ export function formatarPreco(valor: string | undefined): string {
   return v;
 }
 
+/** "R$ 199,40" → "199.40" (para dados estruturados); vazio se não for número. */
+export function precoNumerico(preco: string): string {
+  const m = preco.replace(/[^\d,.]/g, '').replace(/\.(?=\d{3}(\D|$))/g, '').replace(',', '.');
+  return /^\d+(\.\d+)?$/.test(m) ? m : '';
+}
+
 export interface OfertaCurso {
   preco: string;
   parcelado: string;
   link: string;
   disponivel: boolean;
   status: Preco['status'];
+  /** nome do produto na Hotmart, quando é diferente do nome no site (a página avisa o comprador) */
+  nomeHotmart: string;
 }
 
 export function ofertaDe(slug: string): OfertaCurso {
-  const p = precos().get(slug);
+  const p = precos().get(slug === 'assinatura' ? 'acesso-completo' : slug);
   const link = p?.link_hotmart ?? '';
   const status = p?.status ?? 'ativo';
   return {
@@ -118,5 +135,31 @@ export function ofertaDe(slug: string): OfertaCurso {
     link: linkValido(link) ? link.trim() : '',
     disponivel: linkValido(link) && status === 'ativo',
     status,
+    nomeHotmart: p?.nome_na_hotmart ?? '',
   };
+}
+
+/** O plano de acesso a todos os cursos. */
+export function acessoCompleto(): OfertaCurso {
+  return ofertaDe('acesso-completo');
+}
+
+export interface OfertaCombo extends OfertaCurso {
+  slug: string;
+  titulo: string;
+  descricao: string;
+  cursos: string[];
+}
+
+/** Todos os combos com link de compra ativo. */
+export function combos(): OfertaCombo[] {
+  return [...precos().values()]
+    .filter((p) => p.slug.startsWith('combo-') && p.cursos_do_combo.length > 0)
+    .map((p) => ({ ...ofertaDe(p.slug), slug: p.slug, titulo: p.titulo || p.slug, descricao: p.descricao, cursos: p.cursos_do_combo }))
+    .filter((c) => c.disponivel);
+}
+
+/** Combos (ativos) que incluem este curso. */
+export function combosDoCurso(slug: string): OfertaCombo[] {
+  return combos().filter((c) => c.cursos.includes(slug));
 }

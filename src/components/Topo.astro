@@ -3,7 +3,7 @@ import Logo from './Logo.astro';
 import Icone from './Icone.astro';
 import { url } from '../lib/formatar';
 import { config } from '../lib/config';
-import { ofertaDe } from '../lib/precos';
+
 import { cursos } from '../lib/catalogo';
 
 interface Props {
@@ -12,7 +12,6 @@ interface Props {
 }
 const { solido = false, atual = '' } = Astro.props;
 const cfg = config();
-const assinatura = ofertaDe('assinatura');
 const lista = await cursos();
 const areasComCursos = cfg.areas.filter((a) => lista.some((c) => c.area === a.nome));
 const itens = [
@@ -37,12 +36,7 @@ const itens = [
       <Icone nome="busca" />
       <span>Buscar</span>
     </a>
-    <a
-      class="botao botao--laranja botao--pequeno topo__assinar"
-      href={assinatura.link || url('/#assinatura')}
-      target={assinatura.link ? '_blank' : undefined}
-      rel={assinatura.link ? 'noopener' : undefined}
-    >Assinar</a>
+    <a class="botao botao--laranja botao--pequeno topo__assinar" href={url('/#acesso-completo')}>Assinar</a>
     <button class="topo__menu-botao" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="menu-movel" data-abrir-menu>
       <Icone nome="menu" />
     </button>
@@ -64,7 +58,7 @@ const itens = [
       <a class="chip" href={url(`/areas/${a.slug}/`)}>{a.nome}</a>
     ))}
   </div>
-  <a class="botao botao--laranja" href={assinatura.link || url('/#assinatura')}>Assinar a Tutora</a>
+  <a class="botao botao--laranja" href={url('/#acesso-completo')}>Conhecer o {cfg.oferta.acesso_titulo}</a>
 </div>
 
 <script>

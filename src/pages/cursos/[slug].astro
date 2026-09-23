@@ -14,7 +14,7 @@ import Videos from '../../components/Videos.astro';
 import { videosDe } from '../../lib/videos';
 import { cursos, cursoPorSlug, relacionados, doMesmoProfessor, totais, rotuloProfs } from '../../lib/catalogo';
 import { config } from '../../lib/config';
-import { ofertaDe } from '../../lib/precos';
+import { acessoCompleto, combosDoCurso, precoNumerico } from '../../lib/precos';
 import { url, paragrafos, plural, iniciais } from '../../lib/formatar';
 
 export async function getStaticPaths() {
@@ -45,10 +45,17 @@ const secoes = [
   { id: 'inscricao', rotulo: 'Inscrição' },
 ];
 
-const ctaLink = c.oferta.disponivel ? c.oferta.link : '#inscricao';
-const ctaExterno = c.oferta.disponivel;
-const assinaturaDisponivel = ofertaDe('assinatura').disponivel;
-const algumaOferta = c.oferta.disponivel || assinaturaDisponivel;
+// Compra: curso avulso, combo (ex.: Um Passeio pela História) e Acesso Completo.
+// Os botões do topo, da ficha e da barra do celular levam à seção de inscrição, onde as opções aparecem lado a lado.
+const ac = acessoCompleto();
+const combosCurso = combosDoCurso(c.slug);
+const algumaOferta = c.oferta.disponivel || combosCurso.length > 0 || ac.disponivel;
+const principal = c.oferta.disponivel
+  ? { rotulo: cfg.oferta.avulso_titulo, valor: c.oferta.preco, detalhe: c.oferta.parcelado }
+  : combosCurso[0]
+    ? { rotulo: `No combo ${combosCurso[0].titulo}`, valor: combosCurso[0].preco, detalhe: `${plural(combosCurso[0].cursos.length, 'curso')} · ${combosCurso[0].parcelado}` }
+    : null;
+const periodoAcesso = ac.parcelado.match(/^(por [^,;·]+)/i)?.[1] ?? '';
 const semImagem = !c.horizontal && !c.professor?.cena;
 
 const jsonLd = {
@@ -64,11 +71,11 @@ const jsonLd = {
     courseMode: 'online',
     ...(c.minutos ? { courseWorkload: `PT${Math.round(c.minutos / 60)}H` } : {}),
   },
-  ...(c.oferta.preco && c.oferta.disponivel
+  ...(c.oferta.disponivel && precoNumerico(c.oferta.preco)
     ? {
         offers: {
           '@type': 'Offer',
-          price: c.oferta.preco.replace(/[^\d,]/g, '').replace(',', '.'),
+          price: precoNumerico(c.oferta.preco),
           priceCurrency: 'BRL',
           url: c.oferta.link,
           category: 'Paid',
@@ -97,9 +104,9 @@ const jsonLd = {
             {c.lancamento && <span class="chip chip--novo">Novo</span>}
           </div>
           <div class="curso-topo__acoes">
-            <a class="botao botao--laranja" href={ctaLink} target={ctaExterno ? '_blank' : undefined} rel={ctaExterno ? 'noopener' : undefined}>
-              <Icone nome={ctaExterno ? 'carrinho' : 'seta-link'} />
-              {ctaExterno ? `Inscreva-se${c.oferta.preco ? ` · ${c.oferta.preco}` : ''}` : algumaOferta ? 'Ver opções de inscrição' : 'Quero fazer este curso'}
+            <a class="botao botao--laranja" href="#inscricao">
+              <Icone nome={algumaOferta ? 'carrinho' : 'seta-link'} />
+              {c.oferta.disponivel && c.oferta.preco ? `Inscreva-se · ${c.oferta.preco}` : algumaOferta ? 'Ver opções de inscrição' : 'Quero fazer este curso'}
             </a>
             {vids.length > 0 ? (
               <a class="botao botao--vidro" href="#videos"><Icone nome="play" /> {temAulaGratis ? 'Assistir aula grátis' : 'Ver a apresentação'}</a>
@@ -164,16 +171,22 @@ const jsonLd = {
           {c.formato && (<><dt>Formato</dt><dd class="ficha__formato">{c.formato}</dd></>)}
         </dl>
         <div class="ficha__preco">
-          {c.oferta.preco ? (
+          {principal ? (
             <>
-              <p class="ficha__valor">{c.oferta.preco}</p>
-              {c.oferta.parcelado ? <p class="ficha__parcelado">{c.oferta.parcelado}</p> : <p class="ficha__parcelado">no curso avulso</p>}
+              <span class="ficha__rotulo">{principal.rotulo}</span>
+              <p class="ficha__valor">{principal.valor || 'Preço na Hotmart'}</p>
+              {principal.detalhe && <p class="ficha__parcelado">{principal.detalhe}</p>}
             </>
           ) : (
-            <p class="ficha__parcelado">{c.oferta.disponivel ? 'Preço na Hotmart' : cfg.oferta.texto_sem_link}</p>
+            <p class="ficha__parcelado">{cfg.oferta.texto_sem_link}</p>
           )}
-          <a class="botao botao--laranja botao--bloco" href={ctaLink} target={ctaExterno ? '_blank' : undefined} rel={ctaExterno ? 'noopener' : undefined}>
-            {ctaExterno ? 'Comprar na Hotmart' : algumaOferta ? 'Ver opções de inscrição' : 'Saber quando abre'}
+          {ac.disponivel && ac.preco && (
+            <p class="ficha__alternativa">
+              {principal ? 'ou o ' : ''}<strong>{cfg.oferta.acesso_titulo}</strong>, com os {tot.cursos} cursos: {ac.preco}{periodoAcesso ? ` ${periodoAcesso}` : ''}
+            </p>
+          )}
+          <a class="botao botao--laranja botao--bloco" href="#inscricao">
+            {algumaOferta ? 'Ver opções de compra' : 'Saber quando abre'}
           </a>
           <a class="link-seta" style="margin-top:14px" href={url(`/cursos/${c.slug}/resumo/`)}>
             <Icone nome="documento" /> Resumo completo do curso
@@ -299,7 +312,13 @@ const jsonLd = {
           {algumaOferta ? (
             <>
               <h2 class="titulo-secao" style="margin-top:10px">Comece agora</h2>
-              <p>Compre só este curso ou assine a {cfg.nome} e tenha acesso a todo o catálogo.</p>
+              <p>
+                {c.oferta.disponivel
+                  ? `Compre só este curso ou escolha o ${cfg.oferta.acesso_titulo} e estude todos os ${tot.cursos} cursos da ${cfg.nome}.`
+                  : combosCurso[0]
+                    ? `Este curso faz parte do combo ${combosCurso[0].titulo}. Leve o combo ou escolha o ${cfg.oferta.acesso_titulo} e estude todos os ${tot.cursos} cursos da ${cfg.nome}.`
+                    : `Com o ${cfg.oferta.acesso_titulo}, você estuda todos os ${tot.cursos} cursos da ${cfg.nome}.`}
+              </p>
             </>
           ) : (
             <>
@@ -317,10 +336,16 @@ const jsonLd = {
     <div class="barra-compra" data-barra-compra>
       <div class="barra-compra__txt">
         <strong>{c.titulo}</strong>
-        <span>{c.oferta.preco || (c.oferta.disponivel ? 'Na Hotmart' : cfg.oferta.texto_sem_link)}</span>
+        <span>
+          {principal?.valor
+            ? `${principal.valor} · ${c.oferta.disponivel ? 'curso avulso' : 'no combo'}`
+            : ac.disponivel && ac.preco
+              ? `${cfg.oferta.acesso_titulo}: ${ac.preco}`
+              : cfg.oferta.texto_sem_link}
+        </span>
       </div>
-      <a class="botao botao--laranja botao--pequeno" href={ctaLink} target={ctaExterno ? '_blank' : undefined} rel={ctaExterno ? 'noopener' : undefined}>
-        {ctaExterno ? 'Inscrever-se' : algumaOferta ? 'Ver opções' : 'Saber mais'}
+      <a class="botao botao--laranja botao--pequeno" href="#inscricao">
+        {algumaOferta ? 'Ver opções' : 'Saber mais'}
       </a>
     </div>
   </div>

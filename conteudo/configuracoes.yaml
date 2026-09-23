@@ -61,20 +61,36 @@ trilhas:
       - o-grande-seculo-xix
       - inicio-seculo-xx-guerra-e-revolucao
 
-# O que aparece nos cartões de compra (preço e link ficam em precos.csv)
+# O que aparece nos cartões de compra (preços e links ficam em precos.csv)
 oferta:
   avulso_titulo: "Curso avulso"
   avulso_itens:
     - "Todas as aulas deste curso em vídeo"
+    - "7 dias de garantia"
     - "Compra segura pela Hotmart"
-  assinatura_titulo: "Assinatura Tutora"
-  assinatura_itens:
+  # Cartão do combo (ex.: Um Passeio pela História), nos cursos que fazem parte dele
+  combo_itens:
+    - "7 dias de garantia"
+    - "Compra segura pela Hotmart"
+  acesso_titulo: "Acesso Completo"
+  acesso_itens:
     - "Acesso a todos os cursos do catálogo"
+    - "Plano anual: renova até você cancelar"
+    - "7 dias de garantia"
     - "Compra segura pela Hotmart"
-  # Enquanto um curso (ou a assinatura) não tiver link da Hotmart no precos.csv:
+  # Enquanto um curso (ou o Acesso Completo) não tiver link da Hotmart no precos.csv:
   texto_sem_link: "Inscrições em breve"
   texto_espera: "As inscrições ainda não abriram. Se quiser, avisamos você quando abrirem."
   texto_aviso: "Avise-me quando abrir"
   # Para onde vai o botão "Avise-me": um link de WhatsApp, de formulário etc.
   # Se ficar "", o botão abre um e-mail para o endereço de contato acima.
   link_aviso: ""
+
+# Planilha "Meus leads": guarda as respostas de quem faz o "Descubra seu curso"
+# (e o nome e o e-mail, quando a pessoa quiser deixar). Como ligar: LEIA-ME, seção "Meus leads".
+# Enquanto link_planilha ficar "", o site não pede nome/e-mail e não envia nada.
+leads:
+  link_planilha: ""
+  titulo: "Quer receber novidades da Tutora?"
+  texto: "Opcional: deixe seu nome e e-mail para receber sugestões de cursos e novidades. Dá para cancelar quando quiser."
+  aviso: "Usamos seus dados só para falar com você sobre os cursos da Tutora."

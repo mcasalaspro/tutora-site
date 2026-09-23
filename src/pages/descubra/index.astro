@@ -8,9 +8,13 @@ import Capa from '../../components/Capa.astro';
 import Icone from '../../components/Icone.astro';
 import { cursos, nomesProfessores } from '../../lib/catalogo';
 import { descubra } from '../../lib/paginas-extras';
+import { config } from '../../lib/config';
 import { url, plural } from '../../lib/formatar';
 
 const d = descubra();
+// Planilha "Meus leads" (configuracoes.yaml): sem o link, o site não pede contato nem envia nada.
+const leads = config().leads;
+const comLeads = /^https:\/\/script\.google(usercontent)?\.com\//.test(leads.link_planilha);
 const lista = await cursos();
 const porSlug = new Map(lista.map((c) => [c.slug, c]));
 
@@ -34,34 +38,60 @@ const dados = JSON.stringify({
   cursos: dadosCursos,
   pontoDePartida: d.pontoDePartida.filter((s) => porSlug.has(s)),
   trilhas: d.trilhas.map((t) => ({ ...t, cursos: t.cursos.filter((s) => porSlug.has(s)) })).filter((t) => t.cursos.length > 1),
+  titulos: Object.fromEntries([...usados].map((s) => [s, porSlug.get(s)!.titulo])),
+  leads: comLeads ? leads.link_planilha : '',
 }).replace(/</g, '\\u003c');
 const nPerguntas = d.perguntas.length;
 ---
 <Base titulo="Descubra seu curso" descricao={d.subtitulo || d.titulo} topoSolido atual="descubra">
-  <div class="conteiner descubra" data-descubra>
+  <div class="conteiner descubra" data-descubra data-fase="perguntas">
     <script type="application/json" data-dados set:html={dados}></script>
-    <header class="cab-pagina">
-      <span class="sobretitulo">Descubra seu curso</span>
-      <h1>{d.titulo}</h1>
-      {d.subtitulo && <p>{d.subtitulo}</p>}
-      <p class="texto-3 dc-leva"><Icone nome="relogio" /> Cerca de 1 minuto · até {nPerguntas} perguntas</p>
-    </header>
+    <!-- no computador: título à esquerda e perguntas à direita, tudo numa tela só -->
+    <div class="dc-palco">
+      <header class="cab-pagina cab-pagina--compacta dc-cab-pagina">
+        <span class="sobretitulo">Descubra seu curso</span>
+        <h1>{d.titulo}</h1>
+        {d.subtitulo && <p>{d.subtitulo}</p>}
+        <p class="texto-3 dc-leva"><Icone nome="relogio" /> Cerca de 1 minuto · até {nPerguntas} perguntas</p>
+      </header>
 
-    <section class="dc-tela" data-tela="perguntas" aria-label="Perguntas">
-      <div class="dc-caixa">
-        <div class="dc-cab">
-          <div class="dc-progresso" aria-hidden="true"><i data-barra></i></div>
-          <span class="chip" data-passo></span>
+      <section class="dc-tela" data-tela="perguntas" aria-label="Perguntas">
+        <div class="dc-caixa">
+          <div class="dc-cab">
+            <div class="dc-progresso" aria-hidden="true"><i data-barra></i></div>
+            <span class="chip" data-passo></span>
+          </div>
+          <div data-etapa="pergunta">
+            <h2 class="dc-pergunta" data-pergunta tabindex="-1"></h2>
+            <p class="dc-ajuda" data-ajuda></p>
+            <div class="dc-opcoes" data-opcoes></div>
+          </div>
+          {comLeads && (
+            <form class="dc-contato" data-etapa="contato" hidden novalidate>
+              <h2 class="dc-pergunta" tabindex="-1" data-contato-titulo>{leads.titulo}</h2>
+              <p class="dc-ajuda">{leads.texto}</p>
+              <div class="dc-campos">
+                <label class="dc-campo">
+                  <span>Nome <small>(opcional)</small></span>
+                  <input name="nome" type="text" autocomplete="name" maxlength="80" />
+                </label>
+                <label class="dc-campo">
+                  <span>E-mail <small>(opcional)</small></span>
+                  <input name="email" type="email" autocomplete="email" inputmode="email" maxlength="120" aria-describedby="dc-erro-email" />
+                </label>
+                <label class="dc-isca" aria-hidden="true">Deixe em branco <input name="site" type="text" tabindex="-1" autocomplete="off" /></label>
+              </div>
+              <p class="dc-erro" id="dc-erro-email" data-erro hidden>Confira o e-mail: parece que falta alguma coisa.</p>
+              <p class="dc-privacidade">{leads.aviso} <a href={url('/privacidade/')}>Política de privacidade</a>.</p>
+            </form>
+          )}
+          <div class="dc-nav">
+            <button class="botao botao--vidro" type="button" data-voltar><Icone nome="seta-esq" /> Voltar</button>
+            <button class="botao botao--laranja" type="button" data-continuar></button>
+          </div>
         </div>
-        <h2 class="dc-pergunta" data-pergunta tabindex="-1"></h2>
-        <p class="dc-ajuda" data-ajuda></p>
-        <div class="dc-opcoes" data-opcoes></div>
-        <div class="dc-nav">
-          <button class="botao botao--vidro" type="button" data-voltar><Icone nome="seta-esq" /> Voltar</button>
-          <button class="botao botao--laranja" type="button" data-continuar></button>
-        </div>
-      </div>
-    </section>
+      </section>
+    </div>
 
     <section class="dc-tela" data-tela="resultado" hidden aria-label="Sugestões">
       <span class="sobretitulo">Resultado</span>
@@ -126,6 +156,9 @@ const nPerguntas = d.perguntas.length;
     cursos: Record<string, { tags: Record<string, number>; p: string }>;
     pontoDePartida: string[];
     trilhas: { nome: string; descricao: string; cursos: string[] }[];
+    titulos: Record<string, string>;
+    /** endereço da planilha "Meus leads" (vazio = não envia nada) */
+    leads: string;
   }
 
   const raiz = document.querySelector<HTMLElement>('[data-descubra]');
@@ -133,7 +166,10 @@ const nPerguntas = d.perguntas.length;
     const dados: Dados = JSON.parse(raiz.querySelector('[data-dados]')?.textContent || '{}');
     const $ = <T extends HTMLElement = HTMLElement>(s: string) => raiz.querySelector<T>(s)!;
     const respostas = new Map<string, Set<number>>(); // id da pergunta → índices escolhidos
-    let passo = 0;
+    const form = raiz.querySelector<HTMLFormElement>('[data-etapa="contato"]');
+    const comContato = Boolean(form && dados.leads);
+    const sessao = Math.random().toString(36).slice(2, 10);
+    let passo = 0; // índice nas perguntas visíveis; um a mais = etapa do contato (quando existe)
     let jaInteragiu = false; // na primeira pergunta, o foco fica onde a pessoa está
 
     const marcas = () => {
@@ -150,20 +186,39 @@ const nPerguntas = d.perguntas.length;
       const m = marcas();
       return dados.perguntas.filter((p) => !p.mostrarSe || m.has(p.mostrarSe));
     };
+    const naEtapaContato = () => comContato && passo >= visiveis().length;
 
+    // Fases: perguntas | resultado. No celular, depois da primeira resposta o cabeçalho sai de cena
+    // (data-andamento) para cada pergunta caber na tela; a página volta ao topo a cada passo.
     const mostrarTela = (nome: string) => {
       raiz.querySelectorAll<HTMLElement>('[data-tela]').forEach((t) => (t.hidden = t.dataset.tela !== nome));
-      const topo = raiz.getBoundingClientRect().top + window.scrollY - 80;
-      if (window.scrollY > topo) window.scrollTo({ top: Math.max(0, topo), behavior: 'smooth' });
+      raiz.dataset.fase = nome;
+      if (window.scrollY > 0) window.scrollTo({ top: 0 });
     };
 
     function desenhar() {
       const lista = visiveis();
-      passo = Math.min(passo, lista.length - 1);
+      const total = lista.length + (comContato ? 1 : 0);
+      passo = Math.min(passo, total - 1);
+      raiz!.toggleAttribute('data-andamento', passo > 0);
+      $('[data-barra]').style.width = `${Math.round((passo / total) * 100)}%`;
+      $('[data-voltar]').hidden = passo === 0;
+
+      if (naEtapaContato()) {
+        $('[data-passo]').textContent = 'Para terminar';
+        $('[data-etapa="pergunta"]').hidden = true;
+        form!.hidden = false;
+        $('[data-continuar]').textContent = 'Ver minhas sugestões →';
+        $('[data-contato-titulo]').focus({ preventScroll: true });
+        if (window.scrollY > 0) window.scrollTo({ top: 0 });
+        return;
+      }
+      if (form) form.hidden = true;
+      $('[data-etapa="pergunta"]').hidden = false;
+
       const p = lista[passo];
       const escolhidas = respostas.get(p.id) ?? new Set<number>();
       $('[data-passo]').textContent = `Pergunta ${passo + 1} de ${lista.length}`;
-      $('[data-barra]').style.width = `${Math.round((passo / lista.length) * 100)}%`;
       const titulo = $('[data-pergunta]');
       titulo.textContent = p.pergunta;
       const ajuda = $('[data-ajuda]');
@@ -172,6 +227,8 @@ const nPerguntas = d.perguntas.length;
       const caixa = $('[data-opcoes]');
       caixa.innerHTML = '';
       caixa.setAttribute('role', p.tipo === 'uma' ? 'radiogroup' : 'group');
+      // respostas curtas cabem em duas colunas no celular
+      caixa.classList.toggle('dc-opcoes--curtas', p.opcoes.every((o) => o.texto.length <= 26));
       caixa.setAttribute('aria-label', p.pergunta);
       p.opcoes.forEach((o, i) => {
         const b = document.createElement('button');
@@ -184,15 +241,17 @@ const nPerguntas = d.perguntas.length;
         b.addEventListener('click', () => escolher(p, i));
         caixa.appendChild(b);
       });
-      $('[data-voltar]').hidden = passo === 0;
       atualizarContinuar(p);
-      if (jaInteragiu) titulo.focus({ preventScroll: true });
+      if (jaInteragiu) {
+        titulo.focus({ preventScroll: true });
+        if (window.scrollY > 0) window.scrollTo({ top: 0 });
+      }
       jaInteragiu = true;
     }
 
     function atualizarContinuar(p: Pergunta) {
       const n = respostas.get(p.id)?.size ?? 0;
-      const ultimo = passo === visiveis().length - 1;
+      const ultimo = passo === visiveis().length - 1 && !comContato;
       $('[data-continuar]').textContent = n === 0 ? 'Pular' : ultimo ? 'Ver minhas sugestões →' : 'Continuar →';
     }
 
@@ -219,9 +278,26 @@ const nPerguntas = d.perguntas.length;
       if (p.tipo === 'uma') window.setTimeout(avancar, 260);
     }
 
+    // ── contato (opcional) ──
+    const emailValido = (e: string) => /^[^@\s]+@[^@\s]+\.[^@\s]{2,}$/.test(e);
+    function contatoOk(): boolean {
+      if (!form) return true;
+      const email = (form.elements.namedItem('email') as HTMLInputElement).value.trim();
+      const erro = $('[data-erro]');
+      const ok = !email || emailValido(email);
+      erro.hidden = ok;
+      (form.elements.namedItem('email') as HTMLInputElement).setAttribute('aria-invalid', String(!ok));
+      if (!ok) (form.elements.namedItem('email') as HTMLInputElement).focus();
+      return ok;
+    }
+
     function avancar() {
       const lista = visiveis();
-      if (passo < lista.length - 1) {
+      if (naEtapaContato()) {
+        if (contatoOk()) resultado();
+        return;
+      }
+      if (passo < lista.length - 1 || comContato) {
         passo++;
         desenhar();
       } else resultado();
@@ -265,6 +341,40 @@ const nPerguntas = d.perguntas.length;
       return el;
     }
 
+    // ── planilha "Meus leads": uma linha por pessoa que chega ao resultado ──
+    function enviarLead(sugeridos: string[], trilha: string) {
+      if (!dados.leads) return;
+      const campo = (n: string) => ((form?.elements.namedItem(n) as HTMLInputElement | null)?.value ?? '').trim();
+      if (campo('site')) return; // campo-isca: só robô preenche
+      const email = emailValido(campo('email')) ? campo('email') : '';
+      const linha: Record<string, string> = { nome: campo('nome'), email, aceita_emails: email ? 'sim' : '' };
+      let respondeu = false;
+      for (const p of visiveis()) {
+        linha[p.id] = [...(respostas.get(p.id) ?? [])].map((i) => p.opcoes[i]?.texto ?? '').join(' | ');
+        if (linha[p.id]) respondeu = true;
+      }
+      if (!respondeu && !linha.nome && !email) return; // pulou tudo e não deixou contato: nada a guardar
+      sugeridos.slice(0, 3).forEach((s, i) => (linha[`curso_${i + 1}`] = dados.titulos[s] ?? s));
+      linha.trilha = trilha;
+      const q = new URLSearchParams(location.search);
+      let veioDe = '';
+      try {
+        const r = document.referrer ? new URL(document.referrer).hostname : '';
+        veioDe = r && r !== location.hostname ? r : '';
+      } catch {
+        /* referência inválida: ignora */
+      }
+      linha.origem = ['utm_source', 'utm_medium', 'utm_campaign'].map((k) => q.get(k)).filter(Boolean).join(' / ') || veioDe;
+      linha.dispositivo = window.matchMedia('(max-width: 760px)').matches ? 'celular' : 'computador';
+      linha.sessao = sessao;
+      try {
+        // "no-cors": a planilha recebe o texto e o site não precisa esperar a resposta
+        fetch(dados.leads, { method: 'POST', mode: 'no-cors', keepalive: true, body: JSON.stringify(linha) }).catch(() => {});
+      } catch {
+        /* sem internet: segue sem gravar */
+      }
+    }
+
     function resultado() {
       const pf = perfil();
       const ranking = Object.keys(dados.cursos)
@@ -304,8 +414,10 @@ const nPerguntas = d.perguntas.length;
         .map((t) => ({ t, media: t.cursos.reduce((s, c) => s + nota(c, pf), 0) / t.cursos.length }))
         .sort((a, b) => b.media - a.media);
       const bloco = $('[data-bloco-trilha]');
+      let nomeTrilha = '';
       if (!semPerfil && trilhas.length && trilhas[0].media > 0) {
         const { t } = trilhas[0];
+        nomeTrilha = t.nome;
         $('[data-trilha-nome]').textContent = `Uma trilha para você: ${t.nome}`;
         $('[data-trilha-desc]').textContent = t.descricao;
         const passos = $('[data-trilha]');
@@ -323,11 +435,23 @@ const nPerguntas = d.perguntas.length;
         bloco.hidden = false;
       } else bloco.hidden = true;
 
+      enviarLead(finais, nomeTrilha);
       mostrarTela('resultado');
       $('[data-titulo-resultado]').focus({ preventScroll: true });
     }
 
     $('[data-continuar]').addEventListener('click', avancar);
+    // Enter num campo do contato vale como "Ver minhas sugestões"
+    form?.addEventListener('submit', (ev) => {
+      ev.preventDefault();
+      avancar();
+    });
+    form?.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter' && (ev.target as HTMLElement).tagName === 'INPUT') {
+        ev.preventDefault();
+        avancar();
+      }
+    });
     $('[data-voltar]').addEventListener('click', () => {
       if (passo > 0) {
         passo--;
@@ -337,6 +461,7 @@ const nPerguntas = d.perguntas.length;
     $('[data-refazer]').addEventListener('click', () => {
       respostas.clear();
       passo = 0;
+      jaInteragiu = false;
       mostrarTela('perguntas');
       desenhar();
     });

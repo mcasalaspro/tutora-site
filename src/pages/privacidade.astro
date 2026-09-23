@@ -1,0 +1,21 @@
+---
+/**
+ * Política de privacidade. O texto fica em conteudo/privacidade.md (editável pela equipe).
+ */
+import Base from '../layouts/Base.astro';
+import { Content, frontmatter } from '../../conteudo/privacidade.md';
+
+const titulo = frontmatter.titulo ?? 'Política de privacidade';
+---
+<Base titulo={titulo} descricao="Que dados o site da Tutora guarda, para que usamos e como pedir para apagar." topoSolido>
+  <div class="conteiner pagina-texto">
+    <header class="cab-pagina cab-pagina--compacta">
+      <span class="sobretitulo">Privacidade</span>
+      <h1>{titulo}</h1>
+      {frontmatter.atualizada && <p class="texto-3">Atualizada em {frontmatter.atualizada}.</p>}
+    </header>
+    <div class="texto-md">
+      <Content />
+    </div>
+  </div>
+</Base>

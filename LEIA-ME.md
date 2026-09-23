@@ -13,15 +13,17 @@ tutora-site/
 │   ├── cursos/<slug>.md            1 arquivo por curso (vira a página /cursos/<slug>/)
 │   ├── professores/<slug>.md       1 arquivo por professor
 │   ├── quizzes/<slug>.md           quiz e curiosidades de cada curso (mesmo slug do curso)
-│   ├── precos.csv                  preço, parcelamento e link da Hotmart de cada curso + assinatura
+│   ├── precos.csv                  preço e link da Hotmart: cursos avulsos, combos e Acesso Completo
 │   ├── videos.csv                  aulas grátis e apresentações no YouTube (bloco "Assista de graça")
 │   ├── quiz-geral.md               temas do quiz geral (página /quiz/)
 │   ├── descubra.md                 perguntas, pesos e trilhas do "Descubra seu curso" (página /descubra/)
-│   ├── configuracoes.yaml          contatos, redes, áreas, trilhas, textos da home
+│   ├── configuracoes.yaml          contatos, redes, áreas, trilhas, textos da home, planilha de leads
+│   ├── privacidade.md              texto da página /privacidade/
 │   └── imagens/
 │       ├── cursos/                 capas dos cursos (2 formatos por curso)
 │       ├── professores/            fotos dos professores (2 formatos)
 │       └── _modelos/               gabaritos com as áreas de segurança
+├── ferramentas/meus-leads.gs       código da planilha "Meus leads" (ver a seção Meus leads)
 ├── _arquivos-removidos.txt         arquivos que saíram do site; o 2-PUBLICAR.bat apaga cada um deles
 ├── _interno/                       anotações da equipe; NÃO vai para o GitHub (o repositório é público)
 │   └── REVISAO-DO-CONTEUDO.md      pontos para conferir: professores, aulas faltando, grafia de nomes
@@ -119,19 +121,33 @@ e, se quiser, o quiz em `conteudo/quizzes/` com o mesmo nome de arquivo.
 
 ### Preços: `conteudo/precos.csv`
 
-Abra no Excel ou no Google Planilhas e salve de novo como **CSV** (separado por `;`). Colunas:
+Preços e links vieram da planilha da Hotmart de 16/09/2026 (preço principal de cada produto e o link de checkout
+`pay.hotmart.com`). Abra no Excel ou no Google Planilhas e salve de novo como **CSV** (separado por `;`). Colunas:
 
 | Coluna | Exemplo | Observação |
 |---|---|---|
-| `slug` | `roma` | Igual ao nome do arquivo do curso. |
-| `titulo` | `Roma` | Só para você se orientar. O site usa o título do `.md`. |
-| `preco` | `297,00` ou `R$ 297,00` | Vazio mostra "Em breve". |
-| `preco_parcelado` | `ou 12x de R$ 29,70` | Texto livre. |
-| `link_hotmart` | `https://pay.hotmart.com/...` | Enquanto for `https://hotmart.com/em-breve`, a página mostra "Inscrições em breve" e o botão "Avise-me quando abrir". |
+| `slug` | `dante-e-a-literatura` | Igual ao nome do arquivo do curso (ou uma das linhas especiais abaixo). |
+| `titulo` | `Dante e a Literatura` | Nos cursos, só para você se orientar (o site usa o título do `.md`). Nos combos, é o nome que aparece. |
+| `preco` | `199,40` ou `R$ 199,40` | Vazio mostra "Em breve". |
+| `preco_parcelado` | `à vista ou parcelado no cartão` | Texto livre, aparece embaixo do preço. |
+| `link_hotmart` | `https://pay.hotmart.com/G95460018D` | Link de checkout. Vazio (ou `https://hotmart.com/em-breve`) mostra "Inscrições em breve" e o botão "Avise-me quando abrir". |
 | `status` | `ativo` | `ativo`, `em-breve` ou `oculto` (**oculto tira o curso do site** sem apagar o arquivo). |
+| `nome_na_hotmart` | `O Segredo de Falar Bem` | Preencha só quando o produto tem outro nome na Hotmart: o cartão avisa o comprador ("Na Hotmart, este curso aparece como..."). |
+| `cursos_do_combo` | `roma renascimento ...` | Só nas linhas de combo: os slugs dos cursos, separados por espaço. |
+| `descricao` | | Só nas linhas de combo: a frase que aparece no cartão. |
+| `observacao` | | Só para a equipe. |
 
-A linha com slug **`assinatura`** é o plano de acesso a todos os cursos (botão "Assinar" do topo, bloco laranja
-da home e cartão de assinatura em cada curso).
+Linhas especiais:
+
+- **`acesso-completo`**: o plano com todos os cursos (produto "Cursos da Tutora", plano anual). Aparece como
+  cartão "Acesso Completo" em cada curso, no bloco laranja da home e no botão "Assinar" do topo.
+- **`combo-...`**: um pacote de cursos. Hoje há um, **`combo-passeio-pela-historia`** (Um Passeio pela História),
+  com os 12 cursos de panorama do Guilherme Almeida, que não têm produto avulso. Em cada um desses cursos, o
+  cartão do combo aparece no lugar do avulso. Curso que tem avulso **e** está num combo mostra os três cartões.
+
+Cada página de curso mostra, lado a lado: **curso avulso** (ou o combo) e **Acesso Completo**. Os botões do topo,
+da ficha ao lado da sinopse e da barra do celular levam a esses cartões, para a pessoa ver as duas opções antes de
+ir para a Hotmart.
 
 ### Professores: `conteudo/professores/<slug>.md`
 
@@ -188,6 +204,37 @@ as perguntas e respostas, os pontos de cada resposta, as etiquetas e os pesos de
 e as trilhas. O fim do arquivo explica a conta e como calibrar. Curso novo no catálogo precisa de uma linha em
 `cursos:` para poder ser sugerido (o verificador avisa quando falta).
 
+### Meus leads: respostas do "Descubra seu curso" numa planilha Google
+
+Quem faz o "Descubra seu curso" pode deixar **nome e e-mail** (opcional) numa última etapa, e as **respostas**
+vão para uma planilha sua no Google, uma linha por pessoa: data, nome, e-mail, cada resposta, os três cursos
+sugeridos, a trilha, de onde a pessoa veio (`utm_source`/`utm_campaign` do link, ou o site de origem) e se estava
+no celular. É grátis. **Enquanto a planilha não estiver ligada, o site não pede contato nem envia nada.**
+
+Para ligar (uma vez só, uns 5 minutos):
+
+1. No [Google Planilhas](https://sheets.new), crie uma planilha em branco e dê o nome **Meus leads**.
+2. Menu **Extensões > Apps Script**. Apague o que estiver escrito, cole o conteúdo inteiro de
+   `ferramentas/meus-leads.gs` (abra no Bloco de Notas, Ctrl+A, Ctrl+C) e salve (Ctrl+S).
+3. Botão **Implantar > Nova implantação**. Na engrenagem de "Selecionar tipo", escolha **App da Web**.
+   Em "Executar como", **Eu**; em "Quem pode acessar", **Qualquer pessoa**. Clique em **Implantar**.
+4. Autorize com a sua conta Google. O Google avisa que o app "não foi verificado": clique em **Avançado** e
+   depois em **Acessar...** (o nome do projeto). O app é seu e só grava nesta planilha.
+5. Copie o **URL do app da Web** (começa com `https://script.google.com/` e termina em `/exec`) e cole em
+   `conteudo/configuracoes.yaml`, no campo `leads: link_planilha: "..."`.
+6. Rode o `2-PUBLICAR.bat`, faça o teste no site e veja a linha aparecer na aba **Leads** da planilha.
+
+Dicas: para receber um e-mail a cada linha nova, use as notificações da planilha (menu **Ferramentas**). Os
+textos da etapa do contato (título, frase e aviso de privacidade) também ficam no bloco `leads` do
+`configuracoes.yaml`. Pergunta nova no `descubra.md` vira coluna nova na planilha sozinha. Se mudar o código
+do Apps Script, use **Implantar > Gerenciar implantações > lápis > Nova versão**, assim o endereço não muda.
+
+### Privacidade: `conteudo/privacidade.md`
+
+O texto da página **/privacidade/** (link no rodapé e na etapa do contato). Explica o que o site guarda e como
+pedir para apagar. Revise com quem cuida da parte jurídica e mantenha o e-mail de contato igual ao de
+`configuracoes.yaml`.
+
 ### Tirar um curso do site
 
 - **Esconder** (e talvez voltar depois): no `precos.csv`, ponha `oculto` na coluna `status`.
@@ -200,7 +247,8 @@ e as trilhas. O fim do arquivo explica a conta e como calibrar. Curso novo no ca
 E-mail e redes do rodapé, textos da home, **áreas** do catálogo e **trilhas** (sequências de cursos que
 aparecem como fileiras numeradas na home; nas páginas de área, os cursos da trilha seguem essa ordem).
 
-No bloco `oferta` ficam os textos dos cartões de compra e o que aparece enquanto não há link de compra:
+No bloco `oferta` ficam os textos dos cartões de compra (os itens do avulso, do combo e do Acesso Completo, como
+"7 dias de garantia") e o que aparece enquanto não há link de compra:
 `texto_sem_link` ("Inscrições em breve"), `texto_espera` (a frase explicativa), `texto_aviso` (o botão
 "Avise-me quando abrir") e `link_aviso`: um link de WhatsApp ou de formulário para esse botão. Se `link_aviso`
 ficar vazio, o botão abre um e-mail para o endereço de `contato`. **Confira o e-mail e as redes:** os que estão

@@ -1,5 +1,5 @@
 /**
- * Lê conteudo/configuracoes.yaml (textos gerais, contato, áreas, trilhas, oferta).
+ * Lê conteudo/configuracoes.yaml (textos gerais, contato, áreas, trilhas, oferta, leads).
  */
 import fs from 'node:fs';
 import path from 'node:path';
@@ -28,12 +28,20 @@ export interface Config {
   oferta: {
     avulso_titulo: string;
     avulso_itens: string[];
-    assinatura_titulo: string;
-    assinatura_itens: string[];
+    combo_itens: string[];
+    acesso_titulo: string;
+    acesso_itens: string[];
     texto_sem_link: string;
     texto_espera: string;
     texto_aviso: string;
     link_aviso: string;
+  };
+  /** Planilha "Meus leads": para onde o "Descubra seu curso" manda as respostas (vazio = não pede contato nem envia nada) */
+  leads: {
+    link_planilha: string;
+    titulo: string;
+    texto: string;
+    aviso: string;
   };
 }
 
@@ -58,12 +66,22 @@ export function config(): Config {
     oferta: {
       avulso_titulo: bruto.oferta?.avulso_titulo ?? 'Curso avulso',
       avulso_itens: bruto.oferta?.avulso_itens ?? [],
-      assinatura_titulo: bruto.oferta?.assinatura_titulo ?? 'Assinatura',
-      assinatura_itens: bruto.oferta?.assinatura_itens ?? [],
+      combo_itens: bruto.oferta?.combo_itens ?? [],
+      // (os nomes antigos "assinatura_*" continuam valendo)
+      acesso_titulo: bruto.oferta?.acesso_titulo ?? bruto.oferta?.assinatura_titulo ?? 'Acesso Completo',
+      acesso_itens: bruto.oferta?.acesso_itens ?? bruto.oferta?.assinatura_itens ?? [],
       texto_sem_link: bruto.oferta?.texto_sem_link ?? 'Inscrições em breve',
       texto_espera: bruto.oferta?.texto_espera ?? 'As inscrições abrem em breve.',
       texto_aviso: bruto.oferta?.texto_aviso ?? 'Avise-me quando abrir',
       link_aviso: bruto.oferta?.link_aviso ?? '',
+    },
+    leads: {
+      link_planilha: String(bruto.leads?.link_planilha ?? '').trim(),
+      titulo: bruto.leads?.titulo ?? 'Quer receber novidades da Tutora?',
+      texto:
+        bruto.leads?.texto ??
+        'Opcional: deixe seu nome e e-mail para receber sugestões de cursos e novidades. Dá para cancelar quando quiser.',
+      aviso: bruto.leads?.aviso ?? 'Usamos seus dados só para falar com você sobre os cursos da Tutora.',
     },
   };
   return cache;

@@ -110,34 +110,89 @@ const semQuiz = [...cursos.keys()].filter((s) => !fs.existsSync(C('quizzes', `${
 if (semQuiz.length) info.push(`${semQuiz.length} curso(s) sem quiz: ${semQuiz.join(', ')}.`);
 
 // ── preços ───────────────────────────────────────────────────────────────
+// CSV com ";" (Excel em português) ou ","; respeita campos entre aspas.
+function lerCsvArquivo(arquivo) {
+  const linhas = fs.readFileSync(arquivo, 'utf8').replace(/^\uFEFF/, '').split(/\r?\n/).filter((l) => l.trim());
+  if (!linhas.length) return { cab: [], linhas: [] };
+  const sep = (linhas[0].match(/;/g)?.length ?? 0) >= (linhas[0].match(/,/g)?.length ?? 0) ? ';' : ',';
+  const dividir = (linha) => {
+    const campos = [];
+    let atual = '';
+    let aspas = false;
+    for (let i = 0; i < linha.length; i++) {
+      const c = linha[i];
+      if (aspas) {
+        if (c === '"' && linha[i + 1] === '"') {
+          atual += '"';
+          i++;
+        } else if (c === '"') aspas = false;
+        else atual += c;
+      } else if (c === '"') aspas = true;
+      else if (c === sep) {
+        campos.push(atual.trim());
+        atual = '';
+      } else atual += c;
+    }
+    campos.push(atual.trim());
+    return campos;
+  };
+  const cab = dividir(linhas[0]).map((h) => h.toLowerCase());
+  return {
+    cab,
+    linhas: linhas.slice(1).map((l) => {
+      const v = dividir(l);
+      return Object.fromEntries(cab.map((h, i) => [h, v[i] ?? '']));
+    }),
+  };
+}
+
 const csv = C('precos.csv');
 if (!fs.existsSync(csv)) {
   avisos.push('precos.csv não existe: todos os cursos aparecem como "Inscrições em breve".');
 } else {
-  const linhas = fs.readFileSync(csv, 'utf8').replace(/^﻿/, '').split(/\r?\n/).filter((l) => l.trim());
-  const sep = (linhas[0].match(/;/g)?.length ?? 0) >= (linhas[0].match(/,/g)?.length ?? 0) ? ';' : ',';
-  const cab = linhas[0].split(sep).map((s) => s.trim().toLowerCase().replace(/^"|"$/g, ''));
+  const { cab, linhas } = lerCsvArquivo(csv);
   for (const col of ['slug', 'preco', 'link_hotmart']) {
     if (!cab.includes(col)) erros.push(`precos.csv: falta a coluna "${col}" na primeira linha.`);
   }
-  const iSlug = cab.indexOf('slug');
-  const iLink = cab.indexOf('link_hotmart');
-  const iStatus = cab.indexOf('status');
   const vistos = new Set();
-  linhas.slice(1).forEach((l, k) => {
-    const v = l.split(sep).map((s) => s.trim().replace(/^"|"$/g, ''));
-    const slug = v[iSlug];
+  const comAvulso = new Set();
+  const emCombo = new Set();
+  let temAcesso = false;
+  const linkOk = (l) => /^https?:\/\//i.test(l) && !/em-breve|embreve|exemplo|example/i.test(l);
+  linhas.forEach((r, k) => {
+    const slug = (r.slug ?? '').trim();
     if (!slug) return;
-    if (vistos.has(slug)) avisos.push(`precos.csv linha ${k + 2}: o slug "${slug}" aparece mais de uma vez (vale a última).`);
+    const onde = `precos.csv linha ${k + 2}`;
+    if (vistos.has(slug)) avisos.push(`${onde}: o slug "${slug}" aparece mais de uma vez (vale a última).`);
     vistos.add(slug);
-    if (slug !== 'assinatura' && !cursos.has(slug)) avisos.push(`precos.csv linha ${k + 2}: não existe curso "${slug}".`);
-    const link = v[iLink] ?? '';
-    if (link && !/^https?:\/\//i.test(link)) avisos.push(`precos.csv linha ${k + 2}: o link de "${slug}" não começa com https://`);
-    const st = (v[iStatus] ?? '').toLowerCase();
-    if (st && !['ativo', 'em-breve', 'em breve', 'oculto'].includes(st)) avisos.push(`precos.csv linha ${k + 2}: status "${st}" desconhecido (use ativo, em-breve ou oculto).`);
+    const link = (r.link_hotmart ?? '').trim();
+    const st = (r.status ?? '').trim().toLowerCase();
+    const ativo = !st || st === 'ativo';
+    if (link && !/^https?:\/\//i.test(link)) avisos.push(`${onde}: o link de "${slug}" não começa com https://`);
+    else if (linkOk(link) && !/hotmart\.com/i.test(link)) avisos.push(`${onde}: o link de "${slug}" não é da Hotmart (${link}). Confira.`);
+    if (st && !['ativo', 'em-breve', 'em breve', 'oculto'].includes(st)) avisos.push(`${onde}: status "${st}" desconhecido (use ativo, em-breve ou oculto).`);
+    if (linkOk(link) && !(r.preco ?? '').trim()) avisos.push(`${onde}: "${slug}" tem link de compra mas está sem preço (o cartão mostra "Consulte na Hotmart").`);
+    if (slug === 'acesso-completo' || slug === 'assinatura') {
+      temAcesso = linkOk(link) && ativo;
+      return;
+    }
+    if (slug.startsWith('combo-')) {
+      const lista = (r.cursos_do_combo ?? '').split(/[\s,|]+/).filter(Boolean);
+      if (!lista.length) avisos.push(`${onde}: o combo "${slug}" está sem cursos na coluna cursos_do_combo.`);
+      for (const c of lista) {
+        if (!cursos.has(c)) avisos.push(`${onde}: o combo "${slug}" cita o curso "${c}", que não existe.`);
+        else if (linkOk(link) && ativo) emCombo.add(c);
+      }
+      return;
+    }
+    if (!cursos.has(slug)) avisos.push(`${onde}: não existe curso "${slug}".`);
+    else if (linkOk(link) && ativo) comAvulso.add(slug);
   });
+  if (!temAcesso) avisos.push('precos.csv: falta a linha "acesso-completo" com link ativo (o cartão do Acesso Completo mostra "Em breve").');
   const semPreco = [...cursos.keys()].filter((s) => !vistos.has(s));
   if (semPreco.length) info.push(`${semPreco.length} curso(s) sem linha no precos.csv (aparecem como "Inscrições em breve").`);
+  const semCompra = [...cursos.keys()].filter((s) => !comAvulso.has(s) && !emCombo.has(s));
+  info.push(`Compra: ${comAvulso.size} curso(s) avulsos, ${emCombo.size} em combo${semCompra.length ? `, ${semCompra.length} só com "Avise-me" (${semCompra.join(', ')})` : ''}.`);
 }
 
 // ── vídeos (YouTube) ─────────────────────────────────────────────────────

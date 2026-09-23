@@ -42,13 +42,14 @@ const dados = JSON.stringify({ perguntas, porRodada, linkCompra }).replace(/</g,
     </div>
     <h3 class="quiz__enunciado" data-enunciado tabindex="-1"></h3>
     <div class="quiz__opcoes" data-opcoes role="group" aria-label="Alternativas"></div>
-    <div class="quiz__retorno" data-retorno hidden aria-live="polite">
-      <strong data-veredito></strong>
-      <p data-explicacao></p>
+    <div class="quiz__retorno" data-retorno hidden>
+      <div class="quiz__retorno-txt">
+        <strong data-veredito></strong>
+        <p data-explicacao></p>
+      </div>
+      <button class="botao botao--laranja" type="button" data-proxima>Próxima pergunta →</button>
     </div>
-    <div class="quiz__rodape">
-      <button class="botao botao--laranja" type="button" data-proxima hidden>Próxima pergunta <Icone nome="seta-link" /></button>
-    </div>
+    <p class="sr-only" aria-live="polite" data-anuncio></p>
   </div>
   <div class="quiz__tela" data-tela="fim" hidden>
     <span class="sobretitulo">Resultado</span>
@@ -97,10 +98,14 @@ const dados = JSON.stringify({ perguntas, porRodada, linkCompra }).replace(/</g,
     let resultados: boolean[] = [];
     let ordem: number[] = []; // ordem em que as alternativas da pergunta atual aparecem
 
-    // Se a troca de tela deixou o topo do quiz acima da área visível, rola até ele.
+    // Se a troca de tela deixou o quiz fora da vista (atrás do topo fixo e do submenu, ou cortado embaixo),
+    // rola até que ele fique inteiro na tela, logo abaixo do submenu.
     const trazerParaVista = () => {
-      const topo = raiz.getBoundingClientRect().top;
-      if (topo < 0 || topo > window.innerHeight * 0.6) raiz.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      const margem = parseFloat(getComputedStyle(raiz).scrollMarginTop) || 0;
+      const r = raiz.getBoundingClientRect();
+      if (r.top < margem - 8 || r.top > window.innerHeight * 0.5 || r.bottom > window.innerHeight) {
+        raiz.scrollIntoView({ block: 'start', behavior: 'smooth' });
+      }
     };
 
     function montarRodada() {
@@ -153,7 +158,7 @@ const dados = JSON.stringify({ perguntas, porRodada, linkCompra }).replace(/</g,
         opcoes.appendChild(b);
       });
       $('[data-retorno]').hidden = true;
-      $('[data-proxima]').hidden = true;
+      $('[data-anuncio]').textContent = '';
       enunciado.focus({ preventScroll: true });
       trazerParaVista();
     }
@@ -173,12 +178,16 @@ const dados = JSON.stringify({ perguntas, porRodada, linkCompra }).replace(/</g,
       ret.hidden = false;
       ret.className = 'quiz__retorno ' + (certo ? 'acertou' : 'errou');
       const lista = certo ? ACERTOS : ERROS;
-      $('[data-veredito]').textContent = lista[Math.floor(Math.random() * lista.length)];
+      const veredito = lista[Math.floor(Math.random() * lista.length)];
+      $('[data-veredito]').textContent = veredito;
       $('[data-explicacao]').textContent = p.explicacao;
+      $('[data-anuncio]').textContent = `${veredito} ${p.explicacao}`;
       const prox = $('[data-proxima]');
-      prox.hidden = false;
-      prox.innerHTML = atual + 1 < rodada.length ? 'Próxima pergunta →' : 'Ver meu resultado →';
+      prox.textContent = atual + 1 < rodada.length ? 'Próxima pergunta →' : 'Ver meu resultado →';
       prox.focus({ preventScroll: true });
+      // se a explicação ficou abaixo da dobra (celular), traz o retorno e o botão para a vista
+      const r = ret.getBoundingClientRect();
+      if (r.bottom > window.innerHeight) ret.scrollIntoView({ block: 'end', behavior: 'smooth' });
     }
 
     function fim() {
