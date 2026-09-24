@@ -1,13 +1,13 @@
 ---
-# Arquivo do curso. O nome deste arquivo é o endereço da página (/cursos/filosofia-da-natureza/).
+# Arquivo do curso. O nome deste arquivo é o endereço da página (/cursos/introducao-a-aristoteles/).
 # Preço e link de compra ficam em conteudo/precos.csv.
-slug: filosofia-da-natureza
-titulo: Filosofia da Natureza
+slug: introducao-a-aristoteles
+titulo: Introdução a Aristóteles
 professor: erik-gramstrup
 professores_convidados: []
 area: Filosofia e Formação do Juízo
-frase: 'Aristóteles em quatro passos: a vida, a obra, a metafísica e, por fim, sua visão do cosmos e dos seres vivos.'
-sinopse_curta: 'Introdução a Aristóteles: vida, obra, noções centrais da metafísica e a filosofia da natureza, do cosmos de esferas às almas dos seres vivos.'
+frase: 'Uma introdução ao pensamento de Aristóteles, da metafísica à compreensão filosófica do mundo natural.'
+sinopse_curta: 'Aristóteles em quatro passos: a vida, a obra, as noções centrais da metafísica e a filosofia da natureza, do cosmos de esferas às almas dos seres vivos.'
 sinopse_longa: |
   Aristóteles nasceu em Estagira, nos confins da Macedônia, numa família de médicos ligada à corte macedônica. Passou vinte anos na Academia de Platão, exilou-se na Ásia Menor e em Lesbos, onde descreveu animais com um detalhe nunca visto, foi tutor de Alexandre e fundou o Liceu em Atenas. O curso começa por essa vida porque, como insiste o professor Erik Gramstrup, não se entende a obra sem o contexto humano e político em que ela nasceu.
 

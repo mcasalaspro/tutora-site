@@ -199,7 +199,7 @@ curriculo:
 cursos_relacionados:
 - tecnica-ciencia-religiao
 - virtudes-fundamentais
-- filosofia-da-natureza
+- introducao-a-aristoteles
 - patristica-agostinho-dionisio
 - historia-do-pensamento-etico
 destaque_home: false

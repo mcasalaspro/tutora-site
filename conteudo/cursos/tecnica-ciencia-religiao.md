@@ -512,7 +512,7 @@ cursos_relacionados:
 - virtudes-fundamentais
 - filosofia-da-educacao
 - gregos-fundamento-do-ocidente
-- filosofia-da-natureza
+- introducao-a-aristoteles
 - o-que-e-filosofar
 destaque_home: false
 lancamento: false

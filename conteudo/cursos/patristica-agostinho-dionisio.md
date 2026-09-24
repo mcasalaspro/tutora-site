@@ -2,21 +2,21 @@
 # Arquivo do curso. O nome deste arquivo é o endereço da página (/cursos/patristica-agostinho-dionisio/).
 # Preço e link de compra ficam em conteudo/precos.csv.
 slug: patristica-agostinho-dionisio
-titulo: 'Patrística: Agostinho e Dionísio Areopagita'
+titulo: 'Patrística: Agostinho e Pseudo-Dionísio'
 professor: gabriel-de-vitto
 professores_convidados: []
 area: Filosofia e Formação do Juízo
-frase: Como Agostinho e Dionísio Areopagita transformaram por dentro o neoplatonismo e moldaram o pensamento cristão
-sinopse_curta: 'Agostinho e Dionísio Areopagita em seu contexto: a patrística, o neoplatonismo de Plotino e Proclo e a herança que chegou à Idade Média.'
+frase: Como Agostinho e o Pseudo-Dionísio transformaram por dentro o neoplatonismo e moldaram o pensamento cristão
+sinopse_curta: 'Agostinho e o Pseudo-Dionísio em seu contexto: a patrística, o neoplatonismo de Plotino e Proclo e a herança que chegou à Idade Média.'
 sinopse_longa: |
   Entre os séculos IV e VI, dois autores releram em chave cristã o neoplatonismo, a filosofia mais robusta do seu tempo: Santo Agostinho e o autor conhecido como Pseudo-Dionísio Areopagita. Para entendê-los, o curso começa pelos pressupostos: um cristianismo nascido do judaísmo e perseguido pelo Império, as escolas de Alexandria e Antioquia, a crise ariana e o Concílio de Niceia, a educação latina em gramática e retórica e o neoplatonismo de Plotino, rival e ao mesmo tempo ferramenta do pensamento cristão.
 
   Agostinho aparece primeiro no seu mundo: o Império em crise, a formação de retor, o maniqueísmo, a dupla conversão, ao cristianismo e ao neoplatonismo, ouvindo Ambrósio em Milão, e uma obra escrita sob a pressão da vida de bispo. Depois vêm as grandes linhas do seu pensamento: o “creio para entender e entendo para crer”, a angústia feita alimento da vida interior, o diálogo com Deus nos palácios da memória e a analogia trinitária da alma, com a qual ele reforma Plotino por dentro. Um panorama de sua recepção, de Boécio a Wittgenstein, fecha o bloco.
 
-  A segunda metade prepara e expõe Dionísio. Passa pela patrística grega, de Justino e Orígenes aos padres capadócios, e pelo neoplatonismo tardio de Jâmblico e Proclo; conta como o corpus dionisiano foi lido por quase mil anos como obra do discípulo de São Paulo, até a crítica provar sua dependência de Proclo; e apresenta seu sistema: a tearquia, a processão e o retorno, o homem como ponte entre espírito e matéria, as teologias simbólica, discursiva e mística, as hierarquias e a divinização. Segue-se sua influência, de Máximo Confessor e Tomás de Aquino a João da Cruz e à fenomenologia.
+  A segunda metade prepara e expõe o Pseudo-Dionísio. Passa pela patrística grega, de Justino e Orígenes aos padres capadócios, e pelo neoplatonismo tardio de Jâmblico e Proclo; conta como o corpus dionisiano foi lido por quase mil anos como obra do discípulo de São Paulo, até a crítica provar sua dependência de Proclo; e apresenta seu sistema: a tearquia, a processão e o retorno, o homem como ponte entre espírito e matéria, as teologias simbólica, discursiva e mística, as hierarquias e a divinização. Segue-se sua influência, de Máximo Confessor e Tomás de Aquino a João da Cruz e à fenomenologia.
 
   A última aula amplia o quadro: mostra por quais caminhos, o patrístico e o greco-árabe, o platonismo chegou a uma Idade Média que praticamente só conhecia o Timeu, até a tradução completa de Platão por Marsílio Ficino, e defende que a tradição, longe de mutilar os textos, é um diálogo vivo com eles.
-formato: '13 aulas expositivas de 31 a 44 minutos, cerca de 7h40 no total: três de contexto, quatro sobre Agostinho, cinco sobre Dionísio e seu ambiente e uma de fechamento.'
+formato: '13 aulas expositivas de 31 a 44 minutos, cerca de 7h40 no total: três de contexto, quatro sobre Agostinho, cinco sobre o Pseudo-Dionísio e seu ambiente e uma de fechamento.'
 duracao_aulas: 13
 duracao_horas: 7.7
 preview_youtube_embed: ''
@@ -36,16 +36,16 @@ o_que_vai_aprender:
 - Como a herança de Agostinho foi recebida com ênfases diferentes, de Boécio e Anselmo aos carmelitas, aos reformadores e a Descartes
 - O que distingue as escolas de Alexandria e Antioquia e como Jâmblico e Proclo fizeram do neoplatonismo uma religião e um sistema
 - 'Quem foi o Pseudo-Dionísio e como ele relê Proclo em chave cristã: tearquia, processão e retorno, as três teologias, as hierarquias e a divinização'
-- Por quais caminhos Dionísio e o platonismo chegaram à escolástica e ao Renascimento, de Hugo de São Vítor a Tomás de Aquino e Ficino
+- Por quais caminhos o Pseudo-Dionísio e o platonismo chegaram à escolástica e ao Renascimento, de Hugo de São Vítor a Tomás de Aquino e Ficino
 importancia: |
-  Boa parte do vocabulário com que ainda pensamos a fé e a vida interior (pessoa, Trindade, graça, interioridade, mística, hierarquia) foi forjada nesses séculos, no encontro, às vezes áspero, entre a mensagem cristã e a filosofia grega. Conhecer Agostinho e Dionísio é reencontrar a origem dessas categorias e perceber que elas não surgiram prontas: nasceram de disputas reais, de conversões e do trabalho paciente de reler os antigos à luz da fé.
+  Boa parte do vocabulário com que ainda pensamos a fé e a vida interior (pessoa, Trindade, graça, interioridade, mística, hierarquia) foi forjada nesses séculos, no encontro, às vezes áspero, entre a mensagem cristã e a filosofia grega. Conhecer Agostinho e o Pseudo-Dionísio é reencontrar a origem dessas categorias e perceber que elas não surgiram prontas: nasceram de disputas reais, de conversões e do trabalho paciente de reler os antigos à luz da fé.
 
-  O curso mostra também que esses autores não são peças de museu. Agostinho viveu a angústia que Heidegger viu como a marca do nosso tempo e ensinou a fazer dela caminho para dentro, e não fuga para a distração; sua ideia de que a pessoa se descobre no diálogo com Deus e com os outros responde de frente ao individualismo. Dionísio vê no homem a ponte entre o espírito e a matéria e, na cultura, um modo de elevar o mundo. Para quem cuida da própria formação e da formação dos filhos, é uma escola de interioridade e de leitura da tradição como diálogo vivo.
+  O curso mostra também que esses autores não são peças de museu. Agostinho viveu a angústia que Heidegger viu como a marca do nosso tempo e ensinou a fazer dela caminho para dentro, e não fuga para a distração; sua ideia de que a pessoa se descobre no diálogo com Deus e com os outros responde de frente ao individualismo. O Pseudo-Dionísio vê no homem a ponte entre o espírito e a matéria e, na cultura, um modo de elevar o mundo. Para quem cuida da própria formação e da formação dos filhos, é uma escola de interioridade e de leitura da tradição como diálogo vivo.
 curriculo:
 - aula: 'Aula 1 — Cristianismo antigo: das origens judaicas a Niceia'
   tipo: aula
   duracao_min: 31
-  descricao: O cristianismo antigo, nascido do judaísmo, voltado à exegese e à defesa da fé diante de um Império que o perseguia. Distingue as escolas de Alexandria, aberta à filosofia grega, e de Antioquia, apegada à letra da Escritura, e mostra como a crise ariana levou ao Concílio de Niceia, marco para Agostinho e Dionísio.
+  descricao: O cristianismo antigo, nascido do judaísmo, voltado à exegese e à defesa da fé diante de um Império que o perseguia. Distingue as escolas de Alexandria, aberta à filosofia grega, e de Antioquia, apegada à letra da Escritura, e mostra como a crise ariana levou ao Concílio de Niceia, marco para Agostinho e o Pseudo-Dionísio.
   comentario: Entender por que Marco Aurélio, estoico de virtude exemplar, perseguiu com dureza os cristãos ajuda a desfazer o mito de uma aliança natural entre cristianismo e Império.
   topicos:
   - paleocristianismo
@@ -177,7 +177,7 @@ curriculo:
 - aula: Aula 9 — Jâmblico, Proclo e o neoplatonismo tardio
   tipo: aula
   duracao_min: 39
-  descricao: 'O neoplatonismo tardio: Jâmblico faz dele uma religião centrada na teurgia e abre uma contradição entre filosofia e magia. Proclo, à frente da escola neoplatônica de Atenas, tenta resolvê-la num grande sistema de tríades, cujo ciclo de imanência, processão e retorno será decisivo para Dionísio e para a Idade Média.'
+  descricao: 'O neoplatonismo tardio: Jâmblico faz dele uma religião centrada na teurgia e abre uma contradição entre filosofia e magia. Proclo, à frente da escola neoplatônica de Atenas, tenta resolvê-la num grande sistema de tríades, cujo ciclo de imanência, processão e retorno será decisivo para o Pseudo-Dionísio e para a Idade Média.'
   comentario: Proclo, apresentado como o Tomás de Aquino do paganismo, lia Homero como texto sagrado e via no nome verdadeiro de cada coisa uma forma de poder sobre ela.
   topicos:
   - Jâmblico
@@ -194,7 +194,7 @@ curriculo:
 - aula: 'Aula 10 — Pseudo-Dionísio: da lenda à crítica histórica'
   tipo: aula
   duracao_min: 31
-  descricao: 'Dionísio Areopagita, figura que fundiu o convertido de Paulo no Areópago, o bispo de Atenas e o Saint-Denis de Paris. Narra a autoridade quase apostólica do corpus, as dúvidas de Valla e Erasmo, a prova de sua dependência de Proclo no século XIX e o consenso atual: um autor sírio vindo do neoplatonismo.'
+  descricao: 'A lenda de Dionísio Areopagita, figura que fundiu o convertido de Paulo no Areópago, o bispo de Atenas e o Saint-Denis de Paris. Narra a autoridade quase apostólica do corpus, as dúvidas de Valla e Erasmo, a prova de sua dependência de Proclo no século XIX e o consenso atual: um autor sírio vindo do neoplatonismo.'
   comentario: Digna de Indiana Jones, nas palavras do professor, a história do corpus dionisiano passa pelo nacionalismo francês e pela Universidade de Paris, que tinha em Dionísio sua “prata da casa”.
   topicos:
   - Pseudo-Dionísio
@@ -208,11 +208,11 @@ curriculo:
   - Proclo
   - Tomás de Aquino
   - Lorenzo Valla
-- aula: Aula 11 — Tearquia, hierarquias e divinização em Dionísio
+- aula: Aula 11 — Tearquia, hierarquias e divinização no Pseudo-Dionísio
   tipo: aula
   duracao_min: 44
-  descricao: 'O sistema de Dionísio, que relê Proclo em chave cristã: a tearquia trinitária cria livremente o mundo e deixa nele a marca que o faz retornar a ela. Com leitura dos Nomes Divinos, articula o homem como ponte entre espírito e matéria, as teologias simbólica, discursiva e mística, as hierarquias e a divinização.'
-  comentario: Por que Dionísio prefere dizer “tearquia” em vez de “Deus”, e por que mística, para a tradição cristã, é união com Deus e não visões extraordinárias?
+  descricao: 'O sistema do Pseudo-Dionísio, que relê Proclo em chave cristã: a tearquia trinitária cria livremente o mundo e deixa nele a marca que o faz retornar a ela. Com leitura dos Nomes Divinos, articula o homem como ponte entre espírito e matéria, as teologias simbólica, discursiva e mística, as hierarquias e a divinização.'
+  comentario: Por que o Pseudo-Dionísio prefere dizer “tearquia” em vez de “Deus”, e por que mística, para a tradição cristã, é união com Deus e não visões extraordinárias?
   topicos:
   - tearquia
   - processão e retorno
@@ -220,16 +220,16 @@ curriculo:
   - hierarquia celeste
   - divinização
   autores:
-  - Dionísio Areopagita
+  - Pseudo-Dionísio
   - Proclo
   - Tomás de Aquino
   - Platão
   - Sócrates
-- aula: Aula 12 — A recepção de Dionísio, da Idade Média a hoje
+- aula: Aula 12 — A recepção do Pseudo-Dionísio, da Idade Média a hoje
   tipo: aula
   duracao_min: 38
   descricao: 'A recepção do corpus dionisiano como fio da história da espiritualidade cristã: dos escólios de Máximo Confessor e das traduções de Hilduíno e Eriúgena a Hugo de São Vítor, Alberto Magno, Boaventura e Tomás de Aquino; da mística renana a João da Cruz; e daí a Hegel, Heidegger e à fenomenologia.'
-  comentario: Sem Dionísio, sustenta o professor, Tomás de Aquino não teria feito sua síntese entre Aristóteles e Agostinho; a aula segue também o “raio tenebroso” até João da Cruz.
+  comentario: Sem o Pseudo-Dionísio, sustenta o professor, Tomás de Aquino não teria feito sua síntese entre Aristóteles e Agostinho; a aula segue também o “raio tenebroso” até João da Cruz.
   topicos:
   - corpus dionisiano
   - recepção medieval
@@ -271,7 +271,7 @@ lancamento: false
 
 ### Os pressupostos (aulas 1 a 3)
 
-O curso abre com o cristianismo antigo: nascido do judaísmo, dedicado à exegese e à defesa da fé diante de um Império em que, quanto mais zeloso o imperador, mais dura a perseguição. Alexandria, aberta à filosofia grega, e Antioquia, apegada à letra da Escritura, são os dois polos do debate. As heresias, como o arianismo, nascem de tentativas de encaixar a fé em pressupostos pagãos, e o Concílio de Niceia fixa o caminho doutrinal que Agostinho e Dionísio vão seguir.
+O curso abre com o cristianismo antigo: nascido do judaísmo, dedicado à exegese e à defesa da fé diante de um Império em que, quanto mais zeloso o imperador, mais dura a perseguição. Alexandria, aberta à filosofia grega, e Antioquia, apegada à letra da Escritura, são os dois polos do debate. As heresias, como o arianismo, nascem de tentativas de encaixar a fé em pressupostos pagãos, e o Concílio de Niceia fixa o caminho doutrinal que Agostinho e o Pseudo-Dionísio vão seguir.
 
 Na patrística latina, de espírito prático, os cristãos assumem a educação em gramática e retórica, ideias estoicas e herméticas e o vocabulário filosófico latino: Tertuliano aplica pela primeira vez a palavra “pessoa” a Deus, Mário Vitorino traduz Plotino e Ambrósio, bispo de Milão, une a especulação grega à ação pastoral e social. A terceira aula reconstrói o platonismo até Plotino: as três hipóstases, o retorno ao Uno pelo conhecimento de si, a ênosis e a teologia negativa.
 
@@ -283,11 +283,11 @@ Com Ratzinger, Agostinho aparece como “o primeiro homem moderno”: alimenta-s
 
 O bloco fecha com a recepção do agostinismo, que cada tradição leu com ênfase própria: o “teologismo” medieval, de Boécio e Anselmo a Boaventura e Tomás de Aquino; os carmelitas, que guardaram sua psicologia; os reformadores, com a teologia da graça; Descartes, com o cogito; e a filosofia contemporânea, da fenomenologia a Wittgenstein.
 
-### O caminho até Dionísio (aulas 8 e 9)
+### O caminho até o Pseudo-Dionísio (aulas 8 e 9)
 
 Do lado grego, o curso percorre Justino, para quem o cristianismo é a verdadeira filosofia, Clemente e Orígenes em Alexandria, as heresias que obrigaram a fé a se precisar e os padres capadócios, iniciadores do neoplatonismo cristão oriental. Em seguida vem o neoplatonismo tardio: Jâmblico faz dele uma religião teúrgica, e Proclo, à frente da escola de Atenas, constrói um sistema de tríades em que tudo procede do Uno e a ele retorna.
 
-### Dionísio (aulas 10 a 12)
+### Pseudo-Dionísio (aulas 10 a 12)
 
 A história do corpus dionisiano, lido por quase mil anos como obra do discípulo de Paulo no Areópago, termina com a prova, no século XIX, de sua dependência de Proclo. Seu sistema relê Proclo em chave cristã (tearquia, processão e retorno, o homem como ponte entre espírito e matéria, as três teologias, as hierarquias e a divinização), e sua recepção atravessa a espiritualidade cristã, de Máximo Confessor e Hugo de São Vítor a Tomás de Aquino, João da Cruz e a fenomenologia.
 

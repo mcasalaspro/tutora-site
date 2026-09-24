@@ -61,7 +61,7 @@ temas:
     descricao: "A formação do país nas cartas e mapas e as obras de língua portuguesa."
     cursos:
       - brasil-mapas-cartas
-      - literaturas-de-lingua-portuguesa-fuvest
+      - literatura-brasileira-e-de-lingua-portuguesa
 
   - nome: "Filosofia"
     slug: filosofia
@@ -70,7 +70,7 @@ temas:
       - o-que-e-filosofar
       - virtudes-fundamentais
       - historia-do-pensamento-etico
-      - filosofia-da-natureza
+      - introducao-a-aristoteles
       - tecnica-ciencia-religiao
       - patristica-agostinho-dionisio
 
@@ -81,7 +81,7 @@ temas:
       - grandes-epopeias-da-antiguidade
       - teatro-grego-tragedia
       - dante-e-a-literatura
-      - literaturas-de-lingua-portuguesa-fuvest
+      - literatura-brasileira-e-de-lingua-portuguesa
       - musicas-contos-e-lendas-de-natal
 
   - nome: "Direito"

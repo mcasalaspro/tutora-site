@@ -4,8 +4,7 @@
 slug: os-francos-e-o-nascimento-da-cristandade
 titulo: Os Francos e o Nascimento da Cristandade
 professor: guilherme-almeida
-professores_convidados:
-- marcus-boeira
+professores_convidados: []
 area: História e Política
 frase: 'Da queda de Roma a Carlos Magno: como os francos deram à Igreja sua força de instituição no Ocidente.'
 sinopse_curta: Em cinco aulas, como os francos passaram de povo germânico pagão a base política da Igreja e da Europa cristã, de Clóvis a Carlos Magno.

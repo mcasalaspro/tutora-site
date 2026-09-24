@@ -1,27 +1,27 @@
 ---
-# Arquivo do curso. O nome deste arquivo é o endereço da página (/cursos/literaturas-de-lingua-portuguesa-fuvest/).
+# Arquivo do curso. O nome deste arquivo é o endereço da página (/cursos/literatura-brasileira-e-de-lingua-portuguesa/).
 # Preço e link de compra ficam em conteudo/precos.csv.
-slug: literaturas-de-lingua-portuguesa-fuvest
-titulo: Literaturas de Língua Portuguesa para a FUVEST
+slug: literatura-brasileira-e-de-lingua-portuguesa
+titulo: Literatura Brasileira e de Língua Portuguesa
 professor: fabio-ulanin
 professores_convidados: []
 area: Literatura e Cultura
-frase: 'Das liras de Gonzaga aos contos de Honwana: nove obras de língua portuguesa lidas de perto, três aulas para cada uma.'
-sinopse_curta: Nove obras de língua portuguesa, de Marília de Dirceu aos contos de Honwana, lidas em voz alta e comentadas com contexto histórico e comparação.
+frase: 'De Marília de Dirceu a Dois Irmãos, com Pessoa e Honwana: nove obras em português lidas de perto, três aulas para cada uma.'
+sinopse_curta: Sete clássicos da literatura brasileira e duas obras de Portugal e Moçambique, lidos em voz alta e comentados com contexto histórico e comparação.
 sinopse_longa: |
-  O curso percorre as nove obras de literaturas de língua portuguesa que a FUVEST pediu no vestibular de 2024, das liras árcades de Tomás Antônio Gonzaga aos contos do moçambicano Luís Bernardo Honwana. Cada obra recebe três aulas, com o mesmo método: primeiro o contexto histórico, estético e biográfico; depois, a leitura em voz alta de poemas e trechos escolhidos, comentados de perto.
+  O curso percorre nove obras escritas em português, sete delas brasileiras, das liras árcades de Tomás Antônio Gonzaga aos contos do moçambicano Luís Bernardo Honwana. Cada obra recebe três aulas, com o mesmo método: primeiro o contexto histórico, estético e biográfico; depois, a leitura em voz alta de poemas e trechos escolhidos, comentados de perto.
 
   Não é um roteiro de resumos. Fabio Ulanin compara e relaciona: aproxima o humanitismo de Quincas Borba do pessimismo de Schopenhauer, lê a memória de Miguilim em Campo Geral com Santo Agostinho e a cadeia de obediência nos contos de Honwana com a banalidade do mal de Hannah Arendt. E avisa quando uma interpretação é pessoal ou quando usa um conceito só como ferramenta de análise.
 
   Entre um extremo e outro estão Quincas Borba, de Machado de Assis; Mensagem, de Fernando Pessoa; Alguma Poesia, estreia de Carlos Drummond de Andrade; Angústia, de Graciliano Ramos; o Romanceiro da Inconfidência, de Cecília Meireles; Campo Geral, de Guimarães Rosa; e Dois Irmãos, de Milton Hatoum. As obras conversam entre si: Marília de Dirceu reaparece no Romanceiro, Quincas Borba volta na leitura de Angústia, e o engajamento de Graciliano serve de contraponto aos contos de Honwana.
 
-  Feito para vestibulandos, mas também para professores, pais e leitores que querem voltar a essas obras, o curso parte de uma convicção: literatura se aprende lendo, e ler bem pede contexto, comparação e tempo.
-formato: 27 aulas, três por obra, que alternam exposição do contexto e leitura comentada de trechos lidos em voz alta, de 19 a 35 minutos (cerca de 12 horas no total), mais uma apresentação de 2 minutos; a seleção é a da lista da FUVEST de 2024.
+  As aulas nasceram como preparação para a FUVEST, mas foram gravadas como uma explicação de cada obra que serve a qualquer leitor, em qualquer época. O curso parte de uma convicção: literatura se aprende lendo, e ler bem pede contexto, comparação e tempo.
+formato: 27 aulas, três por obra, que alternam exposição do contexto e leitura comentada de trechos lidos em voz alta, de 19 a 35 minutos (cerca de 12 horas no total), mais uma apresentação de 2 minutos.
 duracao_aulas: 27
 duracao_horas: 12.1
 preview_youtube_embed: ''
 para_quem_e:
-- Vestibulandos e estudantes do ensino médio que precisam ler estas obras com profundidade (a seleção é a da lista da FUVEST de 2024)
+- Estudantes do ensino médio e universitários que querem ler estas obras com profundidade
 - Professores de literatura que querem aprofundar a análise dessas obras ou levar as aulas para a sala
 - Pais que acompanham os estudos dos filhos e querem entender o que eles estão lendo
 - Leitores que conhecem os títulos e querem lê-los com atenção crítica e histórica
@@ -37,20 +37,19 @@ o_que_vai_aprender:
 - Ler Dois Irmãos como história de rivalidade e decadência familiar, com a casa como mapa da hierarquia social de Manaus
 - Compreender como os contos de Honwana mostram a hierarquia colonial reproduzida no cotidiano, até entre crianças, à luz da banalidade do mal de Hannah Arendt
 importancia: |
-  Ler as obras de vestibular só para passar na prova é desperdiçar o que elas têm a oferecer. Juntas, estas nove obras mostram como a língua portuguesa, em três continentes e ao longo de mais de dois séculos, deu nome ao amor, à injustiça, à memória, à fé, ao poder colonial e à identidade de um povo.
+  Ler estas obras só para cumprir uma lista de leituras é desperdiçar o que elas têm a oferecer. Juntas, estas nove obras mostram como a língua portuguesa, em três continentes e ao longo de mais de dois séculos, deu nome ao amor, à injustiça, à memória, à fé, ao poder colonial e à identidade de um povo.
 
-  Quem as atravessa com um guia atento aprende a ler textos difíceis sem ansiedade, a seguir o argumento de um poema longo, a desconfiar de rótulos e a perceber como escolhas formais, uma redondilha medieval, um verso livre, o nome de um personagem, carregam sentido. É uma habilidade que serve à prova, mas serve sobretudo a quem quer ler com precisão e escrever com clareza.
+  Quem as atravessa com um guia atento aprende a ler textos difíceis sem ansiedade, a seguir o argumento de um poema longo, a desconfiar de rótulos e a perceber como escolhas formais, uma redondilha medieval, um verso livre, o nome de um personagem, carregam sentido. É uma habilidade que serve a quem estuda, mas serve sobretudo a quem quer ler com precisão e escrever com clareza.
 curriculo:
-- aula: Apresentação — Nove obras de língua portuguesa para a FUVEST
+- aula: Apresentação — Nove obras da literatura em português
   tipo: apresentacao
   duracao_min: 2
-  descricao: Convite para o percurso pelas nove obras de literaturas de língua portuguesa da lista da FUVEST, do arcadismo ao pós-modernismo, cada uma estudada em profundidade.
-  comentario: Pensado para vestibulandos, mas também para pais que acompanham os filhos e para professores que querem aprofundar a leitura dessas obras.
+  descricao: Convite para o percurso pelas nove obras, do arcadismo ao pós-modernismo, cada uma estudada em profundidade.
+  comentario: Pensado para estudantes, mas também para pais que acompanham os filhos e para professores que querem aprofundar a leitura dessas obras.
   topicos:
-  - FUVEST
+  - literatura brasileira
   - literaturas de língua portuguesa
-  - leituras obrigatórias
-  - vestibular
+  - leitura comentada
 - aula: Aula 1 — Tomás Antônio Gonzaga e a estética árcade
   tipo: aula
   duracao_min: 20
@@ -496,7 +495,7 @@ destaque_home: false
 lancamento: false
 ---
 
-O curso lê as nove obras de literaturas de língua portuguesa da lista da FUVEST de 2024, três aulas para cada uma. O método se repete: panorama histórico, estético e biográfico; depois, leitura em voz alta de poemas e trechos, comentados com o apoio de outras obras, da filosofia e da história.
+O curso lê nove obras escritas em português, sete delas brasileiras, três aulas para cada uma. O método se repete: panorama histórico, estético e biográfico; depois, leitura em voz alta de poemas e trechos, comentados com o apoio de outras obras, da filosofia e da história.
 
 ### Gonzaga e Machado (aulas 1 a 6)
 

@@ -6,3 +6,14 @@ conteudo\quizzes\guia-das-emocoes.md
 conteudo\professores\marcelo-danucalov.md
 conteudo\imagens\cursos\guia-das-emocoes-horizontal.jpg
 conteudo\imagens\cursos\guia-das-emocoes-poster.jpg
+# Cursos que mudaram de endereco (24/09/2026): os arquivos antigos saem, os novos ja estao na pasta.
+# Filosofia da Natureza agora e Introducao a Aristoteles (conteudo\cursos\introducao-a-aristoteles.md).
+conteudo\cursos\filosofia-da-natureza.md
+conteudo\quizzes\filosofia-da-natureza.md
+conteudo\imagens\cursos\filosofia-da-natureza-horizontal.jpg
+conteudo\imagens\cursos\filosofia-da-natureza-poster.jpg
+# Literaturas para a FUVEST agora e Literatura Brasileira e de Lingua Portuguesa.
+conteudo\cursos\literaturas-de-lingua-portuguesa-fuvest.md
+conteudo\quizzes\literaturas-de-lingua-portuguesa-fuvest.md
+conteudo\imagens\cursos\literaturas-de-lingua-portuguesa-fuvest-horizontal.jpg
+conteudo\imagens\cursos\literaturas-de-lingua-portuguesa-fuvest-poster.jpg

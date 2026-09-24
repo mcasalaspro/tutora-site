@@ -12,4 +12,4 @@ Erik Gramstrup é mestre e doutor em direito civil e especialista em direito tri
 
 É autor de diversas publicações científicas, entre artigos e livros, como Responsabilidade Civil na Engenharia Genética.
 
-Tem uma paixão pessoal pela filosofia, em especial por Aristóteles e sua extensa obra. Na Tutora, dá os cursos História do Direito Romano e Filosofia da Natureza, este dedicado a Aristóteles.
+Tem uma paixão pessoal pela filosofia, em especial por Aristóteles e sua extensa obra. Na Tutora, dá os cursos História do Direito Romano e Introdução a Aristóteles.

@@ -157,7 +157,7 @@ curriculo:
 cursos_relacionados:
 - historia-das-mentalidades
 - imaginario-crianca-moderna
-- literaturas-de-lingua-portuguesa-fuvest
+- literatura-brasileira-e-de-lingua-portuguesa
 - dante-e-a-literatura
 destaque_home: false
 lancamento: false

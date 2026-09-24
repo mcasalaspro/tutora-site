@@ -1,6 +1,6 @@
 ---
-slug: literaturas-de-lingua-portuguesa-fuvest
-titulo: Literaturas de Língua Portuguesa para a FUVEST
+slug: literatura-brasileira-e-de-lingua-portuguesa
+titulo: Literatura Brasileira e de Língua Portuguesa
 professor: fabio-ulanin
 ---
 

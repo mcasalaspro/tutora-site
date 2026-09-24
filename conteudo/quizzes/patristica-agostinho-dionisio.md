@@ -1,6 +1,6 @@
 ---
 slug: patristica-agostinho-dionisio
-titulo: 'Patrística: Agostinho e Dionísio Areopagita'
+titulo: 'Patrística: Agostinho e Pseudo-Dionísio'
 professor: gabriel-de-vitto
 ---
 
@@ -195,7 +195,7 @@ professor: gabriel-de-vitto
   - "Mônada"
   - "Logos"
 - resposta_correta: B
-- explicacao: "Dionísio prefere 'tearquia' (princípio divino) porque a palavra 'Deus' é semanticamente sobrecarregada e ambígua. 'Tearquia' permite afirmar simultaneamente a unidade e a trindade do princípio supremo, sem as conotações pagãs ou difusas da palavra Deus."
+- explicacao: "O Pseudo-Dionísio prefere 'tearquia' (princípio divino) porque a palavra 'Deus' é semanticamente sobrecarregada e ambígua. 'Tearquia' permite afirmar simultaneamente a unidade e a trindade do princípio supremo, sem as conotações pagãs ou difusas da palavra Deus."
 
 ### 19. As três vias ou teologias de Pseudo-Dionísio correspondem, respectivamente, a quais tipos de movimento da alma?
 - tipo: multipla_escolha
@@ -207,7 +207,7 @@ professor: gabriel-de-vitto
   - "Movimento intelectual, volitivo e afetivo"
   - "Movimento sensível, racional e espiritual"
 - resposta_correta: B
-- explicacao: "Dionísio usa imagens cosmológicas: a alma se move em linha reta quando parte dos símbolos sensíveis (teologia simbólica), em espiral quando passa discursivamente de uma ideia a outra (teologia discursiva) e em círculo quando, recolhida em si mesma e esquecida do exterior, se eleva ao Bem-Beleza (teologia mística). O movimento circular era, para os antigos, o dos astros — o mais perfeito."
+- explicacao: "O Pseudo-Dionísio usa imagens cosmológicas: a alma se move em linha reta quando parte dos símbolos sensíveis (teologia simbólica), em espiral quando passa discursivamente de uma ideia a outra (teologia discursiva) e em círculo quando, recolhida em si mesma e esquecida do exterior, se eleva ao Bem-Beleza (teologia mística). O movimento circular era, para os antigos, o dos astros — o mais perfeito."
 
 ### 20. Qual é a ideia de "teose" ou "divinização" central para a mística dionisiana?
 - tipo: multipla_escolha
@@ -219,7 +219,7 @@ professor: gabriel-de-vitto
   - "O homem ascende a uma divindade inferior intermediária entre ele e Deus"
   - "O homem retorna à matéria pura para se purificar"
 - resposta_correta: B
-- explicacao: "A divinização é a ideia de que a criatura, pela graça e pela união com Deus, se torna semelhante a Ele sem se confundir com Ele: as realidades humanas não são divinas, mas são divinizáveis. A ênfase nesse poder divinizador é típica dos gregos; Tomás de Aquino, leitor de Dionísio, uniu-a à ênfase latina na graça que cura o pecado."
+- explicacao: "A divinização é a ideia de que a criatura, pela graça e pela união com Deus, se torna semelhante a Ele sem se confundir com Ele: as realidades humanas não são divinas, mas são divinizáveis. A ênfase nesse poder divinizador é típica dos gregos; Tomás de Aquino, leitor do Pseudo-Dionísio, uniu-a à ênfase latina na graça que cura o pecado."
 
 ### 21. Qual destes filósofos modernos demonstrou, segundo os estudiosos, dependência significativa do pensamento de Agostinho, sobretudo na epistemologia?
 - tipo: multipla_escolha
@@ -241,9 +241,9 @@ professor: gabriel-de-vitto
   - "Foi a primeira tradução do grego para o latim"
   - "Aplicou ao texto dionisiano o método com que os medievais liam as Escrituras, em seus vários sentidos, tornando-o acessível aos escolásticos"
   - "Desmascarou definitivamente a falsa atribuição apostólica da obra"
-  - "Refutou ponto por ponto os erros teológicos de Dionísio"
+  - "Refutou ponto por ponto os erros teológicos do Pseudo-Dionísio"
 - resposta_correta: B
-- explicacao: "Hugo prestou um serviço 'civilizador': leu Dionísio como os medievais liam a Bíblia, esclarecendo o sentido literal e o sentido espiritual de um texto difícil, conhecido por uma tradução também difícil. Depois dele, as cópias de seu comentário se multiplicaram e o interesse dos escolásticos por Dionísio só cresceu."
+- explicacao: "Hugo prestou um serviço 'civilizador': leu o Pseudo-Dionísio como os medievais liam a Bíblia, esclarecendo o sentido literal e o sentido espiritual de um texto difícil, conhecido por uma tradução também difícil. Depois dele, as cópias de seu comentário se multiplicaram e o interesse dos escolásticos pelo Pseudo-Dionísio só cresceu."
 
 ### 23. No Império Romano do século III, a sucessão de imperadores tornou-se tão instável que houve um período em que sete ou oito imperadores se sucederam em apenas quinze anos.
 - tipo: verdadeiro_falso
@@ -324,7 +324,7 @@ professor: gabriel-de-vitto
 - resposta_correta: B
 - explicacao: "A metafísica procliana é uma geometria de tríades: do Uno emanam tríades, cada uma das quais comporta novas tríades, num desdobramento dialético complexo. Discute-se se Proclo foi influenciado pela Trindade cristã, mas seu sistema parece nascer da exegese do Parmênides de Platão."
 
-### 30. Que imagem paradoxal, vinda de Gregório de Nissa e elaborada por Dionísio, se tornou central na obra de São João da Cruz?
+### 30. Que imagem paradoxal, vinda de Gregório de Nissa e elaborada pelo Pseudo-Dionísio, se tornou central na obra de São João da Cruz?
 - tipo: multipla_escolha
 - dificuldade: dificil
 - fonte: transcricao
@@ -334,7 +334,7 @@ professor: gabriel-de-vitto
   - "Castelo interior"
   - "Chama de amor viva"
 - resposta_correta: B
-- explicacao: "O 'raio tenebroso' é um paradoxo: Deus é luz que ilumina, mas é também treva — não porque seja escuro, mas porque sua luz excede a capacidade humana, como a nuvem de onde Deus fala a Moisés no Sinai. A imagem surge na Vida de Moisés, de Gregório de Nissa, é elaborada por Dionísio e se torna central em João da Cruz."
+- explicacao: "O 'raio tenebroso' é um paradoxo: Deus é luz que ilumina, mas é também treva — não porque seja escuro, mas porque sua luz excede a capacidade humana, como a nuvem de onde Deus fala a Moisés no Sinai. A imagem surge na Vida de Moisés, de Gregório de Nissa, é elaborada pelo Pseudo-Dionísio e se torna central em João da Cruz."
 
 ## curiosidades
 

@@ -31,8 +31,6 @@ perguntas:
         pontos: { direito: 3 }
       - texto: "Me formar como professor ou educador"
         pontos: { educador: 3 }
-      - texto: "Me preparar para o vestibular"
-        pontos: { vestibular: 3 }
       - texto: "Falar melhor em público"
         pontos: { oratoria: 3 }
 
@@ -148,7 +146,6 @@ motivos:
   filhos: "você quer educar melhor seus filhos"
   direito: "você se interessa por direito"
   educador: "você trabalha ou quer trabalhar com educação"
-  vestibular: "você vai prestar vestibular"
   oratoria: "você quer falar melhor em público"
   antiguidade: "Grécia e Roma despertam sua curiosidade"
   medieval: "a Idade Média desperta sua curiosidade"
@@ -184,16 +181,16 @@ duracao:
 # marcou respostas com aquela etiqueta. Curso que não estiver aqui nunca é sugerido.
 cursos:
   alta-idade-media: { historia: 3, medieval: 3, panorama: 2, iniciante: 2 }
-  arte-de-falar-bem: { oratoria: 4, pratico: 3, iniciante: 2, educador: 1, vestibular: 1 }
+  arte-de-falar-bem: { oratoria: 4, pratico: 3, iniciante: 2, educador: 1 }
   baixa-idade-media: { historia: 3, medieval: 3, fe: 1, panorama: 2, iniciante: 2 }
-  brasil-mapas-cartas: { historia: 3, brasil: 3, leitura: 2, intermediario: 2, vestibular: 1 }
+  brasil-mapas-cartas: { historia: 3, brasil: 3, leitura: 2, intermediario: 2 }
   brevissima-introducao-ao-direito: { direito: 3, iniciante: 3, panorama: 2 }
-  como-estudar-historia: { historia: 2, iniciante: 2, pratico: 2, vestibular: 2, educador: 1 }
+  como-estudar-historia: { historia: 2, iniciante: 2, pratico: 2, educador: 1 }
   dante-e-a-literatura: { literatura: 3, poesia: 3, medieval: 2, fe: 2, leitura: 3, intermediario: 1 }
   educacao-personalizada: { filhos: 3, educador: 3, escolar: 2, adolescentes: 1, filosofia: 1, homeschooling: 1, pratico: 1 }
   era-napoleonica: { historia: 3, moderna: 2, contemporanea: 1, panorama: 2, iniciante: 2 }
   filosofia-da-educacao: { educador: 3, filosofia: 3, filhos: 1, homeschooling: 1, aprofundado: 2, panorama: 1 }
-  filosofia-da-natureza: { filosofia: 3, antiguidade: 2, iniciante: 1, intermediario: 1, leitura: 1 }
+  introducao-a-aristoteles: { filosofia: 3, antiguidade: 2, iniciante: 1, intermediario: 1, leitura: 1 }
   filosofia-do-direito: { direito: 3, filosofia: 2, etica: 2, fe: 1, intermediario: 2 }
   grandes-epopeias-da-antiguidade: { literatura: 3, poesia: 3, antiguidade: 3, leitura: 3, aprofundado: 2 }
   gregos-fundamento-do-ocidente: { historia: 3, antiguidade: 3, panorama: 2, iniciante: 2 }
@@ -205,7 +202,7 @@ cursos:
   imaginario-crianca-moderna: { filhos: 3, imaginacao: 3, escolar: 2, primeira-infancia: 1, adolescentes: 1, pratico: 2 }
   imperio-bizantino: { historia: 3, medieval: 2, fe: 2, panorama: 2, iniciante: 2 }
   inicio-seculo-xx-guerra-e-revolucao: { historia: 3, contemporanea: 3, panorama: 2, iniciante: 1 }
-  literaturas-de-lingua-portuguesa-fuvest: { vestibular: 4, literatura: 3, brasil: 3, leitura: 3, poesia: 1 }
+  literatura-brasileira-e-de-lingua-portuguesa: { literatura: 4, brasil: 3, leitura: 3, poesia: 1, educador: 1 }
   mercantilismo: { historia: 3, moderna: 3, panorama: 2, iniciante: 2 }
   musicas-contos-e-lendas-de-natal: { literatura: 2, fe: 3, imaginacao: 2, filhos: 1, poesia: 1, iniciante: 2 }
   o-fim-da-educacao: { educador: 3, filosofia: 2, filhos: 1, literatura: 2, medieval: 1, aprofundado: 2 }
@@ -253,7 +250,7 @@ trilhas:
       - o-que-e-filosofar
       - virtudes-fundamentais
       - historia-do-pensamento-etico
-      - filosofia-da-natureza
+      - introducao-a-aristoteles
 
   - nome: "Fé e razão: o pensamento cristão"
     descricao: "Dos Padres da Igreja a Dante, passando pelo nascimento da cristandade."
@@ -270,7 +267,7 @@ trilhas:
       - gregos-fundamento-do-ocidente
       - grandes-epopeias-da-antiguidade
       - teatro-grego-tragedia
-      - filosofia-da-natureza
+      - introducao-a-aristoteles
       - tecnica-ciencia-religiao
 
   - nome: "Educar os filhos"
@@ -304,7 +301,7 @@ trilhas:
       - grandes-epopeias-da-antiguidade
       - teatro-grego-tragedia
       - dante-e-a-literatura
-      - literaturas-de-lingua-portuguesa-fuvest
+      - literatura-brasileira-e-de-lingua-portuguesa
 
   - nome: "Direito para começar"
     descricao: "O que é o direito, a visão clássica da justiça e as raízes romanas."
@@ -313,20 +310,12 @@ trilhas:
       - filosofia-do-direito
       - historia-direito-romano
 
-  - nome: "Rumo ao vestibular"
-    descricao: "As obras da FUVEST, método de estudo, a história do Brasil nas fontes e a arte de se expressar."
-    cursos:
-      - literaturas-de-lingua-portuguesa-fuvest
-      - como-estudar-historia
-      - brasil-mapas-cartas
-      - arte-de-falar-bem
-
   - nome: "Brasil: história e letras"
     descricao: "A formação do país nas cartas e mapas, a mentalidade brasileira e os clássicos da língua."
     cursos:
       - brasil-mapas-cartas
       - historia-das-mentalidades
-      - literaturas-de-lingua-portuguesa-fuvest
+      - literatura-brasileira-e-de-lingua-portuguesa
 ---
 
 Como a sugestão é calculada:

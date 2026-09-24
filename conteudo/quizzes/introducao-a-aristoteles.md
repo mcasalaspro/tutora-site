@@ -1,6 +1,6 @@
 ---
-slug: filosofia-da-natureza
-titulo: Filosofia da Natureza
+slug: introducao-a-aristoteles
+titulo: Introdução a Aristóteles
 professor: erik-gramstrup
 ---
 
