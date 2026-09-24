@@ -1,8 +1,10 @@
 ---
 /**
  * Política de privacidade. O texto fica em conteudo/privacidade.md (editável pela equipe).
+ * No fim, o botão que apaga o histórico guardado no navegador (ver src/scripts/interesses.ts).
  */
 import Base from '../layouts/Base.astro';
+import Icone from '../components/Icone.astro';
 import { Content, frontmatter } from '../../conteudo/privacidade.md';
 
 const titulo = frontmatter.titulo ?? 'Política de privacidade';
@@ -17,5 +19,36 @@ const titulo = frontmatter.titulo ?? 'Política de privacidade';
     <div class="texto-md">
       <Content />
     </div>
+    <section class="historico" aria-labelledby="historico-titulo" data-historico>
+      <div>
+        <h2 id="historico-titulo">Histórico deste navegador</h2>
+        <p data-historico-texto role="status">
+          Os destaques da página inicial usam os cursos que você abriu neste navegador.
+        </p>
+      </div>
+      <button class="botao botao--contorno" type="button" data-apagar>
+        <Icone nome="lixeira" /> Apagar agora
+      </button>
+    </section>
   </div>
 </Base>
+
+<script>
+  import { apagarPerfil, temPerfil } from '../scripts/interesses';
+
+  const caixa = document.querySelector<HTMLElement>('[data-historico]');
+  const texto = caixa?.querySelector<HTMLElement>('[data-historico-texto]');
+  const botao = caixa?.querySelector<HTMLButtonElement>('[data-apagar]');
+  if (caixa && texto && botao) {
+    if (!temPerfil()) {
+      texto.textContent = 'Não há nada guardado neste navegador.';
+      botao.disabled = true;
+    }
+    botao.addEventListener('click', () => {
+      texto.textContent = apagarPerfil()
+        ? 'Pronto: o histórico deste navegador foi apagado. A página inicial volta a sortear os destaques sem olhar o que você viu.'
+        : 'Não consegui apagar: limpe os dados do site nas configurações do navegador.';
+      botao.disabled = true;
+    });
+  }
+</script>

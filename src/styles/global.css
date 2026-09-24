@@ -230,6 +230,37 @@ button {
   color: var(--verde);
 }
 
+/* /privacidade/: caixa com o botão que apaga o histórico guardado no navegador */
+.historico {
+  max-width: 72ch;
+  margin-top: 30px;
+  padding: 20px 22px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 24px;
+  border: 1px solid var(--linha);
+  border-radius: 18px;
+  background: var(--azul);
+}
+
+.historico h2 {
+  margin: 0 0 4px;
+  font-size: 1.15rem;
+}
+
+.historico p {
+  margin: 0;
+  max-width: 48ch;
+  color: var(--texto-2);
+}
+
+.historico .botao:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 /* ── Botões ────────────────────────────────────────────────────────────── */
 
 .botao {
@@ -952,6 +983,11 @@ a.chip:hover {
   visibility: visible;
 }
 
+/* sem JavaScript: o slide de reserva (dentro de <noscript>) ocupa o carrossel */
+.vitrine > noscript {
+  display: contents;
+}
+
 .vitrine__conteudo {
   position: relative;
   z-index: 2;
@@ -964,6 +1000,33 @@ a.chip:hover {
   font-size: clamp(2.3rem, 1.3rem + 4.2vw, 4.6rem);
   line-height: 0.98;
   text-shadow: 0 2px 30px rgba(0, 0, 0, 0.35);
+}
+
+/* títulos compridos: letra menor, para caberem em duas linhas (o carrossel tem a altura do slide mais alto) */
+.vitrine__titulo--m {
+  font-size: clamp(2.15rem, 1.2rem + 3.5vw, 3.9rem);
+}
+
+.vitrine__titulo--l {
+  font-size: clamp(2rem, 1.1rem + 3vw, 3.35rem);
+}
+
+.vitrine__titulo--xl {
+  font-size: clamp(1.8rem, 0.95rem + 2.3vw, 2.5rem);
+}
+
+@media (max-width: 420px) {
+  .vitrine__titulo--m {
+    font-size: 2rem;
+  }
+
+  .vitrine__titulo--l {
+    font-size: 1.85rem;
+  }
+
+  .vitrine__titulo--xl {
+    font-size: 1.65rem;
+  }
 }
 
 .vitrine__frase {

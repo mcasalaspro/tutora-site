@@ -23,6 +23,8 @@ interface Props {
   atual?: 'inicio' | 'cursos' | 'professores' | 'quiz' | 'descubra' | '';
   jsonLd?: object | object[];
   semIndexar?: boolean;
+  /** O que esta página diz sobre o interesse de quem a abre (guardado só no navegador; ver src/scripts/interesses.ts). */
+  interesse?: { curso?: string; area?: string; professor?: string };
 }
 const cfg = config();
 const {
@@ -34,6 +36,7 @@ const {
   atual = '',
   jsonLd,
   semIndexar = false,
+  interesse = {},
 } = Astro.props;
 
 const tituloCompleto = titulo === cfg.nome ? `${cfg.nome} · ${cfg.slogan}` : `${titulo} · ${cfg.nome}`;
@@ -77,7 +80,12 @@ const ldTexto = (o: object) => JSON.stringify(o).replace(/</g, '\\u003c');
     <meta name="twitter:image" content={og} />
     {ld.map((o) => <script type="application/ld+json" set:html={ldTexto(o)} />)}
   </head>
-  <body class:list={{ 'com-topo-solido': topoSolido }}>
+  <body
+    class:list={{ 'com-topo-solido': topoSolido }}
+    data-interesse-curso={interesse.curso || undefined}
+    data-interesse-area={interesse.area || undefined}
+    data-interesse-professor={interesse.professor || undefined}
+  >
     <a class="pular" href="#conteudo">Pular para o conteúdo</a>
     <Topo solido={topoSolido} atual={atual} />
     <main id="conteudo">
@@ -85,5 +93,26 @@ const ldTexto = (o: object) => JSON.stringify(o).replace(/</g, '\\u003c');
     </main>
     <Rodape />
     <slot name="depois" />
+    <script>
+      // Guarda, só neste navegador, os cursos, áreas e professores que a pessoa abre (a vitrine da home usa isso).
+      import { registrarVisita, registrarForte } from '../scripts/interesses';
+
+      const d = document.body.dataset;
+      if (d.interesseCurso) registrarVisita('cursos', d.interesseCurso);
+      if (d.interesseArea) registrarVisita('areas', d.interesseArea);
+      if (d.interesseProfessor) registrarVisita('professores', d.interesseProfessor);
+      const curso = d.interesseCurso;
+      if (curso) {
+        // botões de compra e de "avise-me" dos cartões, e o play dos vídeos: interesse forte neste curso
+        document.addEventListener(
+          'click',
+          (ev) => {
+            const alvo = ev.target instanceof Element ? ev.target.closest('.oferta a.botao, [data-video]') : null;
+            if (alvo) registrarForte(curso);
+          },
+          { capture: true },
+        );
+      }
+    </script>
   </body>
 </html>

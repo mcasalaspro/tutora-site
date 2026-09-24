@@ -84,7 +84,7 @@ const jsonLd = {
     : {}),
 };
 ---
-<Base titulo={c.titulo} descricao={c.sinopseCurta} imagem={og} tipo="article" atual="cursos" jsonLd={jsonLd}>
+<Base titulo={c.titulo} descricao={c.sinopseCurta} imagem={og} tipo="article" atual="cursos" jsonLd={jsonLd} interesse={{ curso: c.slug }}>
   <section class:list={['curso-topo', { 'curso-topo--sem-imagem': semImagem, 'curso-topo--arte': Boolean(c.horizontal && c.poster) }]}>
     <FundoImagem imagem={c.horizontal} movel={c.poster} foto={c.professor?.cena} />
     <div class="conteiner curso-topo__conteudo">

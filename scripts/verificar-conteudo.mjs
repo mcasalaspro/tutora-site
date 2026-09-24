@@ -97,6 +97,17 @@ const trilhas = cfg.trilhas ?? [];
 for (const t of trilhas) {
   for (const s of t.cursos ?? []) if (!cursos.has(s)) avisos.push(`configuracoes.yaml: a trilha "${t.titulo}" cita o curso "${s}", que não existe.`);
 }
+// carrossel da home
+const vitrine = cfg.vitrine ?? {};
+if (vitrine.fixos !== undefined && vitrine.fixos !== null && !Array.isArray(vitrine.fixos)) {
+  avisos.push('configuracoes.yaml: em "vitrine", o campo "fixos" precisa ser uma lista entre colchetes, como ["dante-e-a-literatura"] (foi ignorado).');
+}
+for (const s of Array.isArray(vitrine.fixos) ? vitrine.fixos : []) {
+  if (!cursos.has(String(s))) avisos.push(`configuracoes.yaml: em "vitrine", o curso fixo "${s}" não existe (foi ignorado).`);
+}
+if (vitrine.quantidade !== undefined && !(Number(vitrine.quantidade) >= 1 && Number(vitrine.quantidade) <= 10)) {
+  avisos.push(`configuracoes.yaml: em "vitrine", a quantidade "${vitrine.quantidade}" precisa ser um número de 1 a 10 (usei ${Math.min(10, Math.max(1, Math.round(Number(vitrine.quantidade) || 6)))}).`);
+}
 
 // ── quizzes ──────────────────────────────────────────────────────────────
 for (const f of listar(C('quizzes'), '.md')) {

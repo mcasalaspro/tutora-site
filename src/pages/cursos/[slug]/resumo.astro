@@ -31,7 +31,7 @@ for (const a of c.aulas.flatMap((x) => x.autores)) {
 const enderecoCurso = urlAbsoluta(`/cursos/${c.slug}/`, Astro.site);
 const cfg = config();
 ---
-<Base titulo={`Resumo: ${c.titulo}`} descricao={`Resumo completo do curso ${c.titulo}: sinopse e o que se discute em cada uma das ${c.nAulas} aulas.`} topoSolido atual="cursos">
+<Base titulo={`Resumo: ${c.titulo}`} descricao={`Resumo completo do curso ${c.titulo}: sinopse e o que se discute em cada uma das ${c.nAulas} aulas.`} topoSolido atual="cursos" interesse={{ curso: c.slug }}>
   <article class="resumo">
     <div class="conteiner resumo__folha">
       <div class="so-imprimir resumo__timbre">

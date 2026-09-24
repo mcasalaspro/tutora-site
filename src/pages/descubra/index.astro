@@ -135,6 +135,8 @@ const nPerguntas = d.perguntas.length;
 </Base>
 
 <script>
+  import { lembrarDescubra } from '../../scripts/interesses';
+
   interface Opcao {
     texto: string;
     pontos: Record<string, number>;
@@ -436,6 +438,8 @@ const nPerguntas = d.perguntas.length;
       } else bloco.hidden = true;
 
       enviarLead(finais, nomeTrilha);
+      // só no navegador da pessoa: a vitrine da home passa a puxar para estes cursos
+      if (!semPerfil) lembrarDescubra([...finais, ...ranking.map((x) => x.s)]);
       mostrarTela('resultado');
       $('[data-titulo-resultado]').focus({ preventScroll: true });
     }

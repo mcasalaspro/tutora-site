@@ -37,7 +37,7 @@ const jsonLd = {
 };
 const bio = paragrafos(p.bioCompleta);
 ---
-<Base titulo={p.nome} descricao={descricao} imagem={og} atual="professores" jsonLd={jsonLd}>
+<Base titulo={p.nome} descricao={descricao} imagem={og} atual="professores" jsonLd={jsonLd} interesse={{ professor: p.slug }}>
   <section class="prof-topo">
     <FundoImagem foto={undefined} imagem={p.cena ?? p.foto} />
     <div class="conteiner">

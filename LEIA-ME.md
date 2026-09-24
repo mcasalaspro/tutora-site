@@ -17,7 +17,7 @@ tutora-site/
 │   ├── videos.csv                  aulas grátis e apresentações no YouTube (bloco "Assista de graça")
 │   ├── quiz-geral.md               temas do quiz geral (página /quiz/)
 │   ├── descubra.md                 perguntas, pesos e trilhas do "Descubra seu curso" (página /descubra/)
-│   ├── configuracoes.yaml          contatos, redes, áreas, trilhas, textos da home, planilha de leads
+│   ├── configuracoes.yaml          contatos, redes, áreas, trilhas, textos e carrossel da home, planilha de leads
 │   ├── privacidade.md              texto da página /privacidade/
 │   └── imagens/
 │       ├── cursos/                 capas dos cursos (2 formatos por curso)
@@ -63,11 +63,15 @@ abaixo substitui tudo pelo site novo, guardando antes uma cópia do antigo.
 - *Precisa de algo do site antigo*: está no ramo `site-antigo-DATA` (menu de ramos, na página do repositório).
   Quando não precisar mais, apague esse ramo em **Branches**.
 
-### Domínio próprio (opcional)
+### Domínio próprio
 
-Em **Settings → Pages → Custom domain**, digite o domínio (ex.: `cursos.tutoracursos.com.br`) e crie no seu
-provedor de DNS um registro **CNAME** apontando para `mcasalaspro.github.io`. O site se ajusta sozinho ao novo
-endereço na próxima publicação.
+O site está em **https://www.tutoracursos.com.br** desde 24/09/2026. No GitHub, **Settings → Pages → Custom
+domain** tem `www.tutoracursos.com.br`, com **Enforce HTTPS** marcado. Na zona DNS da Registro.br (modo avançado)
+ficaram um **CNAME** `www` → `mcasalaspro.github.io` e, no endereço sem www, quatro registros **A**
+(185.199.108.153, 185.199.109.153, 185.199.110.153 e 185.199.111.153) e quatro **AAAA** (2606:50c0:8000::153 a
+2606:50c0:8003::153). O **MX**, o **TXT** (SPF) e o CNAME **autodiscover** são do e-mail (Microsoft 365): não mexa
+neles, senão o e-mail para. O endereço antigo (`mcasalaspro.github.io/tutora-site`) leva ao novo sozinho, e o site
+se ajusta ao endereço configurado no GitHub a cada publicação.
 
 ## 2. No dia a dia: editar e publicar
 
@@ -109,7 +113,7 @@ Use só letras minúsculas, números e hífens. Todos os cursos têm a mesma est
 | `importancia` | Texto do bloco laranja "Por que estudar isso hoje". |
 | `curriculo` | As aulas, na ordem em que aparecem. Cada uma tem `aula` ("Aula 3 — Título"), `descricao`, `comentario`, `duracao_min`, `topicos`, `autores` e, quando a aula tem várias partes, `partes`. `tipo: apresentacao` marca uma apresentação curta (não conta como aula); `modulo` agrupa as aulas sob um título ("Módulo 1 · Tema"). |
 | `cursos_relacionados` | Slugs de cursos para a fileira "Cursos relacionados". O site completa com a mesma área. |
-| `destaque_home` | `true` põe o curso no carrossel do topo da home. |
+| `destaque_home` | `true` dá mais chance de o curso sair no carrossel do topo da home (veja "Destaques da home"). |
 | `lancamento` | `true` mostra o selo "Novo". |
 | `preview_youtube_embed` | Link de um vídeo de apresentação no YouTube (opcional). Prefira a lista `conteudo/videos.csv`, que aceita vários vídeos por curso. |
 
@@ -233,7 +237,8 @@ do Apps Script, use **Implantar > Gerenciar implantações > lápis > Nova vers�
 
 O texto da página **/privacidade/** (link no rodapé e na etapa do contato). Explica o que o site guarda e como
 pedir para apagar. Revise com quem cuida da parte jurídica e mantenha o e-mail de contato igual ao de
-`configuracoes.yaml`.
+`configuracoes.yaml`. No fim da página, o site põe sozinho o botão **Apagar agora**, que apaga o histórico que a
+vitrine da home guarda no navegador da pessoa (veja "Destaques da home").
 
 ### Tirar um curso do site
 
@@ -242,10 +247,36 @@ pedir para apagar. Revise com quem cuida da parte jurídica e mantenha o e-mail 
   alguém descompactar por cima, liste esses arquivos em `_arquivos-removidos.txt`: descompactar não apaga
   nada, e o `2-PUBLICAR.bat` apaga os arquivos da lista antes de enviar.
 
+### Destaques da home (carrossel do topo)
+
+O carrossel "Em destaque" muda a cada visita: o site sorteia os cursos (6, por padrão) na hora em que a página
+abre. Quem chega pela primeira vez vê um sorteio variado, com mais chance para os cursos marcados com
+`destaque_home: true` e para os lançamentos, de áreas e professores diferentes. O primeiro slide nunca repete o da
+visita anterior (a não ser que haja cursos fixos, abaixo).
+
+Para quem já andou pelo site, o sorteio puxa para o que a pessoa mostrou interesse: os cursos, áreas e
+professores que ela abriu, os cliques em comprar e no vídeo, e o resultado do "Descubra seu curso". Esses slides
+aparecem como **"Para você"** (em geral quatro dos seis, a começar pelo primeiro); os outros continuam sendo sorteio, de preferência
+de outras áreas, para a pessoa conhecer coisas novas. O que ela viu fica guardado **só no navegador dela**
+(nada vai para a Tutora ou para a planilha), vale por até um ano, perde peso com o tempo e pode ser apagado no
+botão da página de privacidade.
+
+No `configuracoes.yaml`, bloco `vitrine`:
+
+- `quantidade`: quantos cursos passam no carrossel (de 1 a 10).
+- `fixos`: para uma campanha ou um lançamento, os slugs dos cursos que devem aparecer sempre no começo, na
+  ordem. Exemplo: `fixos: ["dante-e-a-literatura"]`. Vazio (`[]`) = só sorteio.
+- `personalizar`: `false` desliga o "Para você" (fica só o sorteio).
+
+Títulos compridos aparecem com letra um pouco menor no carrossel, para caberem em duas linhas (assim o topo da
+página não cresce quando um deles é sorteado). Sem JavaScript, o carrossel mostra um curso só (o primeiro fixo ou
+o primeiro com `destaque_home`).
+
 ### Configurações: `conteudo/configuracoes.yaml`
 
-E-mail e redes do rodapé, textos da home, **áreas** do catálogo e **trilhas** (sequências de cursos que
-aparecem como fileiras numeradas na home; nas páginas de área, os cursos da trilha seguem essa ordem).
+E-mail e redes do rodapé, textos da home, o carrossel do topo (`vitrine`, veja acima), **áreas** do catálogo e
+**trilhas** (sequências de cursos que aparecem como fileiras numeradas na home; nas páginas de área, os cursos da
+trilha seguem essa ordem).
 
 No bloco `oferta` ficam os textos dos cartões de compra (os itens do avulso, do combo e do Acesso Completo, como
 "7 dias de garantia") e o que aparece enquanto não há link de compra:
@@ -303,3 +334,9 @@ npm run build        # gera a pasta dist/ (o verificador roda antes)
 Astro 7 · coleções de conteúdo com o loader `glob` apontando para `conteudo/` · imagens otimizadas por `astro:assets`
 (localizadas por `import.meta.glob`) · JavaScript mínimo, sem framework · publicação por
 `.github/workflows/publicar.yml` (GitHub Pages; `SITE_URL` e `BASE_PATH` vêm do `actions/configure-pages`).
+
+Vitrine da home: cada curso vira um `<template data-destaque>` (imagem em template não carrega) e
+`src/scripts/vitrine-sorteio.js` roda dentro da página, logo depois do carrossel e antes da primeira pintura,
+escolhendo os slides (sem piscar e sem baixar imagens à toa). O histórico de interesse é gravado por
+`src/scripts/interesses.ts` (chamado pelo `Base.astro` nas páginas de curso, área e professor, e pelo "Descubra")
+no `localStorage`, chave `tutora-interesses`; o formato está no começo desse arquivo.

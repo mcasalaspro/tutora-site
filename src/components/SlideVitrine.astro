@@ -1,0 +1,48 @@
+---
+/**
+ * Um slide do carrossel da home. A home gera um destes para cada curso (dentro de <template>),
+ * e o sorteio (src/scripts/vitrine-sorteio.js) escolhe quais aparecem a cada visita.
+ * O rótulo troca de "Em destaque" para "Para você" quando o curso foi escolhido pelo histórico da pessoa.
+ */
+import FundoImagem from './FundoImagem.astro';
+import ProfDestaque from './ProfDestaque.astro';
+import Icone from './Icone.astro';
+import type { Curso } from '../lib/catalogo';
+import { url, plural } from '../lib/formatar';
+
+interface Props {
+  curso: Curso;
+  carregamento?: 'lazy' | 'eager';
+  ativo?: boolean;
+  rotuloAria?: string;
+}
+const { curso: c, carregamento = 'lazy', ativo = false, rotuloAria } = Astro.props;
+const profs = [c.professor, ...c.convidados].filter((p): p is NonNullable<typeof p> => Boolean(p));
+// Os slides ficam empilhados e o carrossel tem a altura do mais alto: títulos compridos usam letra menor,
+// para nenhum passar de duas linhas no computador (e a vitrine não crescer quando um deles é sorteado).
+const n = c.titulo.length;
+const tamanho = n >= 47 ? 'xl' : n >= 35 ? 'l' : n >= 25 ? 'm' : '';
+---
+<article
+  class:list={['vitrine__slide', { ativo, 'vitrine__slide--arte': Boolean(c.horizontal && c.poster) }]}
+  aria-roledescription="slide"
+  aria-label={rotuloAria}
+  data-slide
+  data-titulo={c.titulo}
+>
+  <FundoImagem imagem={c.horizontal} movel={c.poster} foto={c.professor?.cena} carregamento={carregamento} />
+  <div class="vitrine__conteudo">
+    <span class="sobretitulo" data-rotulo data-para-voce={`Para você · ${c.area}`}>Em destaque · {c.area}</span>
+    <h2 class:list={['vitrine__titulo', tamanho && `vitrine__titulo--${tamanho}`]}>{c.titulo}</h2>
+    <p class="vitrine__frase">{c.frase}</p>
+    <ProfDestaque profs={profs} tamanho="m" />
+    <div class="meta">
+      <span><Icone nome="aulas" />{plural(c.nAulas, 'aula')}</span>
+      {c.duracaoTexto && <span><Icone nome="relogio" />{c.duracaoTexto}</span>}
+    </div>
+    <div class="vitrine__acoes">
+      <a class="botao botao--laranja" href={url(`/cursos/${c.slug}/`)}><Icone nome="play" /> Conhecer o curso</a>
+      <a class="botao botao--vidro" href={url(`/cursos/${c.slug}/#aulas`)}><Icone nome="aulas" /> Ver as aulas</a>
+    </div>
+  </div>
+</article>

@@ -1,25 +1,37 @@
 ---
 import Base from '../layouts/Base.astro';
-import FundoImagem from '../components/FundoImagem.astro';
 import Capa from '../components/Capa.astro';
 import Fileira from '../components/Fileira.astro';
 import ProfCard from '../components/ProfCard.astro';
 import Logo from '../components/Logo.astro';
 import Icone from '../components/Icone.astro';
-import ProfDestaque from '../components/ProfDestaque.astro';
-import { cursos, professores, totais } from '../lib/catalogo';
+import SlideVitrine from '../components/SlideVitrine.astro';
+import { cursos, professores, totais, relacionados, type Curso } from '../lib/catalogo';
 import { config, linkAviso } from '../lib/config';
 import { acessoCompleto } from '../lib/precos';
-import { url, plural } from '../lib/formatar';
+import { url } from '../lib/formatar';
+import sorteioJs from '../scripts/vitrine-sorteio.js?raw';
 
 const cfg = config();
 const lista = await cursos();
 const profs = (await professores()).filter((p) => p.cursos.length > 0);
 const tot = await totais();
 const porSlug = new Map(lista.map((c) => [c.slug, c]));
-let destaques = lista.filter((c) => c.destaque);
-if (destaques.length === 0) destaques = lista.filter((c) => c.professor?.cena).slice(0, 5);
-destaques = destaques.slice(0, 6);
+// Vitrine (carrossel do topo): todos os cursos com imagem entram no sorteio, que acontece no navegador
+// a cada visita (src/scripts/vitrine-sorteio.js). destaque_home e lançamento dão mais chance de sair.
+const noSorteio = lista.filter((c) => c.horizontal || c.professor?.cena);
+const fixos = cfg.vitrine.fixos.filter((s) => noSorteio.some((c) => c.slug === s));
+const quantidade = Math.min(cfg.vitrine.quantidade, noSorteio.length);
+const peso = (c: Curso) => 1 + (c.destaque ? 1.5 : 0) + (c.lancamento ? 1 : 0);
+const relVitrine = new Map<string, string[]>();
+for (const c of noSorteio) relVitrine.set(c.slug, (await relacionados(c, 6)).map((r) => r.slug));
+// sem JavaScript, aparece um slide só: o 1º fixo, ou o 1º com destaque_home
+const padrao = noSorteio.find((c) => c.slug === fixos[0]) ?? noSorteio.find((c) => c.destaque) ?? noSorteio[0];
+// o script vai dentro da página; sem os comentários e os recuos, fica mais leve
+const sorteio = sorteioJs
+  .replace(/\/\*[\s\S]*?\*\//g, '')
+  .replace(/^\s*\/\/.*$/gm, '')
+  .replace(/^\s+/gm, '');
 const novos = lista.filter((c) => c.lancamento);
 const trilhas = cfg.trilhas
   .map((t) => ({ ...t, itens: t.cursos.map((s) => porSlug.get(s)).filter((c): c is NonNullable<typeof c> => Boolean(c)) }))
@@ -34,46 +46,37 @@ const TEMPO = 8000;
 <Base titulo={cfg.nome} atual="inicio">
   <h1 class="sr-only">{cfg.nome}: {cfg.slogan}</h1>
 
-  <section class="vitrine" data-vitrine data-tempo={TEMPO} aria-roledescription="carrossel" aria-label="Cursos em destaque">
-    {destaques.map((c, i) => (
-      <article
-        class:list={['vitrine__slide', { ativo: i === 0, 'vitrine__slide--arte': Boolean(c.horizontal && c.poster) }]}
-        aria-roledescription="slide"
-        aria-label={`${i + 1} de ${destaques.length}: ${c.titulo}`}
-        data-slide
-      >
-        <FundoImagem imagem={c.horizontal} movel={c.poster} foto={c.professor?.cena} carregamento={i === 0 ? 'eager' : 'lazy'} />
-        <div class="vitrine__conteudo">
-          <span class="sobretitulo">Em destaque · {c.area}</span>
-          <h2 class="vitrine__titulo">{c.titulo}</h2>
-          <p class="vitrine__frase">{c.frase}</p>
-          <ProfDestaque profs={[c.professor, ...c.convidados].filter((p): p is NonNullable<typeof p> => Boolean(p))} tamanho="m" />
-          <div class="meta">
-            <span><Icone nome="aulas" />{plural(c.nAulas, 'aula')}</span>
-            {c.duracaoTexto && <span><Icone nome="relogio" />{c.duracaoTexto}</span>}
-          </div>
-          <div class="vitrine__acoes">
-            <a class="botao botao--laranja" href={url(`/cursos/${c.slug}/`)}><Icone nome="play" /> Conhecer o curso</a>
-            <a class="botao botao--vidro" href={url(`/cursos/${c.slug}/#aulas`)}><Icone nome="aulas" /> Ver as aulas</a>
-          </div>
-        </div>
-      </article>
-    ))}
-    {destaques.length > 1 && (
-      <div class="vitrine__pontos" role="group" aria-label="Escolher destaque">
-        {destaques.map((c, i) => (
-          <button
-            class:list={['vitrine__ponto', { ativo: i === 0 }]}
-            type="button"
-            aria-label={`Mostrar ${c.titulo}`}
-            aria-current={i === 0 ? 'true' : undefined}
-            data-ponto={i}
-            style={`--tempo:${TEMPO}ms`}
-          ></button>
-        ))}
-      </div>
-    )}
-  </section>
+  {noSorteio.length > 0 && (
+    <section
+      class="vitrine"
+      data-vitrine
+      data-tempo={TEMPO}
+      data-quantidade={quantidade}
+      data-fixos={fixos.join(' ')}
+      data-personalizar={cfg.vitrine.personalizar ? '1' : '0'}
+      aria-roledescription="carrossel"
+      aria-label="Cursos em destaque"
+    >
+      {noSorteio.map((c) => (
+        <template
+          data-destaque
+          data-slug={c.slug}
+          data-area={c.areaSlug}
+          data-profs={[c.professorSlug, ...c.convidados.map((p) => p.slug)].filter(Boolean).join(' ')}
+          data-rel={(relVitrine.get(c.slug) ?? []).join(' ')}
+          data-peso={peso(c)}
+        >
+          <SlideVitrine curso={c} />
+        </template>
+      ))}
+      <noscript>
+        <SlideVitrine curso={padrao} carregamento="eager" ativo rotuloAria={`Em destaque: ${padrao.titulo}`} />
+      </noscript>
+      <div class="vitrine__pontos" role="group" aria-label="Escolher destaque" data-pontos></div>
+      {/* o sorteio roda aqui mesmo, antes da primeira pintura (fica dentro da seção por causa do CSS ".vitrine + .apos-vitrine") */}
+      <script is:inline set:html={sorteio}></script>
+    </section>
+  )}
 
   <div class="apos-vitrine">
     <section class="conteiner atalhos" aria-label="Por onde começar">

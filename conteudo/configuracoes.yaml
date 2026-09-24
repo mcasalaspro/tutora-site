@@ -21,6 +21,18 @@ home:
   titulo_destaque: "formação humana."
   subtitulo: "História, filosofia, literatura, direito e educação em aulas com professores de referência: para entender o mundo, pensar com clareza e crescer como pessoa."
 
+# Carrossel do topo da home ("Em destaque"). A cada visita, o site sorteia os cursos.
+# Para quem já andou pelo site, o sorteio puxa para os cursos, áreas e professores que a pessoa mais viu
+# e para o resultado do "Descubra seu curso" (esses aparecem como "Para você"). Isso fica só no navegador
+# da pessoa: nada é enviado. Cursos com destaque_home: true têm mais chance de sair no sorteio.
+vitrine:
+  quantidade: 6
+  # Para fixar cursos no começo do carrossel (um lançamento, uma campanha), ponha os slugs aqui, na ordem.
+  # Exemplo:  fixos: ["dante-e-a-literatura"]
+  fixos: []
+  # false = só o sorteio, sem olhar o que a pessoa já viu
+  personalizar: true
+
 # Áreas do catálogo. O campo "area" de cada curso precisa ser igual a um destes nomes.
 areas:
   - nome: "Educação dos Filhos"

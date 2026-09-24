@@ -25,7 +25,7 @@ const todos = await cursos();
 const outras = cfg.areas.filter((a) => a.slug !== area.slug && todos.some((c) => c.area === a.nome));
 const vids = videosDe(`area:${area.slug}`);
 ---
-<Base titulo={area.nome} descricao={`${area.descricao ?? ''} ${plural(itens.length, 'curso')} na Tutora.`} topoSolido atual="cursos">
+<Base titulo={area.nome} descricao={`${area.descricao ?? ''} ${plural(itens.length, 'curso')} na Tutora.`} topoSolido atual="cursos" interesse={{ area: area.slug }}>
   <div class="conteiner">
     <header class="cab-pagina">
       <nav class="migalhas" aria-label="Você está em">

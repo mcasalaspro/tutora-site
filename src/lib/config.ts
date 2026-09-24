@@ -23,6 +23,8 @@ export interface Config {
   descricao: string;
   contato: { email?: string; instagram?: string; youtube?: string; facebook?: string };
   home: { titulo_regular: string; titulo_destaque: string; subtitulo: string };
+  /** Carrossel do topo da home: quantos cursos, quais ficam fixos no começo e se usa o histórico do navegador */
+  vitrine: { quantidade: number; fixos: string[]; personalizar: boolean };
   areas: Area[];
   trilhas: Trilha[];
   oferta: {
@@ -60,6 +62,13 @@ export function config(): Config {
       titulo_regular: bruto.home?.titulo_regular ?? 'Cursos de',
       titulo_destaque: bruto.home?.titulo_destaque ?? 'formação humana.',
       subtitulo: bruto.home?.subtitulo ?? '',
+    },
+    vitrine: {
+      quantidade: Math.min(10, Math.max(1, Math.round(Number(bruto.vitrine?.quantidade) || 6))),
+      fixos: (Array.isArray(bruto.vitrine?.fixos) ? bruto.vitrine.fixos : [])
+        .map((s: unknown) => String(s ?? '').trim())
+        .filter(Boolean),
+      personalizar: bruto.vitrine?.personalizar !== false,
     },
     areas: (bruto.areas ?? []) as Area[],
     trilhas: (bruto.trilhas ?? []) as Trilha[],
