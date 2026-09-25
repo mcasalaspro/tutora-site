@@ -185,9 +185,13 @@ const dados = JSON.stringify({ perguntas, porRodada, linkCompra }).replace(/</g,
       const prox = $('[data-proxima]');
       prox.textContent = atual + 1 < rodada.length ? 'Próxima pergunta →' : 'Ver meu resultado →';
       prox.focus({ preventScroll: true });
-      // se a explicação ficou abaixo da dobra (celular), traz o retorno e o botão para a vista
-      const r = ret.getBoundingClientRect();
-      if (r.bottom > window.innerHeight) ret.scrollIntoView({ block: 'end', behavior: 'smooth' });
+      // se a explicação ficou abaixo da dobra, rola: o cartão inteiro, quando ele cabe abaixo do submenu;
+      // senão (celular), pelo menos o retorno e o botão
+      const r = raiz.getBoundingClientRect();
+      if (r.bottom > window.innerHeight) {
+        const margem = parseFloat(getComputedStyle(raiz).scrollMarginTop) || 0;
+        (r.height <= window.innerHeight - margem ? raiz : ret).scrollIntoView({ block: 'end', behavior: 'smooth' });
+      }
     }
 
     function fim() {

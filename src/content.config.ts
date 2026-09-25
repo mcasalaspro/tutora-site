@@ -56,6 +56,8 @@ const cursos = defineCollection({
     importancia: texto,
     curriculo: z.array(aula).min(1),
     cursos_relacionados: lista,
+    /** Aviso curto que aparece no topo da página do curso (ex.: "Curso gravado em 2022..."). Vazio = sem aviso. */
+    aviso: texto,
     destaque_home: z.boolean().default(false),
     lancamento: z.boolean().default(false),
     ordem: z.number().optional(),

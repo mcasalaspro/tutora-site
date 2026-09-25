@@ -8,6 +8,7 @@ professores_convidados: []
 area: Direito e Vida Pública
 frase: O que a lei brasileira diz sobre educar os filhos em casa e como se defender, do Conselho Tutelar à Justiça.
 sinopse_curta: O que a lei e o STF dizem sobre o ensino domiciliar no Brasil e como a família educadora pode agir diante do Conselho Tutelar e da Justiça.
+aviso: Curso gravado em 2022. As leis e as decisões citadas nas aulas são as daquele ano.
 sinopse_longa: |
   Muitas famílias que educam os filhos em casa não sabem dizer em que a lei as ampara, nem o que fazer quando o Conselho Tutelar bate à porta. Este curso, dado por Isabelle Monteiro, parte dessa insegurança e se dirige tanto aos pais quanto aos advogados que queiram atuar na defesa de famílias educadoras.
 

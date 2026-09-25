@@ -1,14 +1,11 @@
 ---
-import '@fontsource/baloo-2/400.css';
-import '@fontsource/baloo-2/600.css';
-import '@fontsource/baloo-2/800.css';
 import '@fontsource/montserrat/400.css';
 import '@fontsource/montserrat/500.css';
 import '@fontsource/montserrat/600.css';
 import '@fontsource/montserrat/700.css';
 import '../styles/global.css';
-import balooUrl from '@fontsource/baloo-2/files/baloo-2-latin-800-normal.woff2?url';
 import montUrl from '@fontsource/montserrat/files/montserrat-latin-400-normal.woff2?url';
+import montTituloUrl from '@fontsource/montserrat/files/montserrat-latin-700-normal.woff2?url';
 import Topo from '../components/Topo.astro';
 import Rodape from '../components/Rodape.astro';
 import { config } from '../lib/config';
@@ -63,7 +60,7 @@ const ldTexto = (o: object) => JSON.stringify(o).replace(/</g, '\\u003c');
     <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
     <link rel="icon" href={url('/favicon-32.png')} sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href={url('/apple-touch-icon.png')} />
-    <link rel="preload" href={balooUrl} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={montTituloUrl} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={montUrl} as="font" type="font/woff2" crossorigin />
     <link rel="sitemap" href={url('/sitemap-index.xml')} />
 

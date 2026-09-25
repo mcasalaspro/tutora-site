@@ -52,6 +52,7 @@ const cfg = config();
           {c.duracaoTexto && <span>{c.duracaoTexto} de vídeo</span>}
           {c.formato && <span>{c.formato}</span>}
         </p>
+        {c.aviso && <p class="aviso-curso"><Icone nome="info" />{c.aviso}</p>}
         <div class="resumo__acoes nao-imprimir">
           <a class="botao botao--laranja botao--pequeno" href={url(`/cursos/${c.slug}/`)}><Icone nome="seta-esq" /> Voltar ao curso</a>
           <button class="botao botao--contorno botao--pequeno" type="button" data-imprimir><Icone nome="impressora" /> Imprimir ou salvar PDF</button>

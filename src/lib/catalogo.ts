@@ -65,6 +65,8 @@ export interface Curso {
   duracaoTexto: string;
   trailer: string;
   relacionadosSlugs: string[];
+  /** aviso curto no topo da página (ex.: data de gravação) */
+  aviso: string;
   destaque: boolean;
   lancamento: boolean;
   ordem: number;
@@ -160,6 +162,7 @@ export async function cursos(): Promise<Curso[]> {
       duracaoTexto: duracaoTotal(minutos),
       trailer: d.preview_youtube_embed,
       relacionadosSlugs: d.cursos_relacionados,
+      aviso: d.aviso.trim(),
       destaque: d.destaque_home,
       lancamento: d.lancamento,
       ordem: d.ordem ?? 999,

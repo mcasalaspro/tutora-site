@@ -103,6 +103,7 @@ const jsonLd = {
             {c.duracaoTexto && <span><Icone nome="relogio" />{c.duracaoTexto}</span>}
             {c.lancamento && <span class="chip chip--novo">Novo</span>}
           </div>
+          {c.aviso && <p class="aviso-curso"><Icone nome="info" />{c.aviso}</p>}
           <div class="curso-topo__acoes">
             <a class="botao botao--laranja" href="#inscricao">
               <Icone nome={algumaOferta ? 'carrinho' : 'seta-link'} />

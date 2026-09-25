@@ -113,6 +113,7 @@ Use só letras minúsculas, números e hífens. Todos os cursos têm a mesma est
 | `importancia` | Texto do bloco laranja "Por que estudar isso hoje". |
 | `curriculo` | As aulas, na ordem em que aparecem. Cada uma tem `aula` ("Aula 3 — Título"), `descricao`, `comentario`, `duracao_min`, `topicos`, `autores` e, quando a aula tem várias partes, `partes`. `tipo: apresentacao` marca uma apresentação curta (não conta como aula); `modulo` agrupa as aulas sob um título ("Módulo 1 · Tema"). |
 | `cursos_relacionados` | Slugs de cursos para a fileira "Cursos relacionados". O site completa com a mesma área. |
+| `aviso` | Opcional: uma frase curta que aparece no topo da página do curso e no resumo, com um ícone de informação (ex.: `aviso: Curso gravado em 2022. As leis e as decisões citadas nas aulas são as daquele ano.`). |
 | `destaque_home` | `true` dá mais chance de o curso sair no carrossel do topo da home (veja "Destaques da home"). |
 | `lancamento` | `true` mostra o selo "Novo". |
 | `preview_youtube_embed` | Link de um vídeo de apresentação no YouTube (opcional). Prefira a lista `conteudo/videos.csv`, que aceita vários vídeos por curso. |
@@ -314,11 +315,14 @@ Cada curso usa **duas imagens**. Enquanto elas não existem, o site mostra uma c
 
 - Primárias: azul-escuro `#303454`, cinza `#E5E1E6`, laranja `#FF6C37`, verde-água `#1ECAD3`.
 - Secundárias: vermelho `#CE0E2D` (selo "Novo"), azul mais escuro `#171726` (fundos profundos).
-- Títulos em **Baloo 2** (Regular e ExtraBold), textos em **Montserrat** (Regular a Bold), hospedadas no próprio site.
+- Letra: **Montserrat** em tudo (títulos em Bold, textos em Regular), hospedada no próprio site. O brandbook pede
+  Baloo 2 nos títulos; desde 25/09/2026 o site usa a Montserrat também neles, por passar mais seriedade na venda
+  dos cursos. A imagem padrão de compartilhamento (`public/marca/og-padrao.jpg`) foi refeita com a mesma letra.
 - Logo em branco sobre fundos escuros e em azul-escuro sobre fundos claros, como pede o brandbook.
 - Sem o padrão de vitrais/blocos.
 
-As cores ficam em `src/styles/global.css` (bloco `:root`, no começo do arquivo).
+As cores e as letras ficam em `src/styles/global.css` (bloco `:root`, no começo do arquivo: `--fonte-titulo` e
+`--fonte-texto`).
 
 ---
 
